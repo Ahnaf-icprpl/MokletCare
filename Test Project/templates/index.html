@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pelaporan Kerusakan Sarana Prasarana</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <h1>Pelaporan Kerusakan Sarana Prasarana</h1>
+      <p>Sistem laporan kerusakan fasilitas sekolah</p>
+    </div>
+  </header>
+
+  <!-- Navigasi Tab -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <button id="btnTabForm" class="tab-btn active">Form Lapor</button>
+      <button id="btnTabDashboard" class="tab-btn">Dashboard Petugas</button>
+    </div>
+  </nav>
+
+  <main class="container main">
+
+    <!-- ==================== FORM LAPOR ==================== -->
+    <section id="tabForm" class="card">
+      <h2>Formulir Laporan Kerusakan</h2>
+
+      <form id="formLapor">
+        <div class="form-group">
+          <label for="nama">Nama Pelapor</label>
+          <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap">
+        </div>
+
+        <div class="form-group">
+          <label for="kelas">Kelas / Jabatan</label>
+          <input type="text" id="kelas" name="kelas" required placeholder="Contoh: X IPA 1 / Guru">
+        </div>
+
+        <div class="form-group">
+          <label for="lokasi">Lokasi Kerusakan</label>
+          <select id="lokasi" name="lokasi" required>
+            <option value="">-- Pilih Lokasi --</option>
+            <option value="Gedung A">Gedung A</option>
+            <option value="Gedung B">Gedung B</option>
+            <option value="Gedung C">Gedung C</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="deskripsi">Deskripsi Kerusakan</label>
+          <textarea id="deskripsi" name="deskripsi" rows="4" required
+            placeholder="Jelaskan kerusakan yang ditemukan..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Foto (Wajib 3 Foto)</label>
+          <p class="hint">1 foto kerusakan utama + 2 foto lingkungan sekitar</p>
+
+          <div class="foto-grid">
+            <div class="foto-item">
+              <label>Foto Kerusakan Utama</label>
+              <input type="file" id="foto1" name="foto1" accept="image/*" required>
+              <img id="preview1" class="preview hidden" alt="Preview 1">
+            </div>
+            <div class="foto-item">
+              <label>Foto Lingkungan 1</label>
+              <input type="file" id="foto2" name="foto2" accept="image/*" required>
+              <img id="preview2" class="preview hidden" alt="Preview 2">
+            </div>
+            <div class="foto-item">
+              <label>Foto Lingkungan 2</label>
+              <input type="file" id="foto3" name="foto3" accept="image/*" required>
+              <img id="preview3" class="preview hidden" alt="Preview 3">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmit" class="btn btn-primary">Laporkan</button>
+      </form>
+
+      <div id="notifSukses" class="notif success hidden">
+        ✓ Laporan berhasil dikirim! Terima kasih.
+      </div>
+    </section>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <section id="tabDashboard" class="card hidden">
+      <div class="dashboard-header">
+        <h2>Dashboard Petugas Sarpras</h2>
+        <button id="btnRefresh" class="btn btn-outline">Refresh</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Pelapor</th>
+              <th>Lokasi</th>
+              <th>Deskripsi</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelLaporan">
+            <tr>
+              <td colspan="5" class="loading">Memuat data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 Sistem Pelaporan Sarana Prasarana Sekolah
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
