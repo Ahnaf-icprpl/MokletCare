@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
+  <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pelaporan Kerusakan Sarana Prasarana</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -11,79 +12,100 @@
   <!-- Header -->
   <header class="header">
     <div class="container">
-      <h1>Pelaporan Kerusakan Sarana Prasarana</h1>
-      <p>Sistem laporan kerusakan fasilitas sekolah</p>
+      <h1 id="headerTitle" data-i18n="headerTitle">Pelaporan Kerusakan Sarana Prasarana</h1>
+      <p id="headerSubtitle" data-i18n="headerSubtitle">Sistem laporan kerusakan fasilitas sekolah</p>
     </div>
   </header>
 
   <!-- Navigasi Tab -->
   <nav class="nav">
     <div class="container nav-inner">
-      <button id="btnTabForm" class="tab-btn active">Form Lapor</button>
-      <button id="btnTabDashboard" class="tab-btn">Dashboard Petugas</button>
+      <div class="nav-left">
+        <button id="btnTabForm" class="tab-btn active" data-i18n="tabForm">Form Lapor</button>
+        <button id="btnTabDashboard" class="tab-btn" data-i18n="tabDashboard">Dashboard Petugas</button>
+      </div>
+      <div class="nav-right">
+        <select id="languageSelect" class="nav-select" aria-label="Language">
+          <option value="id">Indonesia</option>
+          <option value="en">English</option>
+        </select>
+      </div>
     </div>
   </nav>
+
+  <!-- Floating language toggle (top-right) -->
+  <div id="langToggle" class="lang-toggle" title="Toggle language">
+    <button id="langButton" class="lang-btn" aria-label="Toggle language">
+      <span id="langIcon">🌐</span>
+      <span id="langShort">ID</span>
+    </button>
+    <div id="langMenu" class="lang-menu hidden">
+      <button class="lang-option" data-lang="id">Indonesia</button>
+      <button class="lang-option" data-lang="en">English</button>
+    </div>
+  </div>
 
   <main class="container main">
 
     <!-- ==================== FORM LAPOR ==================== -->
     <section id="tabForm" class="card">
-      <h2>Formulir Laporan Kerusakan</h2>
+      <h2 id="formHeading" data-i18n="formHeading">Formulir Laporan Kerusakan</h2>
 
       <form id="formLapor">
         <div class="form-group">
-          <label for="nama">Nama Pelapor</label>
-          <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap">
+          <label for="nama" data-i18n="labelNama">Nama Pelapor</label>
+          <input type="text" id="nama" name="nama" required data-i18n-placeholder="placeholderNama" placeholder="Masukkan nama lengkap">
         </div>
 
         <div class="form-group">
-          <label for="kelas">Kelas / Jabatan</label>
-          <input type="text" id="kelas" name="kelas" required placeholder="Contoh: X IPA 1 / Guru">
+          <label for="kelas" data-i18n="labelKelas">Kelas</label>
+          <input type="text" id="kelas" name="kelas" required data-i18n-placeholder="placeholderKelas" placeholder="Contoh: X RPL 1">
         </div>
 
         <div class="form-group">
-          <label for="lokasi">Lokasi Kerusakan</label>
+          <label for="lokasi" data-i18n="labelLokasi">Lokasi Kerusakan</label>
           <select id="lokasi" name="lokasi" required>
-            <option value="">-- Pilih Lokasi --</option>
-            <option value="Gedung A">Gedung A</option>
-            <option value="Gedung B">Gedung B</option>
-            <option value="Gedung C">Gedung C</option>
+            <option value="" data-i18n="optionLokasiDefault">-- Pilih Lokasi --</option>
+            <option value="Gedung 1" data-i18n="optionGedungA">Gedung 1</option>
+            <option value="Gedung 2" data-i18n="optionGedungB">Gedung 2</option>
+            <option value="Gedung Aula" data-i18n="optionGedungC">Gedung Aula</option>
+            <option value="Gedung MTP" data-i18n="optionGedungD">Gedung MTP</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="deskripsi">Deskripsi Kerusakan</label>
-          <textarea id="deskripsi" name="deskripsi" rows="4" required
+          <label for="deskripsi" data-i18n="labelDeskripsi">Deskripsi Kerusakan</label>
+          <textarea id="deskripsi" name="deskripsi" rows="4" required data-i18n-placeholder="placeholderDeskripsi"
             placeholder="Jelaskan kerusakan yang ditemukan..."></textarea>
         </div>
 
         <div class="form-group">
-          <label>Upload Foto (Wajib 3 Foto)</label>
-          <p class="hint">1 foto kerusakan utama + 2 foto lingkungan sekitar</p>
+          <label data-i18n="labelUpload">Upload Foto (Wajib 3 Foto)</label>
+          <p class="hint" data-i18n="hintUpload">1 foto kerusakan utama + 2 foto lingkungan sekitar</p>
 
           <div class="foto-grid">
             <div class="foto-item">
-              <label>Foto Kerusakan Utama</label>
+              <label data-i18n="labelFoto1">Foto Kerusakan Utama</label>
               <input type="file" id="foto1" name="foto1" accept="image/*" required>
               <img id="preview1" class="preview hidden" alt="Preview 1">
             </div>
             <div class="foto-item">
-              <label>Foto Lingkungan 1</label>
+              <label data-i18n="labelFoto2">Foto Lingkungan 1</label>
               <input type="file" id="foto2" name="foto2" accept="image/*" required>
               <img id="preview2" class="preview hidden" alt="Preview 2">
             </div>
             <div class="foto-item">
-              <label>Foto Lingkungan 2</label>
+              <label data-i18n="labelFoto3">Foto Lingkungan 2</label>
               <input type="file" id="foto3" name="foto3" accept="image/*" required>
               <img id="preview3" class="preview hidden" alt="Preview 3">
             </div>
           </div>
         </div>
 
-        <button type="submit" id="btnSubmit" class="btn btn-primary">Laporkan</button>
+        <button type="submit" id="btnSubmit" class="btn btn-primary" data-i18n="btnSubmit">Laporkan</button>
       </form>
 
-      <div id="notifSukses" class="notif success hidden">
+      <div id="notifSukses" class="notif success hidden" data-i18n="notifSukses">
         ✓ Laporan berhasil dikirim! Terima kasih.
       </div>
     </section>
@@ -91,24 +113,24 @@
     <!-- ==================== DASHBOARD ==================== -->
     <section id="tabDashboard" class="card hidden">
       <div class="dashboard-header">
-        <h2>Dashboard Petugas Sarpras</h2>
-        <button id="btnRefresh" class="btn btn-outline">Refresh</button>
+        <h2 id="dashboardHeading" data-i18n="dashboardHeading">Dashboard Petugas Sarpras</h2>
+        <button id="btnRefresh" class="btn btn-outline" data-i18n="btnRefresh">Refresh</button>
       </div>
 
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>Nama Pelapor</th>
-              <th>Lokasi</th>
-              <th>Deskripsi</th>
-              <th>Status</th>
-              <th>Aksi</th>
+              <th data-i18n="thNama">Nama Pelapor</th>
+              <th data-i18n="thLokasi">Lokasi</th>
+              <th data-i18n="thDeskripsi">Deskripsi</th>
+              <th data-i18n="thStatus">Status</th>
+              <th data-i18n="thAksi">Aksi</th>
             </tr>
           </thead>
           <tbody id="tabelLaporan">
             <tr>
-              <td colspan="5" class="loading">Memuat data...</td>
+                  <td colspan="5" class="loading" data-i18n="loadingData">Memuat data...</td>
             </tr>
           </tbody>
         </table>
@@ -117,7 +139,7 @@
 
   </main>
 
-  <footer class="footer">
+  <footer class="footer" id="footerText" data-i18n="footerText">
     &copy; 2025 Sistem Pelaporan Sarana Prasarana Sekolah
   </footer>
 

@@ -10,7 +10,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # max 16MB
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # max 10MB
 
 # Buat folder upload jika belum ada
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
