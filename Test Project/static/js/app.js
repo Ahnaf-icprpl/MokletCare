@@ -8,6 +8,7 @@ const btnSubmit = document.getElementById('btnSubmit');
 const notifSukses = document.getElementById('notifSukses');
 const tabelLaporan = document.getElementById('tabelLaporan');
 const btnRefresh = document.getElementById('btnRefresh');
+const btnClearCompleted = document.getElementById('btnClearCompleted');
 const languageSelect = document.getElementById('languageSelect');
 
 const i18nElements = document.querySelectorAll('[data-i18n]');
@@ -33,18 +34,29 @@ const translations = {
     optionGedungD: 'Gedung MTP',
     labelDeskripsi: 'Deskripsi Kerusakan',
     placeholderDeskripsi: 'Jelaskan kerusakan yang ditemukan...',
+    labelSeverity: 'Tingkat Masalah',
+    optionMinor: 'Minor',
+    optionMedium: 'Medium',
+    optionCritical: 'Critical',
     labelUpload: 'Upload Foto (Wajib 3 Foto)',
     hintUpload: '1 foto kerusakan utama + 2 foto lingkungan sekitar',
     labelFoto1: 'Foto Kerusakan Utama',
     labelFoto2: 'Foto Lingkungan 1',
     labelFoto3: 'Foto Lingkungan 2',
+    uploadChoose: 'Pilih Foto',
     btnSubmit: 'Laporkan',
     notifSukses: '✓ Laporan berhasil dikirim! Terima kasih.',
     dashboardHeading: 'Dashboard Petugas Sarpras',
     btnRefresh: 'Refresh',
+    btnClearCompleted: 'Clear',
+    clearing: 'Membersihkan...',
+    confirmClearCompleted: 'Apakah Anda yakin ingin menghapus semua laporan yang sudah selesai?',
+    clearCompletedSuccess: 'Laporan selesai berhasil dibersihkan ({count} item).',
+    clearCompletedError: 'Gagal membersihkan laporan selesai.',
     thNama: 'Nama Pelapor',
     thLokasi: 'Lokasi',
     thDeskripsi: 'Deskripsi',
+    thSeverity: 'Tingkat',
     thStatus: 'Status',
     thAksi: 'Aksi',
     loadingData: 'Memuat data...',
@@ -58,6 +70,9 @@ const translations = {
     statusPending: 'Menunggu',
     statusInProgress: 'Dikerjakan',
     statusCompleted: 'Selesai',
+    severityMinor: 'Minor',
+    severityMedium: 'Medium',
+    severityCritical: 'Critical',
     actionWorking: 'Kerjakan',
     actionComplete: 'Selesai',
     viewPhotos: 'Lihat Foto',
@@ -82,18 +97,29 @@ const translations = {
     optionGedungD: 'Building MTP',
     labelDeskripsi: 'Damage Description',
     placeholderDeskripsi: 'Describe the damage found...',
+    labelSeverity: 'Problem Severity',
+    optionMinor: 'Minor',
+    optionMedium: 'Medium',
+    optionCritical: 'Critical',
     labelUpload: 'Upload Photos (3 Required)',
     hintUpload: '1 main damage photo + 2 surrounding photos',
     labelFoto1: 'Main Damage Photo',
     labelFoto2: 'Surrounding Photo 1',
     labelFoto3: 'Surrounding Photo 2',
+    uploadChoose: 'Choose Photo',
     btnSubmit: 'Submit Report',
     notifSukses: '✓ Report sent successfully! Thank you.',
     dashboardHeading: 'Facility Officer Dashboard',
     btnRefresh: 'Refresh',
+    btnClearCompleted: 'Clear',
+    clearing: 'Clearing...',
+    confirmClearCompleted: 'Are you sure you want to delete all completed reports?',
+    clearCompletedSuccess: 'Completed reports were cleared ({count} item(s)).',
+    clearCompletedError: 'Failed to clear completed reports.',
     thNama: 'Reporter Name',
     thLokasi: 'Location',
     thDeskripsi: 'Description',
+    thSeverity: 'Severity',
     thStatus: 'Status',
     thAksi: 'Action',
     loadingData: 'Loading data...',
@@ -107,6 +133,9 @@ const translations = {
     statusPending: 'Pending',
     statusInProgress: 'In Progress',
     statusCompleted: 'Completed',
+    severityMinor: 'Minor',
+    severityMedium: 'Medium',
+    severityCritical: 'Critical',
     actionWorking: 'Start',
     actionComplete: 'Complete',
     viewPhotos: 'View Photos',
@@ -280,6 +309,7 @@ formLapor.addEventListener('submit', async (e) => {
   formData.append('kelas', document.getElementById('kelas').value.trim());
   formData.append('lokasi', document.getElementById('lokasi').value);
   formData.append('deskripsi', document.getElementById('deskripsi').value.trim());
+  formData.append('tingkat', document.getElementById('tingkat').value);
   formData.append('foto1', foto1.files[0]);
   formData.append('foto2', foto2.files[0]);
   formData.append('foto3', foto3.files[0]);
@@ -327,7 +357,7 @@ async function loadLaporan() {
     const data = await res.json();
 
     if (data.length === 0) {
-      tabelLaporan.innerHTML = `<tr><td colspan="5" class="loading">${translations[currentLang].noReports}</td></tr>`;
+      tabelLaporan.innerHTML = `<tr><td colspan="6" class="loading">${translations[currentLang].noReports}</td></tr>`;
       return;
     }
 
@@ -340,6 +370,16 @@ async function loadLaporan() {
       let statusClass = 'status-menunggu';
       if (item.status === 'Dikerjakan') statusClass = 'status-dikerjakan';
       if (item.status === 'Selesai') statusClass = 'status-selesai';
+
+      const severityValue = item.tingkat || 'Medium';
+      let severityClass = 'severity-medium';
+      if (severityValue === 'Minor') severityClass = 'severity-minor';
+      if (severityValue === 'Critical') severityClass = 'severity-critical';
+
+      let severityText = severityValue;
+      if (severityValue === 'Minor') severityText = translations[currentLang].severityMinor;
+      if (severityValue === 'Medium') severityText = translations[currentLang].severityMedium;
+      if (severityValue === 'Critical') severityText = translations[currentLang].severityCritical;
 
       let statusText = item.status;
       if (item.status === 'Menunggu') statusText = translations[currentLang].statusPending;
@@ -365,6 +405,7 @@ async function loadLaporan() {
           </td>
           <td>${item.lokasi}</td>
           <td>${deskripsiSingkat}</td>
+          <td><span class="severity ${severityClass}">${severityText}</span></td>
           <td><span class="status ${statusClass}">${statusText}</span></td>
           <td style="white-space: nowrap;">${aksi}</td>
         </tr>
@@ -385,7 +426,7 @@ async function loadLaporan() {
       });
     });
   } catch (err) {
-    tabelLaporan.innerHTML = `<tr><td colspan="5" class="loading">${translations[currentLang].failedLoad}</td></tr>`;
+    tabelLaporan.innerHTML = `<tr><td colspan="6" class="loading">${translations[currentLang].failedLoad}</td></tr>`;
   }
 }
 
@@ -404,6 +445,28 @@ async function ubahStatus(id, status) {
 }
 
 btnRefresh.addEventListener('click', loadLaporan);
+
+btnClearCompleted.addEventListener('click', async () => {
+  const shouldClear = confirm(translations[currentLang].confirmClearCompleted);
+  if (!shouldClear) return;
+
+  btnClearCompleted.disabled = true;
+  btnClearCompleted.textContent = translations[currentLang].clearing;
+
+  try {
+    const res = await fetch('/api/laporan/clear-completed', { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || translations[currentLang].clearCompletedError);
+
+    loadLaporan();
+    alert(translations[currentLang].clearCompletedSuccess.replace('{count}', data.deleted));
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    btnClearCompleted.disabled = false;
+    btnClearCompleted.textContent = translations[currentLang].btnClearCompleted;
+  }
+});
 
 function lihatFoto(foto1, foto2, foto3) {
   const modal = document.createElement('div');

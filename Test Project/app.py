@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import sqlite3
 import os
-from datetime import datetime
+import threading
+import time
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -31,6 +33,7 @@ def init_db():
             lokasi TEXT NOT NULL,
             deskripsi TEXT NOT NULL,
             status TEXT DEFAULT 'Menunggu',
+            tingkat TEXT DEFAULT 'Medium',
             waktu_lapor TEXT,
             waktu_selesai TEXT,
             foto1 TEXT,
@@ -38,10 +41,64 @@ def init_db():
             foto3 TEXT
         )
     ''')
+
+    columns = [row[1] for row in conn.execute('PRAGMA table_info(laporan)')]
+    if 'tingkat' not in columns:
+        conn.execute("ALTER TABLE laporan ADD COLUMN tingkat TEXT DEFAULT 'Medium'")
+
     conn.commit()
     conn.close()
 
 init_db()
+
+
+def cleanup_completed_laporan(force=False, older_than_hours=24):
+    conn = get_db()
+    rows = conn.execute('''
+        SELECT id, foto1, foto2, foto3, waktu_selesai
+        FROM laporan
+        WHERE status = 'Selesai'
+    ''').fetchall()
+
+    deleted_count = 0
+    cutoff = datetime.now() - timedelta(hours=older_than_hours)
+
+    for row in rows:
+        try:
+            selesai_time = datetime.strptime(row['waktu_selesai'], '%Y-%m-%d %H:%M:%S')
+        except (TypeError, ValueError):
+            selesai_time = None
+
+        should_delete = force or (selesai_time is not None and selesai_time <= cutoff)
+        if not should_delete:
+            continue
+
+        for foto in [row['foto1'], row['foto2'], row['foto3']]:
+            if foto:
+                foto_path = os.path.join(app.config['UPLOAD_FOLDER'], foto)
+                if os.path.exists(foto_path):
+                    os.remove(foto_path)
+
+        conn.execute('DELETE FROM laporan WHERE id = ?', (row['id'],))
+        deleted_count += 1
+
+    conn.commit()
+    conn.close()
+    return deleted_count
+
+
+def start_cleanup_scheduler():
+    def runner():
+        while True:
+            cleanup_completed_laporan()
+            time.sleep(60 * 60)
+
+    threading.Thread(target=runner, daemon=True).start()
+
+
+cleanup_completed_laporan()
+start_cleanup_scheduler()
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -59,6 +116,7 @@ def uploaded_file(filename):
 # Ambil semua laporan (untuk dashboard)
 @app.route('/api/laporan', methods=['GET'])
 def get_laporan():
+    cleanup_completed_laporan()
     conn = get_db()
     rows = conn.execute('SELECT * FROM laporan ORDER BY id DESC').fetchall()
     conn.close()
@@ -72,6 +130,7 @@ def get_laporan():
             'lokasi': row['lokasi'],
             'deskripsi': row['deskripsi'],
             'status': row['status'],
+            'tingkat': row['tingkat'] or 'Medium',
             'waktu_lapor': row['waktu_lapor'],
             'waktu_selesai': row['waktu_selesai'],
             'foto1': row['foto1'],
@@ -87,6 +146,10 @@ def tambah_laporan():
     kelas = request.form.get('kelas', '').strip()
     lokasi = request.form.get('lokasi', '').strip()
     deskripsi = request.form.get('deskripsi', '').strip()
+    tingkat = request.form.get('tingkat', 'Medium').strip()
+
+    if tingkat not in ['Minor', 'Medium', 'Critical']:
+        return jsonify({'error': 'Tingkat masalah tidak valid'}), 400
 
     # Validasi input teks
     if not all([nama, kelas, lokasi, deskripsi]):
@@ -115,9 +178,9 @@ def tambah_laporan():
     waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     conn = get_db()
     conn.execute('''
-        INSERT INTO laporan (nama, kelas, lokasi, deskripsi, status, waktu_lapor, foto1, foto2, foto3)
-        VALUES (?, ?, ?, ?, 'Menunggu', ?, ?, ?, ?)
-    ''', (nama, kelas, lokasi, deskripsi, waktu_sekarang, foto_names[0], foto_names[1], foto_names[2]))
+        INSERT INTO laporan (nama, kelas, lokasi, deskripsi, status, tingkat, waktu_lapor, foto1, foto2, foto3)
+        VALUES (?, ?, ?, ?, 'Menunggu', ?, ?, ?, ?, ?)
+    ''', (nama, kelas, lokasi, deskripsi, tingkat, waktu_sekarang, foto_names[0], foto_names[1], foto_names[2]))
     conn.commit()
     conn.close()
 
@@ -138,11 +201,17 @@ def update_status(id):
         conn.execute('UPDATE laporan SET status = ?, waktu_selesai = ? WHERE id = ?',
                      (status_baru, waktu_selesai, id))
     else:
-        conn.execute('UPDATE laporan SET status = ? WHERE id = ?', (status_baru, id))
+        conn.execute('UPDATE laporan SET status = ?, waktu_selesai = ? WHERE id = ?', (status_baru, None, id))
 
     conn.commit()
     conn.close()
     return jsonify({'message': 'Status berhasil diubah'})
+
+
+@app.route('/api/laporan/clear-completed', methods=['POST'])
+def clear_completed():
+    deleted_count = cleanup_completed_laporan(force=True)
+    return jsonify({'message': 'Laporan selesai berhasil dibersihkan', 'deleted': deleted_count})
 
 # ==================== JALANKAN ====================
 if __name__ == '__main__':

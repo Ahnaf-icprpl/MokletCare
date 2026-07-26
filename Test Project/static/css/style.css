@@ -153,6 +153,11 @@ body {
   font-weight: 600;
 }
 
+.tab-btn.active[data-tab="dashboard"] {
+  color: #7c2d12;
+  border-bottom-color: #f97316;
+}
+
 /* ========== MAIN ========== */
 .main {
   padding: 32px 16px;
@@ -160,9 +165,15 @@ body {
 
 .card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 28px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+#tabDashboard.card {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 50%, #fff1f2 100%);
+  border: 1px solid #fed7aa;
+  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.12);
 }
 
 .card h2 {
@@ -215,18 +226,79 @@ body {
 
 .foto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
 }
 
-.foto-item label {
-  font-size: 0.8rem;
-  color: #4b5563;
+.foto-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.foto-item input[type="file"] {
+.foto-label {
   font-size: 0.8rem;
-  margin-top: 4px;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.file-upload-glass {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.25));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 24px rgba(185, 28, 28, 0.14);
+  color: #b91c1c;
+  font-weight: 700;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.file-upload-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.45) 45%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.file-upload-glass:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 30px rgba(185, 28, 28, 0.18);
+  border-color: rgba(255,255,255,0.9);
+}
+
+.file-upload-glass:hover::before {
+  transform: translateX(120%);
+}
+
+.file-upload-glass:active {
+  transform: scale(0.98);
+}
+
+.file-upload-glass input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-icon {
+  font-size: 1rem;
+}
+
+.upload-text {
+  font-size: 0.9rem;
 }
 
 .preview {
@@ -274,6 +346,41 @@ body {
   background: #fef2f2;
 }
 
+.action-glass {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.3));
+  color: #b91c1c;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 20px rgba(185, 28, 28, 0.12);
+}
+
+.action-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.45) 45%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.action-glass:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 12px 24px rgba(185, 28, 28, 0.16);
+}
+
+.action-glass:hover::before {
+  transform: translateX(120%);
+}
+
+.action-glass-danger {
+  background: linear-gradient(135deg, rgba(255,241,242,0.95), rgba(254, 202, 202, 0.65));
+  color: #991b1b;
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
 .btn-sm {
   padding: 6px 12px;
   font-size: 0.8rem;
@@ -295,6 +402,16 @@ body {
 
 .btn-green:hover {
   background: #e11d48;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
 }
 
 /* ========== NOTIF ========== */
@@ -319,6 +436,12 @@ body {
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .table-wrapper {
@@ -382,6 +505,29 @@ tr:hover td {
 .status-selesai {
   background: #ffe4e6;
   color: #be123c;
+}
+
+.severity {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.severity-minor {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.severity-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.severity-critical {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
 .sub-text {

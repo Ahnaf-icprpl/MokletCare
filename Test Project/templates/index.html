@@ -21,8 +21,8 @@
   <nav class="nav">
     <div class="container nav-inner">
       <div class="nav-left">
-        <button id="btnTabForm" class="tab-btn active" data-i18n="tabForm">Form Lapor</button>
-        <button id="btnTabDashboard" class="tab-btn" data-i18n="tabDashboard">Dashboard Petugas</button>
+        <button id="btnTabForm" class="tab-btn active" data-tab="form" data-i18n="tabForm">Form Lapor</button>
+        <button id="btnTabDashboard" class="tab-btn" data-tab="dashboard" data-i18n="tabDashboard">Dashboard Petugas</button>
       </div>
       <div class="nav-right">
         <select id="languageSelect" class="nav-select" aria-label="Language">
@@ -80,23 +80,44 @@
         </div>
 
         <div class="form-group">
+          <label for="tingkat" data-i18n="labelSeverity">Tingkat Masalah</label>
+          <select id="tingkat" name="tingkat" required>
+            <option value="Minor" data-i18n="optionMinor">Minor</option>
+            <option value="Medium" data-i18n="optionMedium" selected>Medium</option>
+            <option value="Critical" data-i18n="optionCritical">Critical</option>
+          </select>
+        </div>
+
+        <div class="form-group">
           <label data-i18n="labelUpload">Upload Foto (Wajib 3 Foto)</label>
           <p class="hint" data-i18n="hintUpload">1 foto kerusakan utama + 2 foto lingkungan sekitar</p>
 
           <div class="foto-grid">
             <div class="foto-item">
-              <label data-i18n="labelFoto1">Foto Kerusakan Utama</label>
-              <input type="file" id="foto1" name="foto1" accept="image/*" required>
+              <div class="foto-label" data-i18n="labelFoto1">Foto Kerusakan Utama</div>
+              <label class="file-upload-glass" for="foto1">
+                <span class="upload-icon">📷</span>
+                <span class="upload-text" data-i18n="uploadChoose">Pilih Foto</span>
+                <input type="file" id="foto1" name="foto1" accept="image/*" required>
+              </label>
               <img id="preview1" class="preview hidden" alt="Preview 1">
             </div>
             <div class="foto-item">
-              <label data-i18n="labelFoto2">Foto Lingkungan 1</label>
-              <input type="file" id="foto2" name="foto2" accept="image/*" required>
+              <div class="foto-label" data-i18n="labelFoto2">Foto Lingkungan 1</div>
+              <label class="file-upload-glass" for="foto2">
+                <span class="upload-icon">📷</span>
+                <span class="upload-text" data-i18n="uploadChoose">Pilih Foto</span>
+                <input type="file" id="foto2" name="foto2" accept="image/*" required>
+              </label>
               <img id="preview2" class="preview hidden" alt="Preview 2">
             </div>
             <div class="foto-item">
-              <label data-i18n="labelFoto3">Foto Lingkungan 2</label>
-              <input type="file" id="foto3" name="foto3" accept="image/*" required>
+              <div class="foto-label" data-i18n="labelFoto3">Foto Lingkungan 2</div>
+              <label class="file-upload-glass" for="foto3">
+                <span class="upload-icon">📷</span>
+                <span class="upload-text" data-i18n="uploadChoose">Pilih Foto</span>
+                <input type="file" id="foto3" name="foto3" accept="image/*" required>
+              </label>
               <img id="preview3" class="preview hidden" alt="Preview 3">
             </div>
           </div>
@@ -114,7 +135,10 @@
     <section id="tabDashboard" class="card hidden">
       <div class="dashboard-header">
         <h2 id="dashboardHeading" data-i18n="dashboardHeading">Dashboard Petugas Sarpras</h2>
-        <button id="btnRefresh" class="btn btn-outline" data-i18n="btnRefresh">Refresh</button>
+        <div class="dashboard-actions">
+          <button id="btnClearCompleted" class="btn action-glass action-glass-danger" data-i18n="btnClearCompleted">Clear</button>
+          <button id="btnRefresh" class="btn action-glass" data-i18n="btnRefresh">Refresh</button>
+        </div>
       </div>
 
       <div class="table-wrapper">
@@ -124,6 +148,7 @@
               <th data-i18n="thNama">Nama Pelapor</th>
               <th data-i18n="thLokasi">Lokasi</th>
               <th data-i18n="thDeskripsi">Deskripsi</th>
+              <th data-i18n="thSeverity">Tingkat</th>
               <th data-i18n="thStatus">Status</th>
               <th data-i18n="thAksi">Aksi</th>
             </tr>
