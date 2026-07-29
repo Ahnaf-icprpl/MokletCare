@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import sqlite3
 import os
@@ -7,21 +8,24 @@ import time
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.secret_key = 'sarpras-secret-key-change-me'
 
 # Konfigurasi
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # max 10MB
+app.config['DATABASE'] = os.path.join(app.root_path, 'sarpras.db')
 
 # Buat folder upload jika belum ada
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ==================== DATABASE ====================
 def get_db():
-    conn = sqlite3.connect('sarpras.db')
+    conn = sqlite3.connect(app.config['DATABASE'])
     conn.row_factory = sqlite3.Row
     return conn
+
 
 def init_db():
     conn = get_db()
@@ -42,12 +46,40 @@ def init_db():
         )
     ''')
 
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'reporter',
+            created_at TEXT
+        )
+    ''')
+
     columns = [row[1] for row in conn.execute('PRAGMA table_info(laporan)')]
     if 'tingkat' not in columns:
         conn.execute("ALTER TABLE laporan ADD COLUMN tingkat TEXT DEFAULT 'Medium'")
 
+    seed_default_accounts(conn)
     conn.commit()
     conn.close()
+
+
+def seed_default_accounts(conn):
+    account_count = conn.execute('SELECT COUNT(*) AS count FROM accounts').fetchone()['count']
+    if account_count > 0:
+        return
+
+    defaults = [
+        ('officer', 'officer123', 'officer'),
+        ('reporter', 'reporter123', 'reporter')
+    ]
+    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    for username, password, role in defaults:
+        conn.execute(
+            'INSERT INTO accounts (username, password_hash, role, created_at) VALUES (?, ?, ?, ?)',
+            (username, generate_password_hash(password), role, created_at)
+        )
 
 init_db()
 
@@ -107,7 +139,90 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') == 'officer':
+        return redirect(url_for('officer_page'))
+    return redirect(url_for('reporter_page'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+
+        conn = get_db()
+        user = conn.execute('SELECT * FROM accounts WHERE username = ?', (username,)).fetchone()
+        conn.close()
+
+        if user and check_password_hash(user['password_hash'], password):
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            session['role'] = user['role']
+            if user['role'] == 'officer':
+                return redirect(url_for('officer_page'))
+            return redirect(url_for('reporter_page'))
+
+        error = 'Username atau password salah.'
+
+    return render_template('login.html', error=error)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error = None
+    success = None
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        role = request.form.get('role', 'reporter').strip()
+
+        if not username or not password:
+            error = 'Username dan password wajib diisi.'
+        elif role not in ['reporter', 'officer']:
+            error = 'Role tidak valid.'
+        else:
+            conn = get_db()
+            existing = conn.execute('SELECT id FROM accounts WHERE username = ?', (username,)).fetchone()
+            if existing:
+                error = 'Username sudah digunakan.'
+            else:
+                conn.execute(
+                    'INSERT INTO accounts (username, password_hash, role, created_at) VALUES (?, ?, ?, ?)',
+                    (username, generate_password_hash(password), role, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                )
+                conn.commit()
+                conn.close()
+                success = 'Akun berhasil dibuat, silakan login.'
+                return redirect(url_for('login'))
+            conn.close()
+
+    return render_template('register.html', error=error, success=success)
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+
+@app.route('/reporter')
+def reporter_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('reporter.html', username=session.get('username'))
+
+
+@app.route('/officer')
+def officer_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'officer':
+        return redirect(url_for('reporter_page'))
+    return render_template('officer.html', username=session.get('username'))
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):

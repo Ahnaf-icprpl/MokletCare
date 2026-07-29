@@ -47,6 +47,11 @@ const translations = {
     btnSubmit: 'Laporkan',
     notifSukses: '✓ Laporan berhasil dikirim! Terima kasih.',
     dashboardHeading: 'Dashboard Petugas Sarpras',
+    dashboardSummaryTitle: 'Ringkasan Status',
+    dashboardChartTitle: 'Persentase Status',
+    summaryCompleted: 'Selesai',
+    summaryInProgress: 'Dikerjakan',
+    summaryPending: 'Belum Dikerjakan',
     btnRefresh: 'Refresh',
     btnClearCompleted: 'Clear',
     clearing: 'Membersihkan...',
@@ -58,6 +63,7 @@ const translations = {
     thDeskripsi: 'Deskripsi',
     thSeverity: 'Tingkat',
     thStatus: 'Status',
+    thReportedAt: 'Waktu Lapor',
     thAksi: 'Aksi',
     loadingData: 'Memuat data...',
     noReports: 'Belum ada laporan.',
@@ -76,7 +82,29 @@ const translations = {
     actionWorking: 'Kerjakan',
     actionComplete: 'Selesai',
     viewPhotos: 'Lihat Foto',
-    closeLabel: 'Tutup'
+    closeLabel: 'Tutup',
+    loginTitle: 'Login Sistem Sarpras',
+    loginSubtitle: 'Masuk sebagai pelapor atau petugas.',
+    loginUsername: 'Username',
+    loginPassword: 'Password',
+    loginButton: 'Login',
+    loginError: 'Username atau password salah.',
+    registerLink: 'Buat akun baru',
+    registerTitle: 'Buat Akun Baru',
+    registerSubtitle: 'Buat akun sebagai pelapor atau petugas.',
+    registerRole: 'Role',
+    registerRoleReporter: 'Reporter',
+    registerRoleOfficer: 'Officer',
+    registerButton: 'Register',
+    registerSuccess: 'Akun berhasil dibuat, silakan login.',
+    loginLink: 'Sudah punya akun? Login',
+    logout: 'Logout',
+    reporterPageTitle: 'Form Laporan Kerusakan',
+    reporterPageSubtitle: 'Silakan laporkan kerusakan fasilitas.',
+    officerPageTitle: 'Dashboard Petugas Sarpras',
+    officerPageSubtitle: 'Anda melihat ringkasan pekerjaan sarpras.',
+    graphicSummaryTitle: 'Grafik Status Laporan',
+    footerText: '© 2025 Sistem Pelaporan Sarana Prasarana Sekolah'
   },
   en: {
     headerTitle: 'Facility Damage Reporting',
@@ -110,6 +138,11 @@ const translations = {
     btnSubmit: 'Submit Report',
     notifSukses: '✓ Report sent successfully! Thank you.',
     dashboardHeading: 'Facility Officer Dashboard',
+    dashboardSummaryTitle: 'Status Summary',
+    dashboardChartTitle: 'Status Percentage',
+    summaryCompleted: 'Completed',
+    summaryInProgress: 'In Progress',
+    summaryPending: 'Not Started',
     btnRefresh: 'Refresh',
     btnClearCompleted: 'Clear',
     clearing: 'Clearing...',
@@ -121,6 +154,7 @@ const translations = {
     thDeskripsi: 'Description',
     thSeverity: 'Severity',
     thStatus: 'Status',
+    thReportedAt: 'Reported At',
     thAksi: 'Action',
     loadingData: 'Loading data...',
     noReports: 'No reports yet.',
@@ -139,7 +173,29 @@ const translations = {
     actionWorking: 'Start',
     actionComplete: 'Complete',
     viewPhotos: 'View Photos',
-    closeLabel: 'Close'
+    closeLabel: 'Close',
+    loginTitle: 'Login System Sarpras',
+    loginSubtitle: 'Sign in as a reporter or officer.',
+    loginUsername: 'Username',
+    loginPassword: 'Password',
+    loginButton: 'Login',
+    loginError: 'Username or password is incorrect.',
+    registerLink: 'Create a new account',
+    registerTitle: 'Create New Account',
+    registerSubtitle: 'Create an account as a reporter or officer.',
+    registerRole: 'Role',
+    registerRoleReporter: 'Reporter',
+    registerRoleOfficer: 'Officer',
+    registerButton: 'Register',
+    registerSuccess: 'Account created successfully, please login.',
+    loginLink: 'Already have an account? Login',
+    logout: 'Logout',
+    reporterPageTitle: 'Damage Report Form',
+    reporterPageSubtitle: 'Please report facility damage.',
+    officerPageTitle: 'Officer Dashboard Sarpras',
+    officerPageSubtitle: 'You are viewing the sarpras work summary.',
+    graphicSummaryTitle: 'Report Status Graphic',
+    footerText: '© 2025 School Facility Damage Reporting System'
   }
 };
 
@@ -174,14 +230,18 @@ function translatePage() {
   });
 
   document.documentElement.lang = currentLang;
-  languageSelect.value = currentLang;
+  if (languageSelect) {
+    languageSelect.value = currentLang;
+  }
 }
 
-languageSelect.addEventListener('change', () => {
-  currentLang = languageSelect.value;
-  localStorage.setItem('lang', currentLang);
-  translatePage();
-});
+if (languageSelect) {
+  languageSelect.addEventListener('change', () => {
+    currentLang = languageSelect.value;
+    localStorage.setItem('lang', currentLang);
+    translatePage();
+  });
+}
 
 translatePage();
 
@@ -233,12 +293,14 @@ document.addEventListener('click', (e) => {
 });
 
 // Keep select in sync (accessibility fallback)
-languageSelect.addEventListener('change', () => {
-  currentLang = languageSelect.value;
-  localStorage.setItem('lang', currentLang);
-  translatePage();
-  updateLangShort();
-});
+if (languageSelect) {
+  languageSelect.addEventListener('change', () => {
+    currentLang = languageSelect.value;
+    localStorage.setItem('lang', currentLang);
+    translatePage();
+    updateLangShort();
+  });
+}
 
 updateLangShort();
 
@@ -268,96 +330,147 @@ function setupPreview(input, preview) {
   });
 }
 
-setupPreview(foto1, preview1);
-setupPreview(foto2, preview2);
-setupPreview(foto3, preview3);
+if (foto1 && foto2 && foto3 && preview1 && preview2 && preview3) {
+  setupPreview(foto1, preview1);
+  setupPreview(foto2, preview2);
+  setupPreview(foto3, preview3);
+}
 
 function showForm() {
-  tabForm.classList.remove('hidden');
-  tabDashboard.classList.add('hidden');
-  btnTabForm.classList.add('active');
-  btnTabDashboard.classList.remove('active');
+  if (tabForm && tabDashboard && btnTabForm && btnTabDashboard) {
+    tabForm.classList.remove('hidden');
+    tabDashboard.classList.add('hidden');
+    btnTabForm.classList.add('active');
+    btnTabDashboard.classList.remove('active');
+  }
 }
 
 function showDashboard() {
-  tabForm.classList.add('hidden');
-  tabDashboard.classList.remove('hidden');
-  btnTabForm.classList.remove('active');
-  btnTabDashboard.classList.add('active');
+  if (tabForm && tabDashboard && btnTabForm && btnTabDashboard) {
+    tabForm.classList.add('hidden');
+    tabDashboard.classList.remove('hidden');
+    btnTabForm.classList.remove('active');
+    btnTabDashboard.classList.add('active');
+  }
   loadLaporan();
 }
 
-btnTabForm.addEventListener('click', showForm);
-btnTabDashboard.addEventListener('click', showDashboard);
+if (btnTabForm && btnTabDashboard) {
+  btnTabForm.addEventListener('click', showForm);
+  btnTabDashboard.addEventListener('click', showDashboard);
+}
 
-formLapor.addEventListener('submit', async (e) => {
-  e.preventDefault();
+if (formLapor && btnSubmit && notifSukses && foto1 && foto2 && foto3 && preview1 && preview2 && preview3) {
+  formLapor.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  const maxBytes = 10 * 1024 * 1024; // 10 MB
-  if (!foto1.files[0] || !foto2.files[0] || !foto3.files[0]) {
-    alert(translations[currentLang].alertNoPhotos);
-    return;
-  }
-
-  if (foto1.files[0].size > maxBytes || foto2.files[0].size > maxBytes || foto3.files[0].size > maxBytes) {
-    alert(translations[currentLang].fileTooLarge);
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('nama', document.getElementById('nama').value.trim());
-  formData.append('kelas', document.getElementById('kelas').value.trim());
-  formData.append('lokasi', document.getElementById('lokasi').value);
-  formData.append('deskripsi', document.getElementById('deskripsi').value.trim());
-  formData.append('tingkat', document.getElementById('tingkat').value);
-  formData.append('foto1', foto1.files[0]);
-  formData.append('foto2', foto2.files[0]);
-  formData.append('foto3', foto3.files[0]);
-
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = translations[currentLang].sending;
-
-  try {
-    const res = await fetch('/api/laporan', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || translations[currentLang].alertSendError);
+    const maxBytes = 10 * 1024 * 1024; // 10 MB
+    if (!foto1.files[0] || !foto2.files[0] || !foto3.files[0]) {
+      alert(translations[currentLang].alertNoPhotos);
+      return;
     }
 
-    notifSukses.classList.remove('hidden');
-    formLapor.reset();
-    preview1.classList.add('hidden');
-    preview2.classList.add('hidden');
-    preview3.classList.add('hidden');
+    if (foto1.files[0].size > maxBytes || foto2.files[0].size > maxBytes || foto3.files[0].size > maxBytes) {
+      alert(translations[currentLang].fileTooLarge);
+      return;
+    }
 
-    setTimeout(() => {
-      notifSukses.classList.add('hidden');
-    }, 4000);
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = translations[currentLang].btnSubmit;
-  }
-});
+    const formData = new FormData();
+    formData.append('nama', document.getElementById('nama').value.trim());
+    formData.append('kelas', document.getElementById('kelas').value.trim());
+    formData.append('lokasi', document.getElementById('lokasi').value);
+    formData.append('deskripsi', document.getElementById('deskripsi').value.trim());
+    formData.append('tingkat', document.getElementById('tingkat').value);
+    formData.append('foto1', foto1.files[0]);
+    formData.append('foto2', foto2.files[0]);
+    formData.append('foto3', foto3.files[0]);
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = translations[currentLang].sending;
+
+    try {
+      const res = await fetch('/api/laporan', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || translations[currentLang].alertSendError);
+      }
+
+      notifSukses.classList.remove('hidden');
+      formLapor.reset();
+      preview1.classList.add('hidden');
+      preview2.classList.add('hidden');
+      preview3.classList.add('hidden');
+
+      setTimeout(() => {
+        notifSukses.classList.add('hidden');
+      }, 4000);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = translations[currentLang].btnSubmit;
+    }
+  });
+}
 
 function buildUploadUrl(filename) {
   if (!filename) return '';
   return `${window.location.origin}/uploads/${encodeURIComponent(filename)}`;
 }
 
+function formatTimestamp(value) {
+  if (!value) return '-';
+  const parsed = new Date(value.replace(' ', 'T'));
+  if (Number.isNaN(parsed.getTime())) return value;
+  return parsed.toLocaleString(currentLang === 'en' ? 'en-US' : 'id-ID', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+}
+
+function updateSummary(data) {
+  const total = data.length;
+  const completed = data.filter(item => item.status === 'Selesai').length;
+  const inProgress = data.filter(item => item.status === 'Dikerjakan').length;
+  const pending = data.filter(item => item.status === 'Menunggu').length;
+
+  document.getElementById('summaryCompleteCount').textContent = completed;
+  document.getElementById('summaryProgressCount').textContent = inProgress;
+  document.getElementById('summaryPendingCount').textContent = pending;
+
+  const completeWidth = total === 0 ? 0 : Math.round((completed / total) * 100);
+  const progressWidth = total === 0 ? 0 : Math.round((inProgress / total) * 100);
+  const pendingWidth = total === 0 ? 0 : Math.round((pending / total) * 100);
+
+  document.getElementById('chartComplete').style.width = `${completeWidth}%`;
+  document.getElementById('chartProgress').style.width = `${progressWidth}%`;
+  document.getElementById('chartPending').style.width = `${pendingWidth}%`;
+
+  document.getElementById('completePercent').textContent = `${total === 0 ? 0 : completeWidth}%`;
+  document.getElementById('progressPercent').textContent = `${total === 0 ? 0 : progressWidth}%`;
+  document.getElementById('pendingPercent').textContent = `${total === 0 ? 0 : pendingWidth}%`;
+}
+
 async function loadLaporan() {
-  tabelLaporan.innerHTML = `<tr><td colspan="5" class="loading">${translations[currentLang].loadingData}</td></tr>`;
+  if (tabelLaporan) {
+    tabelLaporan.innerHTML = `<tr><td colspan="7" class="loading">${translations[currentLang].loadingData}</td></tr>`;
+  }
 
   try {
     const res = await fetch('/api/laporan');
     const data = await res.json();
 
+    updateSummary(data);
+
+    if (!tabelLaporan) {
+      return;
+    }
+
     if (data.length === 0) {
-      tabelLaporan.innerHTML = `<tr><td colspan="6" class="loading">${translations[currentLang].noReports}</td></tr>`;
+      tabelLaporan.innerHTML = `<tr><td colspan="7" class="loading">${translations[currentLang].noReports}</td></tr>`;
       return;
     }
 
@@ -407,6 +520,7 @@ async function loadLaporan() {
           <td>${deskripsiSingkat}</td>
           <td><span class="severity ${severityClass}">${severityText}</span></td>
           <td><span class="status ${statusClass}">${statusText}</span></td>
+          <td>${formatTimestamp(item.waktu_lapor)}</td>
           <td style="white-space: nowrap;">${aksi}</td>
         </tr>
       `;
@@ -426,7 +540,9 @@ async function loadLaporan() {
       });
     });
   } catch (err) {
-    tabelLaporan.innerHTML = `<tr><td colspan="6" class="loading">${translations[currentLang].failedLoad}</td></tr>`;
+    if (tabelLaporan) {
+      tabelLaporan.innerHTML = `<tr><td colspan="7" class="loading">${translations[currentLang].failedLoad}</td></tr>`;
+    }
   }
 }
 
@@ -444,9 +560,12 @@ async function ubahStatus(id, status) {
   }
 }
 
-btnRefresh.addEventListener('click', loadLaporan);
+if (btnRefresh) {
+  btnRefresh.addEventListener('click', loadLaporan);
+}
 
-btnClearCompleted.addEventListener('click', async () => {
+if (btnClearCompleted) {
+  btnClearCompleted.addEventListener('click', async () => {
   const shouldClear = confirm(translations[currentLang].confirmClearCompleted);
   if (!shouldClear) return;
 
@@ -467,6 +586,9 @@ btnClearCompleted.addEventListener('click', async () => {
     btnClearCompleted.textContent = translations[currentLang].btnClearCompleted;
   }
 });
+}
+
+loadLaporan();
 
 function lihatFoto(foto1, foto2, foto3) {
   const modal = document.createElement('div');
@@ -493,4 +615,45 @@ function lihatFoto(foto1, foto2, foto3) {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
+}
+
+// ==================== AUTH PAGE INITIALIZATION ====================
+function initAuthPage() {
+  const langSelectLogin = document.getElementById('langSelectLogin');
+  const langSelectRegister = document.getElementById('langSelectRegister');
+  const langSelect = langSelectLogin || langSelectRegister;
+
+  if (langSelect) {
+    langSelect.value = currentLang;
+    langSelect.addEventListener('change', () => {
+      currentLang = langSelect.value;
+      localStorage.setItem('lang', currentLang);
+      translateAuthPage();
+    });
+  }
+
+  translateAuthPage();
+}
+
+function translateAuthPage() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (key && translations[currentLang] && translations[currentLang][key]) {
+      el.textContent = translations[currentLang][key];
+    }
+  });
+  
+  document.querySelectorAll('option[data-i18n]').forEach(option => {
+    const key = option.dataset.i18n;
+    if (key && translations[currentLang] && translations[currentLang][key]) {
+      option.textContent = translations[currentLang][key];
+    }
+  });
+
+  document.documentElement.lang = currentLang;
+}
+
+// Initialize auth pages if they exist
+if (document.body.classList.contains('auth-page') || document.querySelector('.auth-card')) {
+  initAuthPage();
 }
