@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Report Broken Facilities | SMK Telkom Malang</title>
+ <link rel="stylesheet" href="/stylesheets/style.css">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+ <style>
+ body { font-family: 'Inter', sans-serif; }
+ 
+ /* Custom scrollbar for better aesthetics */
+ ::-webkit-scrollbar {
+ width: 8px;
+ }
+ ::-webkit-scrollbar-track {
+ background: #f8fafc; 
+ }
+ ::-webkit-scrollbar-thumb {
+ background: #cbd5e1; 
+ border-radius: 4px;
+ }
+ ::-webkit-scrollbar-thumb:hover {
+ background: #94a3b8; 
+ }
+ </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col justify-center items-center p-6 relative overflow-x-hidden">
+ 
+ <!-- Background Image -->
+ <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+ <div class="absolute inset-0 bg-[url('/images/telkomschools.jpg')] bg-cover bg-center bg-no-repeat blur-xl scale-110 opacity-40"></div>
+ <div class="absolute inset-0 bg-slate-50/80"></div>
+ </div>
+
+ <div class="relative z-10 w-full max-w-2xl mt-8 mb-8">
+ <div class="text-center mb-10">
+ <h1 class="text-4xl md:text-5xl font-extrabold text-red-600 mb-4 tracking-tight">SMK Telkom Malang</h1>
+ <p class="text-slate-600 text-lg font-light">Facility Damage Reporting Portal</p>
+ </div>
+
+ <!-- Main Card with Glassmorphism -->
+ <div class="bg-white/80 backdrop-blur-xl border border-red-100 rounded-2xl p-8 md:p-12 transition-all duration-500 ">
+ <div class="flex justify-end items-center mb-8">
+ <% if (locals.user) { %>
+ <div class="flex items-center gap-3">
+ <span class="text-sm text-slate-500">Logged in as <strong class="text-slate-800"><%= user.displayName %></strong></span>
+ <a href="/history" class="whitespace-nowrap text-xs bg-white text-slate-600 px-3 py-1.5 rounded-lg transition-colors border border-slate-200">My Reports</a>
+ <a href="/logout" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg transition-colors border border-red-200">Logout</a>
+ </div>
+ <% } %>
+ </div>
+ 
+ <form action="/report" method="POST" class="space-y-6">
+ <input type="hidden" name="photo_path" id="photo_path_hidden">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <!-- Reporter Details (Auto-filled from Google) -->
+ <div class="space-y-2 group">
+ <label class="block text-sm font-medium text-slate-600">Reporter Info</label>
+ <div class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 cursor-not-allowed">
+ <div class="text-sm font-medium text-slate-800"><%= locals.user ? user.displayName : 'Guest' %></div>
+ <div class="text-[11px] mt-0.5 text-slate-500"><%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : 'guest@example.com' %></div>
+ <input type="hidden" name="reporter_name" value="<%= locals.user ? user.displayName : '' %>">
+ <input type="hidden" name="reporter_email" value="<%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : '' %>">
+ </div>
+ </div>
+ 
+ <!-- Class/Room -->
+ <div class="space-y-2 group">
+ <label for="room" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Location / Room</label>
+ <input type="text" id="room" name="room" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300" placeholder="e.g. Lab RPL 1">
+ </div>
+ </div>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <!-- Facility Type -->
+  <div class="space-y-2 group">
+  <label for="facility" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Facility Type</label>
+  <div class="relative">
+  <select id="facility" name="facility" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 appearance-none focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 cursor-pointer">
+  <option value="" disabled selected class="text-slate-400 font-bold">Select facility type...</option>
+  <% facilities.forEach(function(opt) { %>
+  <option value="<%= opt.value %>" class="<%= opt.css_class %>"><%= opt.label %></option>
+  <% }); %>
+  </select>
+  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+  </div>
+  </div>
+  </div>
+
+  <!-- Item -->
+  <div class="space-y-2 group">
+  <label for="item" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Damaged Item</label>
+  <div class="relative">
+  <select id="item" name="item" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 appearance-none focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 cursor-pointer">
+  <option value="" disabled selected class="text-slate-400 font-bold">Select item...</option>
+  <% items.forEach(function(opt) { %>
+  <option value="<%= opt.value %>" class="<%= opt.css_class %>"><%= opt.label %></option>
+  <% }); %>
+  </select>
+  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+  </div>
+  </div>
+  <input type="text" id="other_item" name="other_item" class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 hidden mt-2" placeholder="Please specify the item...">
+  </div>
+
+ <!-- Damage Type -->
+ <div class="space-y-2 group">
+ <label for="damage_type" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Damage Type</label>
+ <div class="relative">
+ <select id="damage_type" name="damage_type" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 appearance-none focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 cursor-pointer">
+ <option value="" disabled selected class="text-slate-400 font-bold">Select damage type...</option>
+ <% damageTypes.forEach(function(opt) { %>
+ <option value="<%= opt.value %>" class="<%= opt.css_class %>"><%= opt.label %></option>
+ <% }); %>
+ </select>
+ <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+ <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+ </div>
+ </div>
+ </div>
+
+ <!-- Urgency Level -->
+ <div class="space-y-2 group">
+ <label for="urgency" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Urgency Level</label>
+ <div class="relative">
+ <select id="urgency" name="urgency" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 appearance-none focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 cursor-pointer">
+ <option value="" disabled selected class="text-slate-400 font-bold">Select urgency...</option>
+ <% urgencies.forEach(function(opt) { %>
+ <option value="<%= opt.value %>" class="<%= opt.css_class %>"><%= opt.label %></option>
+ <% }); %>
+ </select>
+ <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+ <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+ </div>
+ </div>
+ </div>
+ 
+ </div>
+
+ <!-- Description -->
+ <div class="space-y-2 group">
+ <label for="description" class="block text-sm font-medium text-slate-600 group-focus-within:text-red-500 transition-colors">Damage Description</label>
+ <textarea id="description" name="description" rows="4" required class="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-300 resize-none" placeholder="Describe the damage in detail..."></textarea>
+ </div>
+
+ <!-- Photo Upload -->
+ <div class="space-y-2">
+ <label class="block text-sm font-medium text-slate-600">Upload Photo <span class="text-red-500">* Required</span></label>
+ <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-lg transition-all duration-300 group cursor-pointer bg-slate-50/50" onclick="document.getElementById('file-upload').click()">
+ <div class="space-y-2 text-center">
+ <div class="mx-auto h-12 w-12 rounded-full bg-red-100 flex items-center justify-center group- group- transition-all duration-300">
+ <svg class="h-6 w-6 text-red-500 group- transition-colors duration-300" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+ <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+ </svg>
+ </div>
+ <div class="flex text-sm text-slate-600 justify-center items-center">
+ <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-red-500 focus-within:outline-none">
+ <span>Upload a file</span>
+ <input id="file-upload" name="file-upload" type="file" required class="sr-only" accept="image/*">
+ </label>
+ <p class="pl-1" id="file-upload-text">or drag and drop</p>
+ </div>
+ <p class="text-xs text-slate-500">PNG, JPG up to 5MB (Required for verification)</p>
+ </div>
+ </div>
+ </div>
+
+ <button type="submit" class="w-full mt-4 bg-red-600 text-white font-semibold py-4 px-6 rounded-lg transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-red-500 flex justify-center items-center gap-2">
+ <span>Submit Report</span>
+ <svg class="w-5 h-5 group- transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+ </button>
+ </form>
+ </div>
+ 
+ <div class="text-center mt-10 text-sm text-slate-500">
+ &copy; 2026 Ahnaf, Rafale, and Baruna
+ </div>
+ </div>
+
+ <script>
+    // Handle 'other' item selection
+    document.getElementById('item').addEventListener('change', function(e) {
+      const otherInput = document.getElementById('other_item');
+      if (e.target.value === 'other') {
+        otherInput.classList.remove('hidden');
+        otherInput.setAttribute('required', 'required');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+        otherInput.removeAttribute('required');
+        otherInput.value = '';
+      }
+    });
+
+ // Form submission UI logic
+ document.querySelector('form').addEventListener('submit', (e) => {
+ const btn = e.target.querySelector('button[type="submit"]');
+ const originalHTML = btn.innerHTML;
+ 
+ btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="ml-2">Submitting...</span>`;
+ btn.classList.add('opacity-90', 'cursor-not-allowed');
+ });
+
+ // Handle async image upload
+ document.getElementById('file-upload').addEventListener('change', async function(e) {
+ if (this.files && this.files[0]) {
+ const file = this.files[0];
+ const textElement = document.getElementById('file-upload-text');
+ 
+ // Show loading state
+ textElement.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-1 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...`;
+ 
+ const formData = new FormData();
+ formData.append('file', file);
+ 
+ try {
+ const res = await fetch('/upload-image', {
+ method: 'POST',
+ body: formData
+ });
+ 
+ if (!res.ok) throw new Error('Upload failed');
+ 
+ const data = await res.json();
+ document.getElementById('photo_path_hidden').value = data.url;
+ textElement.textContent = 'Ready: ' + file.name;
+ textElement.classList.add('text-emerald-500');
+ textElement.classList.remove('text-red-500');
+ } catch (err) {
+ console.error(err);
+ textElement.textContent = 'Upload failed. Try again.';
+ textElement.classList.add('text-red-600');
+ document.getElementById('file-upload').value = '';
+ }
+ }
+ });
+ </script>
+</body>
+</html>

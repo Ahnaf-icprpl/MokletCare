@@ -1,0 +1,1 @@
+ALTER TABLE reports ADD COLUMN damage_type VARCHAR(100) NOT NULL DEFAULT 'other', ADD COLUMN damage_cause TEXT NOT NULL DEFAULT '';

@@ -1,0 +1,18 @@
+INSERT INTO dropdown_options (category, value, label, css_class, sort_order) VALUES
+('item', 'network_switch', 'Network Switch / Router', 'font-bold text-slate-700', 11),
+('item', 'cable', 'Cable / Wiring', 'font-bold text-slate-700', 12),
+('item', 'power_outlet', 'Power Outlet / Extension', 'font-bold text-slate-700', 13),
+('item', 'smartboard', 'Smartboard / Interactive Display', 'font-bold text-slate-700', 14),
+('item', 'projector_screen', 'Projector Screen', 'font-bold text-slate-700', 15),
+('item', 'whiteboard', 'Whiteboard / Blackboard', 'font-bold text-slate-700', 16),
+('item', 'cabinet', 'Cabinet / Storage', 'font-bold text-slate-700', 17),
+('item', 'trash_can', 'Trash Can / Bin', 'font-bold text-slate-700', 18),
+('item', 'dispenser', 'Soap / Sanitizer Dispenser', 'font-bold text-slate-700', 19),
+('item', 'toilet', 'Toilet / Urinal', 'font-bold text-slate-700', 20),
+('item', 'sink', 'Sink / Faucet', 'font-bold text-slate-700', 21),
+('item', 'floor_ceiling', 'Floor / Ceiling Tile', 'font-bold text-slate-700', 22),
+('item', 'wall', 'Wall / Paint', 'font-bold text-slate-700', 23),
+('item', 'fan', 'Fan / Ventilation', 'font-bold text-slate-700', 24),
+('item', 'server', 'Server Equipment', 'font-bold text-slate-700', 25),
+('item', 'printer', 'Printer / Scanner', 'font-bold text-slate-700', 26),
+('item', 'speaker', 'Speaker / Audio System', 'font-bold text-slate-700', 27);

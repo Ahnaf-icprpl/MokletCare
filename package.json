@@ -1,0 +1,34 @@
+{
+  "name": "mokletcare",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "concurrently \"npm run build:css -- --watch\" \"nodemon -e js,ejs app.js\"",
+    "build:css": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css",
+    "migrate": "node ./scripts/migrate.js"
+  },
+  "dependencies": {
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "~4.16.1",
+    "express-rate-limit": "^8.6.0",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "~1.9.1",
+    "multer": "^2.2.0",
+    "multer-storage-cloudinary": "^4.0.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "concurrently": "^10.0.4",
+    "nodemon": "^3.1.14",
+    "tailwindcss": "^4.3.3"
+  }
+}
