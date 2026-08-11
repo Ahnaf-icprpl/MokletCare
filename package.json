@@ -9,20 +9,19 @@
     "migrate": "node ./scripts/migrate.js"
   },
   "dependencies": {
+    "@clerk/express": "^2.1.54",
     "cloudinary": "^1.41.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^17.4.2",
     "ejs": "^6.0.1",
-    "express": "~4.16.1",
+    "express": "^4.22.2",
     "express-rate-limit": "^8.6.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.3",
     "morgan": "~1.9.1",
     "multer": "^2.2.0",
     "multer-storage-cloudinary": "^4.0.0",
-    "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.22.0"
   },
   "devDependencies": {

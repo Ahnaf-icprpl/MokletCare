@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | MokletCare</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col justify-between items-center p-4 md:p-8 relative overflow-x-hidden">
+  
+  <!-- Background Image with Overlay -->
+  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute inset-0 bg-[url('/images/telkomschools.jpg')] bg-cover bg-center bg-no-repeat blur-xl scale-110 opacity-30"></div>
+    <div class="absolute inset-0 bg-slate-50/85"></div>
+  </div>
+
+  <div class="relative z-10 w-full max-w-6xl">
+    
+    <!-- Top Navigation Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 bg-white/80 backdrop-blur-xl border border-red-100 rounded-2xl p-6 shadow-sm">
+      <div>
+        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">MokletCare Dashboard</h1>
+        <p class="text-xs text-slate-500">Logged in as <strong class="text-slate-800"><%= user.displayName %></strong> (<span class="capitalize font-semibold text-red-600"><%= user.role %></span>)</p>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        <a href="/" class="text-xs bg-white text-slate-600 hover:bg-slate-50 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">
+          Report Portal
+        </a>
+        <a href="/history" class="text-xs bg-white text-slate-600 hover:bg-slate-50 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">
+          My Reports
+        </a>
+        <a href="/logout" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3.5 py-2 rounded-lg transition-colors border border-red-200 font-medium text-center">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Alert Notifications -->
+    <% if (locals.error) { %>
+    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
+      <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="font-medium text-sm"><%= error %></span>
+    </div>
+    <% } %>
+
+    <% if (locals.success) { %>
+    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl flex items-center gap-3">
+      <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span class="font-medium text-sm"><%= success %></span>
+    </div>
+    <% } %>
+
+    <!-- Statistics Overview Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Total Reports</div>
+        <div class="text-3xl font-extrabold text-slate-900"><%= stats.total %></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-5 shadow-sm">
+        <div class="text-xs font-medium text-amber-600 uppercase tracking-wider mb-1">Pending</div>
+        <div class="text-3xl font-extrabold text-amber-600"><%= stats.pending %></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-xl border border-blue-200 rounded-2xl p-5 shadow-sm">
+        <div class="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">In Progress</div>
+        <div class="text-3xl font-extrabold text-blue-600"><%= stats.in_progress %></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-xl border border-emerald-200 rounded-2xl p-5 shadow-sm">
+        <div class="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Resolved</div>
+        <div class="text-3xl font-extrabold text-emerald-600"><%= stats.resolved %></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-5 shadow-sm col-span-2 md:col-span-1">
+        <div class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Rejected</div>
+        <div class="text-3xl font-extrabold text-slate-500"><%= stats.rejected %></div>
+      </div>
+    </div>
+
+    <!-- Reports Section -->
+    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+      
+      <!-- Section Header + Controls -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Facility Damage Reports</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Click any report row to view full details and update status</p>
+        </div>
+
+        <!-- Fuzzy Search & Filter Controls -->
+        <form action="/dashboard" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input type="hidden" name="status" value="<%= reportPagination.status %>">
+          <% if (locals.userPagination && userPagination.q) { %>
+            <input type="hidden" name="user_q" value="<%= userPagination.q %>">
+          <% } %>
+
+          <div class="relative flex-1 sm:w-64">
+            <input type="text" name="q" value="<%= reportPagination.q %>" placeholder="Search room, item, reporter..." class="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-200">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+
+          <button type="submit" class="text-xs bg-slate-900 hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+            Search
+          </button>
+          
+          <% if (reportPagination.q) { %>
+            <a href="/dashboard?status=<%= reportPagination.status %>" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3 py-2 rounded-lg transition-colors text-center">Clear</a>
+          <% } %>
+        </form>
+      </div>
+
+      <!-- Status Filter Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-3 border-b border-slate-100 mb-6">
+        <% const statuses = [
+          { key: 'all', label: 'All' },
+          { key: 'unresolved', label: 'All (except resolved)' },
+          { key: 'pending', label: 'Pending' },
+          { key: 'in_progress', label: 'In Progress' },
+          { key: 'resolved', label: 'Resolved' },
+          { key: 'rejected', label: 'Rejected' }
+        ]; %>
+        <% statuses.forEach(function(s) { %>
+          <% 
+            let queryStr = `?status=${s.key}&q=${encodeURIComponent(reportPagination.q)}`;
+            if (locals.userPagination && userPagination.q) queryStr += `&user_q=${encodeURIComponent(userPagination.q)}`;
+            const isActive = reportPagination.status === s.key || (s.key === 'unresolved' && (!reportPagination.status || reportPagination.status === 'unresolved'));
+          %>
+          <a href="/dashboard<%= queryStr %>" class="px-3 py-1.5 rounded-lg text-xs transition-colors whitespace-nowrap <%= isActive ? 'font-semibold bg-red-600 text-white shadow-sm' : 'font-medium bg-slate-100 text-slate-600 hover:bg-slate-200' %>">
+            <%= s.label %>
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (reports.length === 0) { %>
+      <div class="text-center py-12 text-slate-400">
+        <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <p class="font-medium text-slate-600">No damage reports found</p>
+        <p class="text-xs text-slate-400 mt-1"><%= reportPagination.q ? 'Try adjusting your search query or status filter.' : 'No reports in this category yet.' %></p>
+      </div>
+      <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-500 font-medium text-xs uppercase tracking-wider">
+              <th class="py-3.5 px-4">Photo</th>
+              <th class="py-3.5 px-4">Reporter</th>
+              <th class="py-3.5 px-4">Facility & Item</th>
+              <th class="py-3.5 px-4">Location</th>
+              <th class="py-3.5 px-4">Urgency</th>
+              <th class="py-3.5 px-4">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% reports.forEach(function(report) { %>
+            <%
+              const itemLabel = formatOptionText(report.item_type, locals.optionMap);
+              const facilityLabel = formatOptionText(report.facility_type, locals.optionMap);
+              const damageLabel = formatOptionText(report.damage_type, locals.optionMap);
+              const urgencyLabel = formatOptionText(report.urgency_level, locals.optionMap);
+            %>
+            <tr class="hover:bg-slate-100/70 transition-colors cursor-pointer group"
+                onclick="openReportModal(this)"
+                data-id="<%= report.id %>"
+                data-reporter-name="<%= report.reporter_name %>"
+                data-reporter-email="<%= report.reporter_email %>"
+                data-facility-label="<%= facilityLabel %>"
+                data-item-label="<%= itemLabel %>"
+                data-damage-label="<%= damageLabel %>"
+                data-room-location="<%= report.room_location %>"
+                data-urgency-level="<%= report.urgency_level %>"
+                data-urgency-label="<%= urgencyLabel %>"
+                data-description="<%= report.damage_description %>"
+                data-photo-path="<%= report.photo_path %>"
+                data-status="<%= report.status %>"
+                data-created-at="<%= report.created_at %>">
+              <td class="py-4 px-4" onclick="event.stopPropagation()">
+                <a href="<%= report.photo_path %>" target="_blank" rel="noopener noreferrer">
+                  <img src="<%= report.photo_path %>" alt="Photo" class="w-12 h-12 rounded-lg object-cover border border-slate-200 hover:opacity-90 transition-opacity">
+                </a>
+              </td>
+              <td class="py-4 px-4">
+                <div class="font-medium text-slate-900 group-hover:text-red-600 transition-colors"><%= report.reporter_name %></div>
+                <div class="text-xs text-slate-400 truncate max-w-[140px]" title="<%= report.reporter_email %>"><%= report.reporter_email %></div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="font-semibold text-slate-800"><%= itemLabel %></div>
+                <div class="text-xs text-slate-500"><%= facilityLabel %> &bull; <%= damageLabel %></div>
+              </td>
+              <td class="py-4 px-4 text-slate-700 font-medium">
+                <%= report.room_location %>
+              </td>
+              <td class="py-4 px-4">
+                <% if (report.urgency_level === 'high' || report.urgency_level === 'critical' || report.urgency_level === 'severe' || report.urgency_level === 'Darurat / Penting') { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                <% } else if (report.urgency_level === 'medium' || report.urgency_level === 'Sedang') { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                <% } else { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                <% } %>
+              </td>
+              <td class="py-4 px-4">
+                <% if (report.status === 'pending') { %>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-200 whitespace-nowrap">Pending</span>
+                <% } else if (report.status === 'in_progress') { %>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 whitespace-nowrap">In Progress</span>
+                <% } else if (report.status === 'resolved') { %>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 whitespace-nowrap">Resolved</span>
+                <% } else { %>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">Rejected</span>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SQL Database Pagination Bar for Reports -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-200 text-xs text-slate-500">
+        <div>
+          Showing <strong class="text-slate-800"><%= Math.min((reportPagination.page - 1) * reportPagination.limit + 1, reportPagination.totalItems) %></strong>
+          to <strong class="text-slate-800"><%= Math.min(reportPagination.page * reportPagination.limit, reportPagination.totalItems) %></strong>
+          of <strong class="text-slate-800"><%= reportPagination.totalItems %></strong> matching reports
+        </div>
+
+        <div class="flex items-center gap-1">
+          <% 
+            const prevPage = reportPagination.page > 1 ? reportPagination.page - 1 : 1;
+            const nextPage = reportPagination.page < reportPagination.totalPages ? reportPagination.page + 1 : reportPagination.totalPages;
+            const baseReportUrl = `/dashboard?status=${reportPagination.status}&q=${encodeURIComponent(reportPagination.q)}${locals.userPagination && userPagination.q ? '&user_q=' + encodeURIComponent(userPagination.q) : ''}`;
+          %>
+
+          <a href="<%= baseReportUrl %>&page=<%= prevPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= reportPagination.page <= 1 ? 'pointer-events-none opacity-50' : '' %>">
+            Previous
+          </a>
+
+          <span class="px-3 py-1.5 font-semibold text-slate-700">
+            Page <%= reportPagination.page %> of <%= reportPagination.totalPages %>
+          </span>
+
+          <a href="<%= baseReportUrl %>&page=<%= nextPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= reportPagination.page >= reportPagination.totalPages ? 'pointer-events-none opacity-50' : '' %>">
+            Next
+          </a>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- Admin User Management Section (Admin Only) -->
+    <% if (user.role === 'admin' && locals.users) { %>
+    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+      
+      <!-- Section Header + Controls -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">User Role Management</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Promote or assign roles to registered MokletCare portal users</p>
+        </div>
+
+        <!-- User Fuzzy Search Control -->
+        <form action="/dashboard" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input type="hidden" name="status" value="<%= reportPagination.status %>">
+          <input type="hidden" name="q" value="<%= reportPagination.q %>">
+
+          <div class="relative flex-1 sm:w-64">
+            <input type="text" name="user_q" value="<%= userPagination.q %>" placeholder="Search name, email, role..." class="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition duration-200">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+
+          <button type="submit" class="text-xs bg-slate-900 hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+            Search Users
+          </button>
+          
+          <% if (userPagination.q) { %>
+            <a href="/dashboard?status=<%= reportPagination.status %>&q=<%= encodeURIComponent(reportPagination.q) %>" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3 py-2 rounded-lg transition-colors text-center">Clear</a>
+          <% } %>
+        </form>
+      </div>
+
+      <% if (users.length === 0) { %>
+      <div class="text-center py-12 text-slate-400">
+        <p class="font-medium text-slate-600">No users found</p>
+        <p class="text-xs text-slate-400 mt-1">Try adjusting your search query.</p>
+      </div>
+      <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-500 font-medium text-xs uppercase tracking-wider">
+              <th class="py-3.5 px-4">User</th>
+              <th class="py-3.5 px-4">Email</th>
+              <th class="py-3.5 px-4">Current Role</th>
+              <th class="py-3.5 px-4 text-right">Assign Role</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% users.forEach(function(u) { %>
+            <tr class="hover:bg-slate-50/80 transition-colors">
+              <td class="py-4 px-4 font-semibold text-slate-800">
+                <%= u.name || 'User' %>
+              </td>
+              <td class="py-4 px-4 text-slate-600">
+                <%= u.email %>
+              </td>
+              <td class="py-4 px-4">
+                <% if (u.role === 'admin') { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 whitespace-nowrap">Admin</span>
+                <% } else if (u.role === 'staff') { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 whitespace-nowrap">Staff</span>
+                <% } else { %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 whitespace-nowrap">Reporter</span>
+                <% } %>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <form action="/dashboard/users/<%= u.id %>/role" method="POST" class="inline-flex items-center gap-1">
+                  <select name="role" onchange="this.form.submit()" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="reporter" <%= u.role === 'reporter' ? 'selected' : '' %>>Reporter (Default)</option>
+                    <option value="staff" <%= u.role === 'staff' ? 'selected' : '' %>>Staff</option>
+                    <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                  </select>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SQL Database Pagination Bar for Users -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-200 text-xs text-slate-500">
+        <div>
+          Showing <strong class="text-slate-800"><%= Math.min((userPagination.page - 1) * userPagination.limit + 1, userPagination.totalItems) %></strong>
+          to <strong class="text-slate-800"><%= Math.min(userPagination.page * userPagination.limit, userPagination.totalItems) %></strong>
+          of <strong class="text-slate-800"><%= userPagination.totalItems %></strong> matching users
+        </div>
+
+        <div class="flex items-center gap-1">
+          <% 
+            const prevUserPage = userPagination.page > 1 ? userPagination.page - 1 : 1;
+            const nextUserPage = userPagination.page < userPagination.totalPages ? userPagination.page + 1 : userPagination.totalPages;
+            const baseUserUrl = `/dashboard?status=${reportPagination.status}&q=${encodeURIComponent(reportPagination.q)}&user_q=${encodeURIComponent(userPagination.q)}`;
+          %>
+
+          <a href="<%= baseUserUrl %>&user_page=<%= prevUserPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= userPagination.page <= 1 ? 'pointer-events-none opacity-50' : '' %>">
+            Previous
+          </a>
+
+          <span class="px-3 py-1.5 font-semibold text-slate-700">
+            Page <%= userPagination.page %> of <%= userPagination.totalPages %>
+          </span>
+
+          <a href="<%= baseUserUrl %>&user_page=<%= nextUserPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= userPagination.page >= userPagination.totalPages ? 'pointer-events-none opacity-50' : '' %>">
+            Next
+          </a>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+
+    <div class="text-center text-xs text-slate-400 pb-8">
+      &copy; 2026 Ahnaf, Rafale, and Baruna &bull; MokletCare
+    </div>
+  </div>
+
+  <!-- Interactive Report Details & Action Modal -->
+  <div id="report-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <h3 class="text-lg font-bold text-slate-900" id="modal-title">Report Details</h3>
+          <span id="modal-status-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"></span>
+        </div>
+        <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/50 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Photo & Location Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="relative group">
+            <a id="modal-photo-link" href="#" target="_blank" rel="noopener noreferrer" class="block">
+              <img id="modal-photo" src="" alt="Damage Photo" class="w-full h-52 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-95 transition-opacity">
+              <div class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-1 rounded font-medium backdrop-blur-sm">Click to Expand</div>
+            </a>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Location / Room</div>
+              <div class="text-base font-bold text-slate-900 mt-0.5" id="modal-location"></div>
+            </div>
+
+            <div>
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Facility & Item</div>
+              <div class="text-sm font-semibold text-slate-800 mt-0.5" id="modal-item"></div>
+              <div class="text-xs text-slate-500" id="modal-facility"></div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div>
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Urgency</div>
+                <span id="modal-urgency-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"></span>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted</div>
+                <div class="text-xs font-medium text-slate-600 mt-0.5" id="modal-date"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reporter Information -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-400 font-medium">Submitted by Reporter</div>
+            <div class="text-sm font-bold text-slate-800" id="modal-reporter-name"></div>
+          </div>
+          <div class="text-xs font-medium text-slate-600 bg-white px-3 py-1.5 rounded-lg border border-slate-200" id="modal-reporter-email"></div>
+        </div>
+
+        <!-- Damage Description -->
+        <div>
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Damage Description</div>
+          <div class="text-sm text-slate-700 bg-slate-50/80 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed max-h-36 overflow-y-auto" id="modal-description"></div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Status Update Action -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <form id="modal-status-form" method="POST" class="flex items-center gap-3 w-full sm:w-auto">
+          <label for="modal-status-select" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Update Status:</label>
+          <select id="modal-status-select" name="status" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm">
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button type="submit" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">
+            Save Status
+          </button>
+        </form>
+
+        <button onclick="closeReportModal()" class="text-xs bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-medium px-4 py-2 rounded-lg transition-colors w-full sm:w-auto text-center">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="<%= clerkPublishableKey %>"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+  <script>
+    function openReportModal(row) {
+      const data = row.dataset;
+      document.getElementById('modal-title').textContent = `Report Details #${data.id}`;
+      document.getElementById('modal-location').textContent = data.roomLocation;
+      document.getElementById('modal-item').textContent = data.itemLabel;
+      document.getElementById('modal-facility').textContent = `${data.facilityLabel} • ${data.damageLabel}`;
+      document.getElementById('modal-reporter-name').textContent = data.reporterName;
+      document.getElementById('modal-reporter-email').textContent = data.reporterEmail;
+      document.getElementById('modal-description').textContent = data.description;
+      
+      const photoEl = document.getElementById('modal-photo');
+      const photoLinkEl = document.getElementById('modal-photo-link');
+      photoEl.src = data.photoPath;
+      photoLinkEl.href = data.photoPath;
+
+      if (data.createdAt) {
+        document.getElementById('modal-date').textContent = new Date(data.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
+      }
+
+      // Status Badge
+      const statusBadge = document.getElementById('modal-status-badge');
+      if (data.status === 'pending') {
+        statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-200 whitespace-nowrap';
+        statusBadge.textContent = 'Pending';
+      } else if (data.status === 'in_progress') {
+        statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 whitespace-nowrap';
+        statusBadge.textContent = 'In Progress';
+      } else if (data.status === 'resolved') {
+        statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 whitespace-nowrap';
+        statusBadge.textContent = 'Resolved';
+      } else {
+        statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap';
+        statusBadge.textContent = 'Rejected';
+      }
+
+      // Urgency Badge
+      const urgencyBadge = document.getElementById('modal-urgency-badge');
+      urgencyBadge.textContent = data.urgencyLabel;
+      if (data.urgencyLevel === 'high' || data.urgencyLevel === 'critical' || data.urgencyLevel === 'severe' || data.urgencyLevel === 'Darurat / Penting') {
+        urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap';
+      } else if (data.urgencyLevel === 'medium' || data.urgencyLevel === 'Sedang') {
+        urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 whitespace-nowrap';
+      } else {
+        urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap';
+      }
+
+      // Action Form
+      const form = document.getElementById('modal-status-form');
+      form.action = `/dashboard/reports/${data.id}/status`;
+      document.getElementById('modal-status-select').value = data.status;
+
+      document.getElementById('report-modal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.add('hidden');
+    }
+
+    // Backdrop click close
+    document.getElementById('report-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('report-modal')) {
+        closeReportModal();
+      }
+    });
+
+    // Escape key close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeReportModal();
+      }
+    });
+
+    window.addEventListener('load', async () => {
+      if (window.Clerk) {
+        try {
+          await window.Clerk.load();
+        } catch (e) {}
+      }
+    });
+  </script>
+</body>
+</html>

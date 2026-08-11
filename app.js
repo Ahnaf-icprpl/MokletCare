@@ -5,8 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
 
-var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+const { clerkMiddleware } = require('@clerk/express');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -22,32 +21,22 @@ const globalLimiter = rateLimit({
 });
 app.use(globalLimiter);
 
-// Passport Google OAuth Setup
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_client_id',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy_client_secret',
-    callbackURL: "/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    // Optional: Add email domain restriction here if needed
-    // e.g., if (profile.emails[0].value.endsWith('@smktelkom-mlg.sch.id')) ...
-    return cb(null, profile);
-  }
-));
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Parse cookies and request bodies before Clerk middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(passport.initialize());
+// Enable Clerk middleware with explicit keys
+app.use(clerkMiddleware({
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  secretKey: process.env.CLERK_SECRET_KEY
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

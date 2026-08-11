@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Report Broken Facilities | SMK Telkom Malang</title>
+ <title>Report Broken Facilities | MokletCare</title>
  <link rel="stylesheet" href="/stylesheets/style.css">
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
  <style>
@@ -35,21 +35,34 @@
 
  <div class="relative z-10 w-full max-w-2xl mt-8 mb-8">
  <div class="text-center mb-10">
- <h1 class="text-4xl md:text-5xl font-extrabold text-red-600 mb-4 tracking-tight">SMK Telkom Malang</h1>
+ <h1 class="text-4xl md:text-5xl font-extrabold text-red-600 mb-4 tracking-tight">MokletCare</h1>
  <p class="text-slate-600 text-lg font-light">Facility Damage Reporting Portal</p>
  </div>
 
  <!-- Main Card with Glassmorphism -->
  <div class="bg-white/80 backdrop-blur-xl border border-red-100 rounded-2xl p-8 md:p-12 transition-all duration-500 ">
- <div class="flex justify-end items-center mb-8">
- <% if (locals.user) { %>
- <div class="flex items-center gap-3">
- <span class="text-sm text-slate-500">Logged in as <strong class="text-slate-800"><%= user.displayName %></strong></span>
- <a href="/history" class="whitespace-nowrap text-xs bg-white text-slate-600 px-3 py-1.5 rounded-lg transition-colors border border-slate-200">My Reports</a>
- <a href="/logout" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg transition-colors border border-red-200">Logout</a>
- </div>
- <% } %>
- </div>
+    <div class="flex justify-between items-center mb-8 gap-4">
+      <% if (locals.user) { %>
+      <div class="text-sm text-slate-500 flex flex-col sm:flex-row sm:items-center sm:gap-1.5 min-w-0">
+        <span>Logged in as</span>
+        <strong class="text-slate-800 font-semibold truncate"><%= user.displayName %></strong>
+      </div>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 shrink-0">
+        <% if (user && (user.role === 'admin' || user.role === 'staff')) { %>
+        <a href="/dashboard" class="whitespace-nowrap text-xs bg-red-600 hover:bg-red-700 text-white font-medium px-3 py-1.5 rounded-lg transition-colors text-center shadow-sm">Dashboard</a>
+        <% } %>
+        <a href="/history" class="whitespace-nowrap text-xs bg-white text-slate-600 px-3 py-1.5 rounded-lg transition-colors border border-slate-200 text-center">My Reports</a>
+        <a href="/logout" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg transition-colors border border-red-200 text-center">Logout</a>
+      </div>
+      <% } %>
+    </div>
+
+    <% if (locals.error) { %>
+    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
+      <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="font-medium text-sm"><%= error %></span>
+    </div>
+    <% } %>
  
  <form action="/report" method="POST" class="space-y-6">
  <input type="hidden" name="photo_path" id="photo_path_hidden">
@@ -57,12 +70,10 @@
  <!-- Reporter Details (Auto-filled from Google) -->
  <div class="space-y-2 group">
  <label class="block text-sm font-medium text-slate-600">Reporter Info</label>
- <div class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 cursor-not-allowed">
- <div class="text-sm font-medium text-slate-800"><%= locals.user ? user.displayName : 'Guest' %></div>
- <div class="text-[11px] mt-0.5 text-slate-500"><%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : 'guest@example.com' %></div>
- <input type="hidden" name="reporter_name" value="<%= locals.user ? user.displayName : '' %>">
- <input type="hidden" name="reporter_email" value="<%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : '' %>">
- </div>
+        <div class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 cursor-not-allowed overflow-hidden">
+          <div class="text-sm font-medium text-slate-800 truncate"><%= locals.user ? user.displayName : 'Guest' %></div>
+          <div class="text-[11px] mt-0.5 text-slate-500 truncate" title="<%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : 'guest@example.com' %>"><%= locals.user && user.emails && user.emails[0] ? user.emails[0].value : 'guest@example.com' %></div>
+        </div>
  </div>
  
  <!-- Class/Room -->
@@ -180,7 +191,9 @@
  </div>
  </div>
 
- <script>
+  <script>
+    let isUploadingImage = false;
+
     // Handle 'other' item selection
     document.getElementById('item').addEventListener('change', function(e) {
       const otherInput = document.getElementById('other_item');
@@ -195,48 +208,93 @@
       }
     });
 
- // Form submission UI logic
- document.querySelector('form').addEventListener('submit', (e) => {
- const btn = e.target.querySelector('button[type="submit"]');
- const originalHTML = btn.innerHTML;
- 
- btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="ml-2">Submitting...</span>`;
- btn.classList.add('opacity-90', 'cursor-not-allowed');
- });
+    // Form submission UI and validation logic
+    document.querySelector('form').addEventListener('submit', (e) => {
+      const photoPath = document.getElementById('photo_path_hidden').value;
 
- // Handle async image upload
- document.getElementById('file-upload').addEventListener('change', async function(e) {
- if (this.files && this.files[0]) {
- const file = this.files[0];
- const textElement = document.getElementById('file-upload-text');
- 
- // Show loading state
- textElement.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-1 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...`;
- 
- const formData = new FormData();
- formData.append('file', file);
- 
- try {
- const res = await fetch('/upload-image', {
- method: 'POST',
- body: formData
- });
- 
- if (!res.ok) throw new Error('Upload failed');
- 
- const data = await res.json();
- document.getElementById('photo_path_hidden').value = data.url;
- textElement.textContent = 'Ready: ' + file.name;
- textElement.classList.add('text-emerald-500');
- textElement.classList.remove('text-red-500');
- } catch (err) {
- console.error(err);
- textElement.textContent = 'Upload failed. Try again.';
- textElement.classList.add('text-red-600');
- document.getElementById('file-upload').value = '';
- }
- }
- });
- </script>
+      if (isUploadingImage) {
+        e.preventDefault();
+        alert('Please wait for the photo upload to complete before submitting.');
+        return;
+      }
+
+      if (!photoPath) {
+        e.preventDefault();
+        alert('Please upload a photo of the damaged facility before submitting.');
+        return;
+      }
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="ml-2">Submitting...</span>`;
+      btn.classList.add('opacity-90', 'cursor-not-allowed');
+      btn.disabled = true;
+    });
+
+    // Handle async image upload
+    document.getElementById('file-upload').addEventListener('change', async function(e) {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
+        const textElement = document.getElementById('file-upload-text');
+
+        // Client-side file size check (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size exceeds 5MB limit. Please choose a smaller image.');
+          this.value = '';
+          return;
+        }
+        
+        isUploadingImage = true;
+        document.getElementById('photo_path_hidden').value = '';
+        textElement.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-1 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...`;
+        textElement.classList.remove('text-red-500', 'text-emerald-500');
+
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+          const res = await fetch('/upload-image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'Upload failed');
+          }
+          
+          document.getElementById('photo_path_hidden').value = data.url;
+          textElement.textContent = 'Ready: ' + file.name;
+          textElement.classList.add('text-emerald-500');
+        } catch (err) {
+          console.error(err);
+          textElement.textContent = err.message || 'Upload failed. Try again.';
+          textElement.classList.add('text-red-600');
+          document.getElementById('file-upload').value = '';
+          document.getElementById('photo_path_hidden').value = '';
+        } finally {
+          isUploadingImage = false;
+        }
+      }
+    });
+  </script>
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="<%= clerkPublishableKey %>"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+  <script>
+    window.addEventListener('load', async () => {
+      if (window.Clerk) {
+        try {
+          await window.Clerk.load();
+        } catch (e) {}
+      }
+    });
+  </script>
 </body>
 </html>
