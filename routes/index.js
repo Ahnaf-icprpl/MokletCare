@@ -177,6 +177,26 @@ router.get('/sso-callback', function(req, res, next) {
   });
 });
 
+router.get('/privacy-policy', function(req, res, next) {
+  res.render('privacy-policy', {
+    title: 'Privacy Policy | MokletCare'
+  });
+});
+
+router.get('/privacy', function(req, res, next) {
+  res.redirect('/privacy-policy');
+});
+
+router.get('/tos', function(req, res, next) {
+  res.render('tos', {
+    title: 'Terms of Service | MokletCare'
+  });
+});
+
+router.get(['/terms', '/terms-of-service'], function(req, res, next) {
+  res.redirect('/tos');
+});
+
 router.get('/', ensureAuthenticated, async function(req, res, next) {
   try {
     const result = await db.query('SELECT * FROM dropdown_options ORDER BY sort_order ASC');
