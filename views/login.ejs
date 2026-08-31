@@ -144,17 +144,20 @@
       if (!window.Clerk) return;
       try {
         await window.Clerk.load();
-        if (window.Clerk.session) {
+        const isRedirected = urlParams.has('redirected');
+        if (window.Clerk.session && !isRedirected) {
           try {
             const token = await window.Clerk.session.getToken();
             if (token) {
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
-              window.location.replace('/');
+              window.location.replace('/?redirected=1');
               return;
             }
           } catch (e) {
             console.error('Session sync error:', e);
           }
+        } else if (isRedirected && window.Clerk.session) {
+          console.warn('Server redirected back to login despite active client session. Breaking redirect loop.');
         }
       } catch (err) {
         console.error('Error loading Clerk JS:', err);

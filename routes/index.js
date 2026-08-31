@@ -96,13 +96,24 @@ async function ensureAuthenticated(req, res, next) {
 
     // Fallback to cached Clerk user if claims were not embedded
     if (!primaryEmail) {
-      const clerkUser = await getCachedClerkUser(auth.userId);
-      const primaryEmailObj = clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId) 
-        || clerkUser.emailAddresses[0];
-      primaryEmail = primaryEmailObj ? primaryEmailObj.emailAddress : '';
-      fullName = (clerkUser.firstName || clerkUser.lastName)
-        ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim()
-        : (clerkUser.username || (primaryEmail ? primaryEmail.split('@')[0] : 'User'));
+      try {
+        const clerkUser = await getCachedClerkUser(auth.userId);
+        if (clerkUser) {
+          const primaryEmailObj = (clerkUser.emailAddresses && clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId)) 
+            || (clerkUser.emailAddresses && clerkUser.emailAddresses[0]);
+          primaryEmail = primaryEmailObj ? primaryEmailObj.emailAddress : '';
+          fullName = (clerkUser.firstName || clerkUser.lastName)
+            ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim()
+            : (clerkUser.username || (primaryEmail ? primaryEmail.split('@')[0] : 'User'));
+        }
+      } catch (clerkErr) {
+        console.warn('Could not fetch Clerk user details in middleware:', clerkErr.message);
+      }
+    }
+
+    if (!primaryEmail) {
+      primaryEmail = `${auth.userId}@clerk.user`;
+      fullName = fullName || 'User';
     }
 
     // Check if user's email is an admin email from process.env (ADMIN_EMAIL or ADMIN_EMAILS)

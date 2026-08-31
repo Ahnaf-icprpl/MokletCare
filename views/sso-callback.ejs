@@ -36,12 +36,17 @@
       if (window.Clerk) {
         try {
           await window.Clerk.load();
-          await window.Clerk.handleRedirectCallback({
-            redirectUrl: '/'
-          });
+          await window.Clerk.handleRedirectCallback({});
+          if (window.Clerk.session) {
+            const token = await window.Clerk.session.getToken();
+            if (token) {
+              document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
+            }
+          }
+          window.location.href = '/';
         } catch (err) {
           console.error('SSO callback error:', err);
-          window.location.href = '/login';
+          window.location.href = '/login?error=' + encodeURIComponent('Authentication failed. Please try again.');
         }
       }
     });
