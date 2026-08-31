@@ -11,12 +11,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 
-// Global rate limit: 200 requests per 15 minutes per IP
+// Global rate limit: 5000 requests per 15 minutes per IP
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 5000,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: 'Too many requests from this IP, please try again after 15 minutes.'
 });
 app.use(globalLimiter);

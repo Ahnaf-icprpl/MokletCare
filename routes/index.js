@@ -8,20 +8,20 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const rateLimit = require('express-rate-limit');
 const { clerkClient, getAuth } = require('@clerk/express');
 
-// Rate limiter for image uploads (10 per hour per user)
+// Rate limiter for image uploads (100 per hour per user)
 const uploadLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 100,
   keyGenerator: (req) => {
     return (req.user && req.user.emails && req.user.emails[0]) ? req.user.emails[0].value : 'anonymous';
   },
   message: { error: 'Too many uploads. Please try again in an hour.' }
 });
 
-// Rate limiter for submitting reports (10 per hour per user)
+// Rate limiter for submitting reports (100 per hour per user)
 const reportLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 100,
   keyGenerator: (req) => {
     return (req.user && req.user.emails && req.user.emails[0]) ? req.user.emails[0].value : 'anonymous';
   },
