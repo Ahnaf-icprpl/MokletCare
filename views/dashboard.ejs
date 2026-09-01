@@ -520,6 +520,7 @@
     type="text/javascript"
   ></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
   <script>
     function openReportModal(row) {
       const data = row.dataset;
@@ -602,6 +603,9 @@
         } catch (e) {}
       }
 
+      // Register Chart.js plugins
+      Chart.register(ChartDataLabels);
+
       // Initialize Status Chart
       const ctx = document.getElementById('statusChart');
       if (ctx) {
@@ -613,7 +617,7 @@
           parseInt(statsEl.dataset.statsRejected)
         ];
         new Chart(ctx, {
-          type: 'doughnut',
+          type: 'pie',
           data: {
             labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
             datasets: [
@@ -621,19 +625,18 @@
                 label: 'Reports',
                 data: chartData,
                 backgroundColor: [
-                  '#FBBF24',
-                  '#60A5FA',
-                  '#34D399',
-                  '#94A3B8'
+                  '#2563EB',
+                  '#FF8C42',
+                  '#22C55E',
+                  '#DC2626'
                 ],
                 borderColor: [
-                  '#F59E0B',
-                  '#3B82F6',
-                  '#10B981',
-                  '#64748B'
+                  '#1E40AF',
+                  '#EA580C',
+                  '#16A34A',
+                  '#B91C1C'
                 ],
-                borderWidth: 2,
-                spacing: 3
+                borderWidth: 2
               }
             ]
           },
@@ -642,7 +645,17 @@
             maintainAspectRatio: true,
             plugins: {
               legend: {
-                display: false
+                display: true,
+                position: 'right',
+                labels: {
+                  font: {
+                    size: 12,
+                    weight: '500'
+                  },
+                  padding: 15,
+                  usePointStyle: true,
+                  pointStyle: 'circle'
+                }
               },
               tooltip: {
                 callbacks: {
@@ -653,6 +666,18 @@
                     const percentage = ((value / total) * 100).toFixed(1);
                     return label + ': ' + value + ' (' + percentage + '%)';
                   }
+                }
+              },
+              datalabels: {
+                formatter: (value, ctx) => {
+                  const sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = (value * 100 / sum).toFixed(1) + '%';
+                  return percentage;
+                },
+                color: '#fff',
+                font: {
+                  weight: 'bold',
+                  size: 14
                 }
               }
             }
