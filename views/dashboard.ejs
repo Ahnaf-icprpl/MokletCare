@@ -82,6 +82,53 @@
       </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+      <div class="flex flex-col lg:flex-row justify-between items-start gap-8">
+        <div class="flex-1">
+          <h2 class="text-xl font-bold text-slate-900 mb-6">Report Status Distribution</h2>
+          <div class="flex items-center justify-center">
+            <canvas id="statusChart" class="max-w-sm"></canvas>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex-1 space-y-4" data-stats-pending="<%= stats.pending %>" data-stats-in-progress="<%= stats.in_progress %>" data-stats-resolved="<%= stats.resolved %>" data-stats-rejected="<%= stats.rejected %>">
+          <h3 class="text-lg font-semibold text-slate-900 mb-4">Status Breakdown</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-amber-50 border border-amber-100">
+              <div class="w-4 h-4 rounded-full bg-amber-400"></div>
+              <div>
+                <div class="text-sm font-semibold text-slate-900">Pending</div>
+                <div class="text-xs text-slate-600"><%= stats.pending %> reports</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-blue-50 border border-blue-100">
+              <div class="w-4 h-4 rounded-full bg-blue-400"></div>
+              <div>
+                <div class="text-sm font-semibold text-slate-900">In Progress</div>
+                <div class="text-xs text-slate-600"><%= stats.in_progress %> reports</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+              <div class="w-4 h-4 rounded-full bg-emerald-400"></div>
+              <div>
+                <div class="text-sm font-semibold text-slate-900">Resolved</div>
+                <div class="text-xs text-slate-600"><%= stats.resolved %> reports</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div class="w-4 h-4 rounded-full bg-slate-400"></div>
+              <div>
+                <div class="text-sm font-semibold text-slate-900">Rejected</div>
+                <div class="text-xs text-slate-600"><%= stats.rejected %> reports</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Reports Section -->
     <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
       
@@ -472,6 +519,7 @@
     src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
     type="text/javascript"
   ></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
     function openReportModal(row) {
       const data = row.dataset;
@@ -552,6 +600,64 @@
         try {
           await window.Clerk.load();
         } catch (e) {}
+      }
+
+      // Initialize Status Chart
+      const ctx = document.getElementById('statusChart');
+      if (ctx) {
+        const statsEl = document.querySelector('[data-stats-pending]');
+        const chartData = [
+          parseInt(statsEl.dataset.statsPending),
+          parseInt(statsEl.dataset.statsInProgress),
+          parseInt(statsEl.dataset.statsResolved),
+          parseInt(statsEl.dataset.statsRejected)
+        ];
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
+            datasets: [
+              {
+                label: 'Reports',
+                data: chartData,
+                backgroundColor: [
+                  '#FBBF24',
+                  '#60A5FA',
+                  '#34D399',
+                  '#94A3B8'
+                ],
+                borderColor: [
+                  '#F59E0B',
+                  '#3B82F6',
+                  '#10B981',
+                  '#64748B'
+                ],
+                borderWidth: 2,
+                spacing: 3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return label + ': ' + value + ' (' + percentage + '%)';
+                  }
+                }
+              }
+            }
+          }
+        });
       }
     });
   </script>
