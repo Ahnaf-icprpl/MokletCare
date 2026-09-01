@@ -1,5 +1,4 @@
 const { clerkClient, getAuth } = require('@clerk/express');
-const db = require('../db');
 
 // In-memory cache for Clerk user profile data (TTL: 5 minutes)
 const userProfileCache = new Map();
@@ -35,26 +34,40 @@ async function ensureAuthenticated(req, res, next) {
   try {
     let primaryEmail = '';
     let fullName = '';
+    let userRole = null;
 
-    // Fast path: Extract user profile directly from verified JWT session claims
+    // Fast path: Extract user profile and role directly from verified JWT session claims
     if (auth.sessionClaims) {
       primaryEmail = auth.sessionClaims.email || auth.sessionClaims.primary_email || (auth.sessionClaims.email_addresses && auth.sessionClaims.email_addresses[0]) || '';
       fullName = (auth.sessionClaims.first_name || auth.sessionClaims.last_name)
         ? `${auth.sessionClaims.first_name || ''} ${auth.sessionClaims.last_name || ''}`.trim()
         : (auth.sessionClaims.username || (primaryEmail ? primaryEmail.split('@')[0] : ''));
+      
+      if (auth.sessionClaims.metadata && auth.sessionClaims.metadata.role) {
+        userRole = auth.sessionClaims.metadata.role;
+      } else if (auth.sessionClaims.public_metadata && auth.sessionClaims.public_metadata.role) {
+        userRole = auth.sessionClaims.public_metadata.role;
+      }
     }
 
-    // Fallback to cached Clerk user if claims were not embedded
-    if (!primaryEmail) {
+    // Fetch Clerk user details if role or email was not present in claims
+    if (!primaryEmail || !userRole) {
       try {
         const clerkUser = await getCachedClerkUser(auth.userId);
         if (clerkUser) {
-          const primaryEmailObj = (clerkUser.emailAddresses && clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId)) 
-            || (clerkUser.emailAddresses && clerkUser.emailAddresses[0]);
-          primaryEmail = primaryEmailObj ? primaryEmailObj.emailAddress : '';
-          fullName = (clerkUser.firstName || clerkUser.lastName)
-            ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim()
-            : (clerkUser.username || (primaryEmail ? primaryEmail.split('@')[0] : 'User'));
+          if (!primaryEmail) {
+            const primaryEmailObj = (clerkUser.emailAddresses && clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId)) 
+              || (clerkUser.emailAddresses && clerkUser.emailAddresses[0]);
+            primaryEmail = primaryEmailObj ? primaryEmailObj.emailAddress : '';
+          }
+          if (!fullName) {
+            fullName = (clerkUser.firstName || clerkUser.lastName)
+              ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim()
+              : (clerkUser.username || (primaryEmail ? primaryEmail.split('@')[0] : 'User'));
+          }
+          if (!userRole && clerkUser.publicMetadata && clerkUser.publicMetadata.role) {
+            userRole = clerkUser.publicMetadata.role;
+          }
         }
       } catch (clerkErr) {
         console.warn('Could not fetch Clerk user details in middleware:', clerkErr.message);
@@ -74,41 +87,10 @@ async function ensureAuthenticated(req, res, next) {
 
     const isAdminEmail = primaryEmail && adminEmails.includes(primaryEmail.toLowerCase());
 
-    let userRole = 'reporter';
-
-    // 1. Look up user by Clerk auth.userId or by matching email
-    const userDbRes = await db.query(
-      'SELECT id, role, email FROM users WHERE id = $1 OR (email IS NOT NULL AND email != \'\' AND email ILIKE $2) ORDER BY (id = $1) DESC LIMIT 1',
-      [auth.userId, primaryEmail]
-    );
-
-    if (userDbRes.rows.length > 0) {
-      const existingUser = userDbRes.rows[0];
-      userRole = existingUser.role || 'reporter';
-
-      if (isAdminEmail && userRole !== 'admin') {
-        userRole = 'admin';
-      }
-
-      // If existing user has different ID (e.g. placeholder ID or changed Clerk account), update ID
-      if (existingUser.id !== auth.userId) {
-        await db.query(
-          'UPDATE users SET id = $1, email = $2, name = $3, role = $4, updated_at = NOW() WHERE id = $5',
-          [auth.userId, primaryEmail, fullName || 'User', userRole, existingUser.id]
-        );
-      } else {
-        await db.query(
-          'UPDATE users SET email = $1, name = $2, role = $3, updated_at = NOW() WHERE id = $4',
-          [primaryEmail, fullName || 'User', userRole, auth.userId]
-        );
-      }
-    } else {
-      userRole = isAdminEmail ? 'admin' : 'reporter';
-      await db.query(
-        `INSERT INTO users (id, email, name, role) VALUES ($1, $2, $3, $4)
-         ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, name = EXCLUDED.name, role = EXCLUDED.role`,
-        [auth.userId, primaryEmail, fullName || 'User', userRole]
-      );
+    if (isAdminEmail) {
+      userRole = 'admin';
+    } else if (!userRole) {
+      userRole = 'reporter';
     }
 
     req.user = {

@@ -8,7 +8,6 @@ require('dotenv').config();
 const { clerkMiddleware } = require('@clerk/express');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var approvalRouter = require('./routes/approval');
 
 var app = express();
@@ -43,7 +42,6 @@ app.use(clerkMiddleware({
 }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/', approvalRouter);
 
 // catch 404 and forward to error handler

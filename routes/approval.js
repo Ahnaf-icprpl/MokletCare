@@ -60,36 +60,58 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
     const statsResult = await db.query(statsQuery);
     const requestStats = statsResult.rows[0] || { pending: 0, approved: 0, rejected: 0 };
 
-    // Query Users for Admin User Permissions Control
+    // Query Users via Clerk Backend API for Admin User Permissions Control
     const userPage = Math.max(1, parseInt(req.query.user_page, 10) || 1);
     const userLimit = Math.max(1, Math.min(100, parseInt(req.query.user_limit, 10) || 10));
     const userOffset = (userPage - 1) * userLimit;
     const userSearchQuery = typeof req.query.user_q === 'string' ? req.query.user_q.trim() : '';
 
-    let userWhere = [];
-    let userParams = [];
-    let uParamIdx = 1;
-
-    if (userSearchQuery) {
-      userWhere.push(`(name ILIKE $${uParamIdx} OR email ILIKE $${uParamIdx} OR role ILIKE $${uParamIdx})`);
-      userParams.push(`%${userSearchQuery}%`);
-      uParamIdx++;
+    let clerkUsersList = { data: [], totalCount: 0 };
+    try {
+      const { clerkClient } = require('@clerk/express');
+      const fetchParams = {
+        limit: userLimit,
+        offset: userOffset,
+        orderBy: '-created_at'
+      };
+      if (userSearchQuery) {
+        fetchParams.query = userSearchQuery;
+      }
+      const clerkRes = await clerkClient.users.getUserList(fetchParams);
+      clerkUsersList = {
+        data: clerkRes.data || (Array.isArray(clerkRes) ? clerkRes : []),
+        totalCount: clerkRes.totalCount !== undefined ? clerkRes.totalCount : (clerkRes.data ? clerkRes.data.length : 0)
+      };
+    } catch (clerkErr) {
+      console.error('Error fetching Clerk user list:', clerkErr);
     }
 
-    const userWhereClause = userWhere.length > 0 ? 'WHERE ' + userWhere.join(' AND ') : '';
+    const adminEmails = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '')
+      .split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean);
 
-    userParams.push(userLimit, userOffset);
-    const usersSql = `
-      SELECT id, email, name, role, created_at, COUNT(*) OVER()::int as full_count 
-      FROM users 
-      ${userWhereClause} 
-      ORDER BY created_at DESC 
-      LIMIT $${uParamIdx++} OFFSET $${uParamIdx++}
-    `;
+    const users = clerkUsersList.data.map(u => {
+      const primaryEmailObj = (u.emailAddresses && u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)) 
+        || (u.emailAddresses && u.emailAddresses[0]);
+      const email = primaryEmailObj ? primaryEmailObj.emailAddress : '';
+      const name = (u.firstName || u.lastName) 
+        ? `${u.firstName || ''} ${u.lastName || ''}`.trim() 
+        : (u.username || (email ? email.split('@')[0] : 'User'));
+      
+      const isAdminEmail = email && adminEmails.includes(email.toLowerCase());
+      const role = isAdminEmail ? 'admin' : (u.publicMetadata?.role || 'reporter');
 
-    const usersRes = await db.query(usersSql, userParams);
-    const users = usersRes.rows;
-    const totalUserMatching = users.length > 0 ? users[0].full_count : 0;
+      return {
+        id: u.id,
+        email: email,
+        name: name,
+        role: role,
+        created_at: u.createdAt ? new Date(u.createdAt) : new Date()
+      };
+    });
+
+    const totalUserMatching = clerkUsersList.totalCount;
     const totalUserPages = Math.ceil(totalUserMatching / userLimit) || 1;
 
     res.render('approval', {
@@ -119,7 +141,7 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
   }
 });
 
-// POST: Admin manages user role permissions
+// POST: Admin manages user role permissions via Clerk
 router.post(['/admin/users/:id/role', '/dashboard/users/:id/role', '/users/:id/role'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
@@ -133,20 +155,15 @@ router.post(['/admin/users/:id/role', '/dashboard/users/:id/role', '/users/:id/r
       return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid role specified.') + '#users');
     }
 
-    await db.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, id]);
+    // Update user role directly in Clerk publicMetadata
+    const { clerkClient } = require('@clerk/express');
+    await clerkClient.users.updateUserMetadata(id, {
+      publicMetadata: { role: role }
+    });
+
     const { clearUserCache } = require('../middleware/auth');
     clearUserCache(id);
     clearUserCache();
-
-    // Also sync with Clerk publicMetadata
-    try {
-      const { clerkClient } = require('@clerk/express');
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: { role: role }
-      });
-    } catch (clerkErr) {
-      console.warn('Could not sync role to Clerk publicMetadata:', clerkErr.message);
-    }
 
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
       return res.json({ success: true, role, message: `User permission successfully updated to ${role}.` });
@@ -160,6 +177,7 @@ router.post(['/admin/users/:id/role', '/dashboard/users/:id/role', '/users/:id/r
     }
     res.redirect('/admin/approval?success=' + encodeURIComponent(`User permission successfully updated to ${role}.`) + '#users');
   } catch (err) {
+    console.error('Error updating Clerk user role:', err);
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
       return res.status(500).json({ error: err.message || 'Failed to update user permission.' });
     }
