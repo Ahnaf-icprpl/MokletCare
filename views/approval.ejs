@@ -204,10 +204,10 @@
                     <span>Approve Request</span>
                   </button>
                 </form>
-                <form action="/admin/approval/<%= req.id %>/reject" method="POST" class="flex-1">
+                <form action="/admin/approval/<%= req.id %>/decline" method="POST" class="flex-1">
                   <button type="submit" class="w-full text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    <span>Reject Request</span>
+                    <span>Decline Request</span>
                   </button>
                 </form>
               </div>

@@ -239,8 +239,8 @@ router.post(['/admin/approval/:id/approve', '/admin/permissions/:id/approve'], e
   }
 });
 
-// POST: Reject photo request
-router.post(['/admin/approval/:id/reject', '/admin/permissions/:id/reject'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+// POST: Reject / Decline photo request
+router.post(['/admin/approval/:id/reject', '/admin/approval/:id/decline', '/admin/permissions/:id/reject'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
 
@@ -251,7 +251,7 @@ router.post(['/admin/approval/:id/reject', '/admin/permissions/:id/reject'], ens
     if (referer && (referer.includes('/admin/approval') || referer.includes('/approval') || referer.includes('/admin/permissions'))) {
       return res.redirect(referer);
     }
-    res.redirect('/admin/approval?success=' + encodeURIComponent('Request rejected successfully'));
+    res.redirect('/admin/approval?success=' + encodeURIComponent('Request declined successfully'));
   } catch (err) {
     next(err);
   }
