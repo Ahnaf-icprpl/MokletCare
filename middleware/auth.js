@@ -76,12 +76,31 @@ async function ensureAuthenticated(req, res, next) {
 
     let userRole = 'reporter';
 
-    const userDbRes = await db.query('SELECT role FROM users WHERE id = $1', [auth.userId]);
+    // 1. Look up user by Clerk auth.userId or by matching email
+    const userDbRes = await db.query(
+      'SELECT id, role, email FROM users WHERE id = $1 OR (email IS NOT NULL AND email != \'\' AND email ILIKE $2) ORDER BY (id = $1) DESC LIMIT 1',
+      [auth.userId, primaryEmail]
+    );
+
     if (userDbRes.rows.length > 0) {
-      userRole = userDbRes.rows[0].role || 'reporter';
+      const existingUser = userDbRes.rows[0];
+      userRole = existingUser.role || 'reporter';
+
       if (isAdminEmail && userRole !== 'admin') {
         userRole = 'admin';
-        await db.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', ['admin', auth.userId]);
+      }
+
+      // If existing user has different ID (e.g. placeholder ID or changed Clerk account), update ID
+      if (existingUser.id !== auth.userId) {
+        await db.query(
+          'UPDATE users SET id = $1, email = $2, name = $3, role = $4, updated_at = NOW() WHERE id = $5',
+          [auth.userId, primaryEmail, fullName || 'User', userRole, existingUser.id]
+        );
+      } else {
+        await db.query(
+          'UPDATE users SET email = $1, name = $2, role = $3, updated_at = NOW() WHERE id = $4',
+          [primaryEmail, fullName || 'User', userRole, auth.userId]
+        );
       }
     } else {
       userRole = isAdminEmail ? 'admin' : 'reporter';

@@ -318,37 +318,6 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
   }
 });
 
-router.post('/dashboard/users/:id/role', ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
-  try {
-    const { id } = req.params;
-    const { role } = req.body;
-    const allowedRoles = ['reporter', 'staff', 'admin'];
-
-    if (!allowedRoles.includes(role)) {
-      return res.redirect('/dashboard?error=' + encodeURIComponent('Invalid role specified.'));
-    }
-
-    await db.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, id]);
-    clearUserCache(id);
-
-    // Also sync with Clerk publicMetadata
-    try {
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: { role: role }
-      });
-    } catch (clerkErr) {
-      console.warn('Could not sync role to Clerk publicMetadata:', clerkErr.message);
-    }
-
-    const referer = req.get('Referer');
-    if (referer && referer.includes('/dashboard')) {
-      return res.redirect(referer);
-    }
-    res.redirect('/dashboard?success=' + encodeURIComponent('User role updated successfully.'));
-  } catch (err) {
-    next(err);
-  }
-});
 
 router.post('/upload-image', ensureAuthenticated, uploadLimiter, function(req, res, next) {
   upload.single('file')(req, res, function(err) {

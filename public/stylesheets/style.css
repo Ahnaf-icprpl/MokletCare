@@ -107,6 +107,7 @@
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
     --animate-spin: spin 1s linear infinite;
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     --blur-xs: 4px;
     --blur-sm: 8px;
     --blur-xl: 24px;
@@ -312,11 +313,17 @@
   .right-2 {
     right: calc(var(--spacing) * 2);
   }
+  .right-6 {
+    right: calc(var(--spacing) * 6);
+  }
   .bottom-0 {
     bottom: 0px;
   }
   .bottom-2 {
     bottom: calc(var(--spacing) * 2);
+  }
+  .bottom-6 {
+    bottom: calc(var(--spacing) * 6);
   }
   .left-3 {
     left: calc(var(--spacing) * 3);
@@ -534,6 +541,9 @@
   .min-w-0 {
     min-width: 0px;
   }
+  .min-w-\[50px\] {
+    min-width: 50px;
+  }
   .min-w-\[160px\] {
     min-width: 160px;
   }
@@ -543,6 +553,10 @@
   .shrink-0 {
     flex-shrink: 0;
   }
+  .translate-y-2 {
+    --tw-translate-y: calc(var(--spacing) * 2);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
   .scale-110 {
     --tw-scale-x: 110%;
     --tw-scale-y: 110%;
@@ -551,6 +565,9 @@
   }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
   }
   .animate-spin {
     animation: var(--animate-spin);
@@ -768,6 +785,9 @@
   }
   .border-red-200 {
     border-color: var(--color-red-200);
+  }
+  .border-red-500 {
+    border-color: var(--color-red-500);
   }
   .border-slate-100 {
     border-color: var(--color-slate-100);
@@ -1317,6 +1337,9 @@
   .placeholder-slate-400::placeholder {
     color: var(--color-slate-400);
   }
+  .opacity-0 {
+    opacity: 0%;
+  }
   .opacity-25 {
     opacity: 25%;
   }
@@ -1340,6 +1363,10 @@
   }
   .shadow-2xl {
     --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-lg {
+    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-sm {
@@ -1636,6 +1663,21 @@
     }
   }
 }
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-scale-x {
   syntax: "*";
   inherits: false;
@@ -1861,9 +1903,17 @@
     transform: rotate(360deg);
   }
 }
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
       --tw-scale-x: 1;
       --tw-scale-y: 1;
       --tw-scale-z: 1;

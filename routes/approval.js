@@ -120,19 +120,23 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
 });
 
 // POST: Admin manages user role permissions
-router.post(['/admin/users/:id/role', '/dashboard/users/:id/role'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+router.post(['/admin/users/:id/role', '/dashboard/users/:id/role', '/users/:id/role'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
     const { role } = req.body;
     const allowedRoles = ['reporter', 'staff', 'admin'];
 
     if (!allowedRoles.includes(role)) {
-      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid role specified.'));
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
+        return res.status(400).json({ error: 'Invalid role specified.' });
+      }
+      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid role specified.') + '#users');
     }
 
     await db.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, id]);
     const { clearUserCache } = require('../middleware/auth');
     clearUserCache(id);
+    clearUserCache();
 
     // Also sync with Clerk publicMetadata
     try {
@@ -144,12 +148,21 @@ router.post(['/admin/users/:id/role', '/dashboard/users/:id/role'], ensureAuthen
       console.warn('Could not sync role to Clerk publicMetadata:', clerkErr.message);
     }
 
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
+      return res.json({ success: true, role, message: `User permission successfully updated to ${role}.` });
+    }
+
     const referer = req.get('Referer');
     if (referer && referer.includes('/admin/approval')) {
-      return res.redirect(referer);
+      const cleanReferer = referer.split('#')[0].replace(/([?&])success=[^&]*(&|$)/g, '$1').replace(/([?&])error=[^&]*(&|$)/g, '$1').replace(/[?&]$/, '');
+      const separator = cleanReferer.includes('?') ? '&' : '?';
+      return res.redirect(cleanReferer + separator + 'success=' + encodeURIComponent(`User permission successfully updated to ${role}.`) + '#users');
     }
-    res.redirect('/admin/approval?success=' + encodeURIComponent(`User permission successfully updated to ${role}.`));
+    res.redirect('/admin/approval?success=' + encodeURIComponent(`User permission successfully updated to ${role}.`) + '#users');
   } catch (err) {
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
+      return res.status(500).json({ error: err.message || 'Failed to update user permission.' });
+    }
     next(err);
   }
 });

@@ -306,7 +306,7 @@
               <td class="py-4 px-4 text-slate-400 text-xs">
                 <%= u.created_at ? new Date(u.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %>
               </td>
-              <td class="py-4 px-4">
+              <td class="py-4 px-4 user-role-badge-cell">
                 <% if (u.role === 'admin') { %>
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 whitespace-nowrap">Admin (Full Control)</span>
                 <% } else if (u.role === 'staff') { %>
@@ -316,12 +316,13 @@
                 <% } %>
               </td>
               <td class="py-4 px-4 text-right">
-                <form action="/admin/users/<%= u.id %>/role" method="POST" class="inline-flex items-center gap-1.5 justify-end">
-                  <select name="role" onchange="this.form.submit()" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer shadow-xs">
+                <form action="/admin/users/<%= u.id %>/role" method="POST" class="inline-flex items-center gap-2 justify-end" onsubmit="handleRoleFormSubmit(event, this, '<%= u.id %>')">
+                  <select name="role" onchange="updateUserRole(this, '<%= u.id %>')" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer shadow-xs">
                     <option value="reporter" <%= u.role === 'reporter' ? 'selected' : '' %>>Reporter (Standard)</option>
                     <option value="staff" <%= u.role === 'staff' ? 'selected' : '' %>>Staff (Report Manager)</option>
                     <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin (Full Control)</option>
                   </select>
+                  <span id="role-status-<%= u.id %>" class="min-w-[50px] text-left"></span>
                 </form>
               </td>
             </tr>
@@ -452,6 +453,89 @@
         });
       }
     });
+
+    async function updateUserRole(selectEl, userId) {
+      const newRole = selectEl.value;
+      const statusEl = document.getElementById(`role-status-${userId}`);
+      const row = selectEl.closest('tr');
+      const badgeCell = row ? row.querySelector('.user-role-badge-cell') : null;
+
+      if (statusEl) {
+        statusEl.innerHTML = '<span class="text-blue-600 font-medium text-[11px] animate-pulse">Saving...</span>';
+      }
+
+      try {
+        const res = await fetch(`/admin/users/${userId}/role`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ role: newRole })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          if (statusEl) {
+            statusEl.innerHTML = '<span class="text-emerald-600 font-bold text-[11px]">✓ Saved</span>';
+            setTimeout(() => { if (statusEl) statusEl.innerHTML = ''; }, 3000);
+          }
+          if (badgeCell) {
+            if (newRole === 'admin') {
+              badgeCell.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 whitespace-nowrap">Admin (Full Control)</span>';
+            } else if (newRole === 'staff') {
+              badgeCell.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 whitespace-nowrap">Staff</span>';
+            } else {
+              badgeCell.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 whitespace-nowrap">Reporter</span>';
+            }
+          }
+          showToast(`Permission successfully updated to ${newRole.toUpperCase()}!`, 'success');
+        } else {
+          if (statusEl) statusEl.innerHTML = '<span class="text-red-600 font-medium text-[11px]">Failed</span>';
+          showToast('Failed to update permission: ' + (data.error || 'Server error'), 'error');
+        }
+      } catch (err) {
+        console.error('Role update error:', err);
+        // Fallback to regular form submission
+        selectEl.form.submit();
+      }
+    }
+
+    function handleRoleFormSubmit(e, form, userId) {
+      e.preventDefault();
+      const selectEl = form.querySelector('select[name="role"]');
+      if (selectEl) updateUserRole(selectEl, userId);
+    }
+
+    function showToast(message, type) {
+      let toastContainer = document.getElementById('toast-notification-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-notification-container';
+        toastContainer.className = 'fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = `px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${isSuccess ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-red-600 text-white border-red-500'}`;
+      toast.innerHTML = `
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isSuccess ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}"></path>
+        </svg>
+        <span>${message}</span>
+      `;
+
+      toastContainer.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
   </script>
 </body>
 </html>
