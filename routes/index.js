@@ -217,47 +217,6 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async functio
     const totalReportPages = Math.ceil(totalReportsMatching / limit) || 1;
     const stats = statsRes.rows[0];
 
-    // 3. User Management Pagination & Fuzzy Search (Admin only)
-    let users = [];
-    let userPage = 1;
-    let userLimit = 10;
-    let totalUserMatching = 0;
-    let totalUserPages = 1;
-    let userSearchQuery = '';
-
-    if (req.user.role === 'admin') {
-      userPage = Math.max(1, parseInt(req.query.user_page, 10) || 1);
-      userLimit = Math.max(1, Math.min(100, parseInt(req.query.user_limit, 10) || 10));
-      const userOffset = (userPage - 1) * userLimit;
-      userSearchQuery = typeof req.query.user_q === 'string' ? req.query.user_q.trim() : '';
-
-      let userWhere = [];
-      let userParams = [];
-      let uParamIdx = 1;
-
-      if (userSearchQuery) {
-        userWhere.push(`(name ILIKE $${uParamIdx} OR email ILIKE $${uParamIdx} OR role ILIKE $${uParamIdx})`);
-        userParams.push(`%${userSearchQuery}%`);
-        uParamIdx++;
-      }
-
-      const userWhereClause = userWhere.length > 0 ? 'WHERE ' + userWhere.join(' AND ') : '';
-
-      userParams.push(userLimit, userOffset);
-      const usersSql = `
-        SELECT id, email, name, role, created_at, COUNT(*) OVER()::int as full_count 
-        FROM users 
-        ${userWhereClause} 
-        ORDER BY created_at DESC 
-        LIMIT $${uParamIdx++} OFFSET $${uParamIdx++}
-      `;
-
-      const usersRes = await db.query(usersSql, userParams);
-      users = usersRes.rows;
-      totalUserMatching = users.length > 0 ? users[0].full_count : 0;
-      totalUserPages = Math.ceil(totalUserMatching / userLimit) || 1;
-    }
-
     res.render('dashboard', {
       user: req.user,
       reports,
@@ -269,14 +228,6 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async functio
         totalPages: totalReportPages,
         status: statusFilter,
         q: searchQuery
-      },
-      users,
-      userPagination: {
-        page: userPage,
-        limit: userLimit,
-        totalItems: totalUserMatching,
-        totalPages: totalUserPages,
-        q: userSearchQuery
       },
       error: req.query.error || null,
       success: req.query.success || null,

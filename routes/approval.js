@@ -60,6 +60,38 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
     const statsResult = await db.query(statsQuery);
     const requestStats = statsResult.rows[0] || { pending: 0, approved: 0, rejected: 0 };
 
+    // Query Users for Admin User Permissions Control
+    const userPage = Math.max(1, parseInt(req.query.user_page, 10) || 1);
+    const userLimit = Math.max(1, Math.min(100, parseInt(req.query.user_limit, 10) || 10));
+    const userOffset = (userPage - 1) * userLimit;
+    const userSearchQuery = typeof req.query.user_q === 'string' ? req.query.user_q.trim() : '';
+
+    let userWhere = [];
+    let userParams = [];
+    let uParamIdx = 1;
+
+    if (userSearchQuery) {
+      userWhere.push(`(name ILIKE $${uParamIdx} OR email ILIKE $${uParamIdx} OR role ILIKE $${uParamIdx})`);
+      userParams.push(`%${userSearchQuery}%`);
+      uParamIdx++;
+    }
+
+    const userWhereClause = userWhere.length > 0 ? 'WHERE ' + userWhere.join(' AND ') : '';
+
+    userParams.push(userLimit, userOffset);
+    const usersSql = `
+      SELECT id, email, name, role, created_at, COUNT(*) OVER()::int as full_count 
+      FROM users 
+      ${userWhereClause} 
+      ORDER BY created_at DESC 
+      LIMIT $${uParamIdx++} OFFSET $${uParamIdx++}
+    `;
+
+    const usersRes = await db.query(usersSql, userParams);
+    const users = usersRes.rows;
+    const totalUserMatching = users.length > 0 ? users[0].full_count : 0;
+    const totalUserPages = Math.ceil(totalUserMatching / userLimit) || 1;
+
     res.render('approval', {
       user: req.user,
       requests: requests.map(r => ({ ...r, full_count: undefined })),
@@ -71,9 +103,52 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
         totalPages,
         status: statusFilter
       },
+      users,
+      userPagination: {
+        page: userPage,
+        limit: userLimit,
+        totalItems: totalUserMatching,
+        totalPages: totalUserPages,
+        q: userSearchQuery
+      },
       error: req.query.error || null,
       success: req.query.success || null
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST: Admin manages user role permissions
+router.post(['/admin/users/:id/role', '/dashboard/users/:id/role'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const allowedRoles = ['reporter', 'staff', 'admin'];
+
+    if (!allowedRoles.includes(role)) {
+      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid role specified.'));
+    }
+
+    await db.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, id]);
+    const { clearUserCache } = require('../middleware/auth');
+    clearUserCache(id);
+
+    // Also sync with Clerk publicMetadata
+    try {
+      const { clerkClient } = require('@clerk/express');
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: { role: role }
+      });
+    } catch (clerkErr) {
+      console.warn('Could not sync role to Clerk publicMetadata:', clerkErr.message);
+    }
+
+    const referer = req.get('Referer');
+    if (referer && referer.includes('/admin/approval')) {
+      return res.redirect(referer);
+    }
+    res.redirect('/admin/approval?success=' + encodeURIComponent(`User permission successfully updated to ${role}.`));
   } catch (err) {
     next(err);
   }
