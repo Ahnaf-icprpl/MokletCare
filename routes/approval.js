@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
-
 const { ensureAuthenticated, ensureRole } = require('../middleware/auth');
 
-// GET: Admin permissions page - show all photo requests with pie chart
-router.get('/admin/permissions', ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+// GET: Approval page - show all photo requests with pie chart and approval workflow
+router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissions'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.max(1, Math.min(100, parseInt(req.query.limit, 10) || 10));
@@ -37,7 +36,7 @@ router.get('/admin/permissions', ensureAuthenticated, ensureRole('admin'), async
     const requestsResult = await db.query(requestsQuery, params);
     const requests = requestsResult.rows;
     const totalItems = requests.length > 0 ? requests[0].full_count : 0;
-    const totalPages = Math.ceil(totalItems / limit);
+    const totalPages = Math.ceil(totalItems / limit) || 1;
 
     // Get stats for pie chart
     const statsQuery = `
@@ -51,8 +50,9 @@ router.get('/admin/permissions', ensureAuthenticated, ensureRole('admin'), async
     const statsResult = await db.query(statsQuery);
     const requestStats = statsResult.rows[0] || { pending: 0, approved: 0, rejected: 0 };
 
-    res.render('admin-permissions', {
-      requests: requests.map(r => ({ ...r, full_count: undefined })), // Remove full_count from individual rows
+    res.render('approval', {
+      user: req.user,
+      requests: requests.map(r => ({ ...r, full_count: undefined })),
       requestStats,
       requestPagination: {
         page,
@@ -60,7 +60,9 @@ router.get('/admin/permissions', ensureAuthenticated, ensureRole('admin'), async
         totalItems,
         totalPages,
         status: statusFilter
-      }
+      },
+      error: req.query.error || null,
+      success: req.query.success || null
     });
   } catch (err) {
     next(err);
@@ -122,7 +124,7 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
     res.json({
       success: true,
       requestId: result.rows[0].id,
-      message: 'Photo request sent successfully'
+      message: 'Photo approval request sent successfully'
     });
   } catch (err) {
     next(err);
@@ -130,7 +132,7 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
 });
 
 // POST: Approve photo request
-router.post('/admin/permissions/:id/approve', ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+router.post(['/admin/approval/:id/approve', '/admin/permissions/:id/approve'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
 
@@ -138,17 +140,17 @@ router.post('/admin/permissions/:id/approve', ensureAuthenticated, ensureRole('a
     await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['approved', id]);
 
     const referer = req.get('Referer');
-    if (referer && referer.includes('/admin/permissions')) {
+    if (referer && (referer.includes('/admin/approval') || referer.includes('/approval') || referer.includes('/admin/permissions'))) {
       return res.redirect(referer);
     }
-    res.redirect('/admin/permissions?success=Request approved');
+    res.redirect('/admin/approval?success=' + encodeURIComponent('Request approved successfully'));
   } catch (err) {
     next(err);
   }
 });
 
 // POST: Reject photo request
-router.post('/admin/permissions/:id/reject', ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+router.post(['/admin/approval/:id/reject', '/admin/permissions/:id/reject'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
 
@@ -156,10 +158,10 @@ router.post('/admin/permissions/:id/reject', ensureAuthenticated, ensureRole('ad
     await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['rejected', id]);
 
     const referer = req.get('Referer');
-    if (referer && referer.includes('/admin/permissions')) {
+    if (referer && (referer.includes('/admin/approval') || referer.includes('/approval') || referer.includes('/admin/permissions'))) {
       return res.redirect(referer);
     }
-    res.redirect('/admin/permissions?success=Request rejected');
+    res.redirect('/admin/approval?success=' + encodeURIComponent('Request rejected successfully'));
   } catch (err) {
     next(err);
   }

@@ -92,6 +92,9 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
 });
 
 router.get('/', ensureAuthenticated, async function(req, res, next) {
+  if (req.user && req.user.role === 'admin') {
+    return res.redirect('/admin/approval');
+  }
   try {
     const result = await db.query('SELECT * FROM dropdown_options ORDER BY sort_order ASC');
     const facilities = result.rows.filter(r => r.category === 'facility');
@@ -145,7 +148,7 @@ function formatOptionText(val, optionMap) {
     .join(' ');
 }
 
-router.get('/dashboard', ensureAuthenticated, ensureRole('admin', 'staff'), async function(req, res, next) {
+router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
   try {
     const optionMap = await getOptionLabelMap();
 
@@ -277,7 +280,7 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('admin', 'staff'), asyn
   }
 });
 
-router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], ensureAuthenticated, ensureRole('admin', 'staff'), async function(req, res, next) {
+router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
   try {
     const { id } = req.params;
     const { status, finished_photo_path, admin_reply } = req.body;
@@ -384,6 +387,9 @@ router.post('/upload-image', ensureAuthenticated, uploadLimiter, function(req, r
 });
 
 router.post('/report', ensureAuthenticated, reportLimiter, async function(req, res, next) {
+  if (req.user && req.user.role === 'admin') {
+    return res.redirect('/admin/approval');
+  }
   try {
     // Secure identity enforcement directly from JWT token / session
     const reporter_name = req.user.displayName || 'Anonymous';
@@ -440,6 +446,9 @@ router.post('/report', ensureAuthenticated, reportLimiter, async function(req, r
 });
 
 router.get('/history', ensureAuthenticated, async function(req, res, next) {
+  if (req.user && req.user.role === 'admin') {
+    return res.redirect('/admin/approval');
+  }
   try {
     const email = (req.user && req.user.emails && req.user.emails[0]) ? req.user.emails[0].value : '';
     if (!email) {

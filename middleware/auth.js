@@ -114,6 +114,9 @@ function ensureRole(...allowedRoles) {
       if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(403).json({ error: 'Forbidden: Insufficient privileges.' });
       }
+      if (req.user && req.user.role === 'admin') {
+        return res.redirect('/admin/approval');
+      }
       return res.redirect('/?error=' + encodeURIComponent('Access denied. You do not have permission to view that page.'));
     }
     next();

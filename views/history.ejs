@@ -43,8 +43,10 @@
       <p class="text-slate-500 mt-1">Track the progress of your submitted facility damage reports.</p>
     </div>
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-      <% if (locals.user && (user.role === 'admin' || user.role === 'staff')) { %>
+      <% if (locals.user && user.role === 'staff') { %>
       <a href="/dashboard" class="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center shadow-sm">Dashboard</a>
+      <% } else if (locals.user && user.role === 'admin') { %>
+      <a href="/admin/approval" class="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center shadow-sm">Approval Page</a>
       <% } %>
       <a href="/" class="text-sm bg-white text-slate-600 px-4 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">New Report</a>
       <a href="/logout" class="text-sm bg-red-50 text-red-600 px-4 py-2 rounded-lg transition-colors border border-red-200 font-medium text-center">Logout</a>
