@@ -2,27 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 
-// Middleware to check if user is admin
-function ensureRole(...allowedRoles) {
-  return function(req, res, next) {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    const userRole = req.user.publicMetadata && req.user.publicMetadata.role ? req.user.publicMetadata.role : 'reporter';
-    if (allowedRoles.includes(userRole)) {
-      return next();
-    }
-    return res.status(403).json({ error: 'Forbidden' });
-  };
-}
-
-// Middleware to ensure user is authenticated
-function ensureAuthenticated(req, res, next) {
-  if (req.user) {
-    return next();
-  }
-  res.redirect('/sign-in');
-}
+const { ensureAuthenticated, ensureRole } = require('../middleware/auth');
 
 // GET: Admin permissions page - show all photo requests with pie chart
 router.get('/admin/permissions', ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {

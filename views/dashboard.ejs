@@ -226,14 +226,29 @@
                 data-room-location="<%= report.room_location %>"
                 data-urgency-level="<%= report.urgency_level %>"
                 data-urgency-label="<%= urgencyLabel %>"
-                data-description="<%= report.damage_description %>"
+                data-description="<%= (report.damage_description || '').replace(/"/g, '&quot;') %>"
                 data-photo-path="<%= report.photo_path %>"
+                data-finished-photo-path="<%= report.finished_photo_path || '' %>"
+                data-admin-reply="<%= (report.admin_reply || '').replace(/"/g, '&quot;') %>"
+                data-resolved-at="<%= report.resolved_at || '' %>"
                 data-status="<%= report.status %>"
                 data-created-at="<%= report.created_at %>">
               <td class="py-4 px-4" onclick="event.stopPropagation()">
-                <a href="<%= report.photo_path %>" target="_blank" rel="noopener noreferrer">
-                  <img src="<%= report.photo_path %>" alt="Photo" class="w-12 h-12 rounded-lg object-cover border border-slate-200 hover:opacity-90 transition-opacity">
-                </a>
+                <div class="flex items-center gap-1.5">
+                  <a href="<%= report.photo_path %>" target="_blank" rel="noopener noreferrer" title="Damage Photo">
+                    <img src="<%= report.photo_path %>" alt="Damage Photo" class="w-12 h-12 rounded-lg object-cover border border-slate-200 hover:opacity-90 transition-opacity">
+                  </a>
+                  <% if (report.finished_photo_path) { %>
+                  <a href="<%= report.finished_photo_path %>" target="_blank" rel="noopener noreferrer" title="Finished Photo (Proof of Repair)">
+                    <div class="relative">
+                      <img src="<%= report.finished_photo_path %>" alt="Finished Photo" class="w-12 h-12 rounded-lg object-cover border-2 border-emerald-500 shadow-sm hover:opacity-90 transition-opacity">
+                      <span class="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      </span>
+                    </div>
+                  </a>
+                  <% } %>
+                </div>
               </td>
               <td class="py-4 px-4">
                 <div class="font-medium text-slate-900 group-hover:text-red-600 transition-colors"><%= report.reporter_name %></div>
@@ -427,7 +442,7 @@
 
   <!-- Interactive Report Details & Action Modal -->
   <div id="report-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh] transition-all">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
@@ -444,34 +459,61 @@
       <div class="p-6 overflow-y-auto space-y-6 flex-1">
         
         <!-- Photo & Location Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div class="relative group">
-            <a id="modal-photo-link" href="#" target="_blank" rel="noopener noreferrer" class="block">
-              <img id="modal-photo" src="" alt="Damage Photo" class="w-full h-52 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-95 transition-opacity">
-              <div class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-1 rounded font-medium backdrop-blur-sm">Click to Expand</div>
-            </a>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Location / Room</div>
-              <div class="text-base font-bold text-slate-900 mt-0.5" id="modal-location"></div>
-            </div>
-
-            <div>
-              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Facility & Item</div>
-              <div class="text-sm font-semibold text-slate-800 mt-0.5" id="modal-item"></div>
-              <div class="text-xs text-slate-500" id="modal-facility"></div>
-            </div>
-
-            <div class="flex items-center justify-between pt-1">
-              <div>
-                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Urgency</div>
-                <span id="modal-urgency-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"></span>
+        <div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <!-- Damage Photo -->
+            <div class="space-y-1.5">
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                <span>Damage Photo (Initial)</span>
+                <span class="text-[10px] text-slate-400 font-normal">Reported by user</span>
               </div>
-              <div class="text-right">
-                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted</div>
-                <div class="text-xs font-medium text-slate-600 mt-0.5" id="modal-date"></div>
+              <div class="relative group">
+                <a id="modal-photo-link" href="#" target="_blank" rel="noopener noreferrer" class="block">
+                  <img id="modal-photo" src="" alt="Damage Photo" class="w-full h-48 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-95 transition-opacity">
+                  <div class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-1 rounded font-medium backdrop-blur-sm">Click to Expand</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Finished / Proof of Repair Photo (If Available) -->
+            <div id="modal-finished-photo-container" class="space-y-1.5 hidden">
+              <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  Finished Photo (Proof of Repair)
+                </span>
+                <span class="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Completed</span>
+              </div>
+              <div class="relative group">
+                <a id="modal-finished-photo-link" href="#" target="_blank" rel="noopener noreferrer" class="block">
+                  <img id="modal-finished-photo" src="" alt="Finished Photo" class="w-full h-48 object-cover rounded-xl border-2 border-emerald-400 shadow-sm hover:opacity-95 transition-opacity">
+                  <div class="absolute bottom-2 right-2 bg-emerald-900/80 text-white text-[10px] px-2 py-1 rounded font-medium backdrop-blur-sm">Click to Expand</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Location & Facility details (if no finished photo is shown, takes remaining col) -->
+            <div id="modal-details-container" class="space-y-3 bg-slate-50/70 p-4 rounded-xl border border-slate-100">
+              <div>
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Location / Room</div>
+                <div class="text-base font-bold text-slate-900 mt-0.5" id="modal-location"></div>
+              </div>
+
+              <div>
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Facility & Item</div>
+                <div class="text-sm font-semibold text-slate-800 mt-0.5" id="modal-item"></div>
+                <div class="text-xs text-slate-500" id="modal-facility"></div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <div>
+                  <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Urgency</div>
+                  <span id="modal-urgency-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"></span>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted</div>
+                  <div class="text-xs font-medium text-slate-600 mt-0.5" id="modal-date"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -489,33 +531,101 @@
         <!-- Damage Description -->
         <div>
           <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Damage Description</div>
-          <div class="text-sm text-slate-700 bg-slate-50/80 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed max-h-36 overflow-y-auto" id="modal-description"></div>
+          <div class="text-sm text-slate-700 bg-slate-50/80 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto" id="modal-description"></div>
         </div>
+
+        <!-- Existing Admin Reply (If any) -->
+        <div id="modal-existing-reply-container" class="hidden bg-emerald-50/70 border border-emerald-200 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-1.5">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Current Admin Reply to Reporter</span>
+          </div>
+          <p class="text-sm text-emerald-800 whitespace-pre-wrap leading-relaxed" id="modal-existing-reply-text"></p>
+        </div>
+
+        <!-- Admin Resolution & Reply Form Section -->
+        <% if (user.role === 'admin' || user.role === 'staff') { %>
+        <div class="bg-slate-50/90 p-5 rounded-2xl border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+              </div>
+              <h4 class="text-sm font-bold text-slate-900">Reply with Finished Photo & Update Status</h4>
+            </div>
+            <span class="text-[11px] text-slate-400 font-medium">Updates are sent to reporter</span>
+          </div>
+
+          <form id="modal-status-form" method="POST" class="space-y-4">
+            <input type="hidden" id="modal-finished-photo-input" name="finished_photo_path" value="">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Status Selector -->
+              <div>
+                <label for="modal-status-select" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Report Status</label>
+                <select id="modal-status-select" name="status" class="w-full text-xs bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm cursor-pointer">
+                  <option value="pending">Pending</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="resolved">Resolved (Completed)</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+
+              <!-- Finished Photo Upload Action -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Attach Finished Photo</label>
+                <div class="flex items-center gap-2">
+                  <input type="file" id="modal-finished-file-upload" accept="image/*" class="sr-only">
+                  <button type="button" onclick="document.getElementById('modal-finished-file-upload').click()" class="text-xs bg-white hover:bg-slate-100 text-slate-700 font-medium px-3.5 py-2 rounded-lg border border-slate-200 flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    <span id="modal-finished-upload-text">Upload Finished Photo</span>
+                  </button>
+                  <span id="modal-finished-upload-status" class="text-xs text-slate-500"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Uploaded Finished Photo Preview in Form -->
+            <div id="modal-upload-finished-preview" class="hidden flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+              <img id="modal-upload-finished-img" src="" alt="Finished Preview" class="w-14 h-14 rounded-lg object-cover border border-emerald-300">
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-bold text-emerald-700 flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  Finished Photo Attached
+                </div>
+                <p class="text-[11px] text-slate-500 truncate">Reporter will see this proof of repair photo in their history view.</p>
+              </div>
+              <button type="button" onclick="removeFinishedPhoto(event)" class="text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                Remove
+              </button>
+            </div>
+
+            <!-- Admin Reply Message Textarea -->
+            <div>
+              <label for="modal-admin-reply-input" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Reply Message / Resolution Notes to Reporter</label>
+              <textarea id="modal-admin-reply-input" name="admin_reply" rows="2" placeholder="e.g. Fasilitas telah berhasil diperbaiki oleh tim sarpras dan sudah berfungsi normal kembali." class="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition resize-none"></textarea>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-1">
+              <% if (user.role === 'staff') { %>
+              <button type="button" onclick="openPhotoRequestModal()" class="text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold px-4 py-2 rounded-lg transition-colors shadow-sm">
+                Request Photo Permission
+              </button>
+              <% } %>
+              <button type="submit" id="modal-submit-btn" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-lg transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Save Status & Reply</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <% } %>
 
       </div>
 
-      <!-- Modal Footer Status Update Action -->
-      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <% if (user.role === 'admin') { %>
-        <form id="modal-status-form" method="POST" class="flex items-center gap-3 w-full sm:w-auto">
-          <label for="modal-status-select" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Update Status:</label>
-          <select id="modal-status-select" name="status" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm">
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="resolved">Resolved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-          <button type="submit" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">
-            Save Status
-          </button>
-        </form>
-        <% } else if (user.role === 'staff') { %>
-        <button onclick="openPhotoRequestModal()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">
-          Send Photo to Admin/Reporter
-        </button>
-        <% } %>
-
-        <button onclick="closeReportModal()" class="text-xs bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-medium px-4 py-2 rounded-lg transition-colors w-full sm:w-auto text-center">
+      <!-- Modal Footer Close Action -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end">
+        <button onclick="closeReportModal()" class="text-xs bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-medium px-5 py-2 rounded-lg transition-colors text-center cursor-pointer">
           Close
         </button>
       </div>
@@ -646,11 +756,14 @@
       }
     }
 
+    let isUploadingFinishedPhoto = false;
+
     function openReportModal(row) {
       const data = row.dataset;
-      // Store report data globally for photo request
       document.getElementById('report-modal').dataset.id = data.id;
       document.getElementById('report-modal').dataset.photoPath = data.photoPath;
+      document.getElementById('report-modal').dataset.finishedPhotoPath = data.finishedPhotoPath || '';
+      document.getElementById('report-modal').dataset.adminReply = data.adminReply || '';
       
       document.getElementById('modal-title').textContent = `Report Details #${data.id}`;
       document.getElementById('modal-location').textContent = data.roomLocation;
@@ -660,10 +773,33 @@
       document.getElementById('modal-reporter-email').textContent = data.reporterEmail;
       document.getElementById('modal-description').textContent = data.description;
       
+      // Damage Photo
       const photoEl = document.getElementById('modal-photo');
       const photoLinkEl = document.getElementById('modal-photo-link');
       photoEl.src = data.photoPath;
       photoLinkEl.href = data.photoPath;
+
+      // Finished Photo (Proof of repair) in View Area
+      const finishedPhotoContainer = document.getElementById('modal-finished-photo-container');
+      const finishedPhotoEl = document.getElementById('modal-finished-photo');
+      const finishedPhotoLinkEl = document.getElementById('modal-finished-photo-link');
+      if (data.finishedPhotoPath) {
+        finishedPhotoEl.src = data.finishedPhotoPath;
+        finishedPhotoLinkEl.href = data.finishedPhotoPath;
+        finishedPhotoContainer.classList.remove('hidden');
+      } else {
+        finishedPhotoContainer.classList.add('hidden');
+      }
+
+      // Existing Admin Reply Box
+      const existingReplyContainer = document.getElementById('modal-existing-reply-container');
+      const existingReplyText = document.getElementById('modal-existing-reply-text');
+      if (data.adminReply) {
+        existingReplyText.textContent = data.adminReply;
+        existingReplyContainer.classList.remove('hidden');
+      } else {
+        existingReplyContainer.classList.add('hidden');
+      }
 
       if (data.createdAt) {
         document.getElementById('modal-date').textContent = new Date(data.createdAt).toLocaleDateString('en-US', {
@@ -698,12 +834,127 @@
         urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap';
       }
 
-      // Action Form
+      // Populate Admin Action Form
       const form = document.getElementById('modal-status-form');
-      form.action = `/dashboard/reports/${data.id}/status`;
-      document.getElementById('modal-status-select').value = data.status;
+      if (form) {
+        form.action = `/dashboard/reports/${data.id}/reply`;
+        document.getElementById('modal-status-select').value = data.status;
+        document.getElementById('modal-admin-reply-input').value = data.adminReply || '';
+        
+        const photoInput = document.getElementById('modal-finished-photo-input');
+        const previewContainer = document.getElementById('modal-upload-finished-preview');
+        const previewImg = document.getElementById('modal-upload-finished-img');
+        const uploadText = document.getElementById('modal-finished-upload-text');
+        const uploadStatus = document.getElementById('modal-finished-upload-status');
+
+        if (uploadStatus) uploadStatus.textContent = '';
+
+        if (data.finishedPhotoPath) {
+          photoInput.value = data.finishedPhotoPath;
+          previewImg.src = data.finishedPhotoPath;
+          previewContainer.classList.remove('hidden');
+          uploadText.textContent = 'Change finished photo';
+        } else {
+          photoInput.value = '';
+          previewImg.src = '';
+          previewContainer.classList.add('hidden');
+          uploadText.textContent = 'Upload finished photo';
+        }
+      }
 
       document.getElementById('report-modal').classList.remove('hidden');
+    }
+
+    function removeFinishedPhoto(e) {
+      if (e) e.stopPropagation();
+      const photoInput = document.getElementById('modal-finished-photo-input');
+      const fileInput = document.getElementById('modal-finished-file-upload');
+      const previewContainer = document.getElementById('modal-upload-finished-preview');
+      const previewImg = document.getElementById('modal-upload-finished-img');
+      const uploadText = document.getElementById('modal-finished-upload-text');
+      const uploadStatus = document.getElementById('modal-finished-upload-status');
+
+      if (photoInput) photoInput.value = '';
+      if (fileInput) fileInput.value = '';
+      if (previewImg) previewImg.src = '';
+      if (previewContainer) previewContainer.classList.add('hidden');
+      if (uploadText) uploadText.textContent = 'Upload finished photo';
+      if (uploadStatus) uploadStatus.textContent = '';
+    }
+
+    function setupFinishedPhotoUpload() {
+      const fileInput = document.getElementById('modal-finished-file-upload');
+      if (!fileInput) return;
+
+      fileInput.addEventListener('change', async function() {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          const uploadStatus = document.getElementById('modal-finished-upload-status');
+          const previewContainer = document.getElementById('modal-upload-finished-preview');
+          const previewImg = document.getElementById('modal-upload-finished-img');
+          const photoInput = document.getElementById('modal-finished-photo-input');
+          const uploadText = document.getElementById('modal-finished-upload-text');
+
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File size exceeds 5MB limit. Please choose a smaller image.');
+            this.value = '';
+            return;
+          }
+
+          isUploadingFinishedPhoto = true;
+          uploadStatus.innerHTML = `<span class="text-blue-600 inline-flex items-center gap-1 font-medium"><svg class="animate-spin h-3.5 w-3.5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...</span>`;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          try {
+            const res = await fetch('/upload-image', {
+              method: 'POST',
+              body: formData,
+              headers: { 'Accept': 'application/json' }
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              throw new Error(data.error || 'Upload failed');
+            }
+
+            photoInput.value = data.url;
+            previewImg.src = data.url;
+            previewContainer.classList.remove('hidden');
+            uploadText.textContent = 'Change finished photo';
+            uploadStatus.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Uploaded</span>`;
+
+            // Auto-select resolved status if pending/in_progress
+            const statusSelect = document.getElementById('modal-status-select');
+            if (statusSelect && statusSelect.value !== 'resolved') {
+              statusSelect.value = 'resolved';
+            }
+          } catch (err) {
+            console.error('Error uploading finished photo:', err);
+            uploadStatus.innerHTML = `<span class="text-red-600 font-medium">${err.message || 'Upload failed'}</span>`;
+          } finally {
+            isUploadingFinishedPhoto = false;
+          }
+        }
+      });
+    }
+
+    // Attach form submit protection
+    const statusForm = document.getElementById('modal-status-form');
+    if (statusForm) {
+      statusForm.addEventListener('submit', function(e) {
+        if (isUploadingFinishedPhoto) {
+          e.preventDefault();
+          alert('Please wait for the finished photo upload to complete.');
+          return;
+        }
+        const btn = document.getElementById('modal-submit-btn');
+        if (btn) {
+          btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="ml-1">Saving...</span>`;
+          btn.disabled = true;
+        }
+      });
     }
 
     function closeReportModal() {
@@ -730,6 +981,8 @@
           await window.Clerk.load();
         } catch (e) {}
       }
+
+      setupFinishedPhotoUpload();
 
       // Register Chart.js plugins
       Chart.register(ChartDataLabels);

@@ -59,67 +59,104 @@
  <a href="/" class="inline-block mt-6 bg-red-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors">Submit a Report</a>
  </div>
  <% } else { %>
- <div class="space-y-4">
- <% reports.forEach(function(report) { %>
- <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 transition-">
- <div class="flex flex-col md:flex-row justify-between md:items-start gap-4">
- 
- <!-- Report Details -->
- <div class="flex-1 space-y-3">
- <div class="flex items-center gap-3">
- <h3 class="font-semibold text-slate-800 text-lg"><%= report.room_location %></h3>
- <span class="text-xs font-medium px-2.5 py-1 rounded-full border 
- <%= report.urgency_level === 'critical' ? 'bg-red-50 border-red-200 text-red-600' : 
- report.urgency_level === 'high' ? 'bg-orange-50 border-orange-200 text-orange-600' : 
- 'bg-slate-100 border-slate-200 text-slate-600' %>">
- <%= formatOptionText(report.urgency_level, locals.optionMap) %>
- </span>
- </div>
- 
- <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Facility:</span> <%= formatOptionText(report.facility_type, locals.optionMap) %></p>
- <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Item:</span> <%= formatOptionText(report.item_type, locals.optionMap) %></p>
- <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Damage Type:</span> <%= formatOptionText(report.damage_type, locals.optionMap) %></p>
- <p class="text-slate-600 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100"><%= report.damage_description %></p>
- 
- <p class="text-xs text-slate-400 font-medium">Submitted on <%= new Date(report.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' }) %></p>
- </div>
+  <div class="space-y-4">
+  <% reports.forEach(function(report) { %>
+  <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 transition-all shadow-xs">
+    <div class="flex flex-col md:flex-row justify-between md:items-start gap-5">
+      
+      <!-- Report Details -->
+      <div class="flex-1 space-y-3">
+        <div class="flex items-center gap-3">
+          <h3 class="font-bold text-slate-900 text-lg"><%= report.room_location %></h3>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full border 
+          <%= report.urgency_level === 'critical' || report.urgency_level === 'high' ? 'bg-red-50 border-red-200 text-red-600 font-semibold' : 
+          report.urgency_level === 'medium' ? 'bg-amber-50 border-amber-200 text-amber-700 font-semibold' : 
+          'bg-slate-100 border-slate-200 text-slate-600' %>">
+          <%= formatOptionText(report.urgency_level, locals.optionMap) %>
+          </span>
+        </div>
+        
+        <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Facility:</span> <%= formatOptionText(report.facility_type, locals.optionMap) %></p>
+        <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Item:</span> <%= formatOptionText(report.item_type, locals.optionMap) %></p>
+        <p class="text-slate-600 text-sm"><span class="font-medium text-slate-700">Damage Type:</span> <%= formatOptionText(report.damage_type, locals.optionMap) %></p>
+        <div class="text-slate-700 text-sm bg-slate-50 p-3.5 rounded-xl border border-slate-100 leading-relaxed"><%= report.damage_description %></div>
+        
+        <p class="text-xs text-slate-400 font-medium">Submitted on <%= new Date(report.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' }) %></p>
+      </div>
 
- <!-- Status Badge & Photo -->
- <div class="flex flex-col items-end gap-3 min-w-[140px]">
- <% if (report.status === 'pending') { %>
- <div class="inline-flex items-center gap-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
- Pending
- </div>
- <% } else if (report.status === 'in_progress') { %>
- <div class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
- <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
- In Progress
- </div>
- <% } else if (report.status === 'resolved') { %>
- <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
- Resolved
- </div>
- <% } else if (report.status === 'rejected') { %>
- <div class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
- Rejected
- </div>
- <% } %>
- 
- <% if (report.photo_path) { %>
- <a href="<%= report.photo_path %>" target="_blank" class="block w-full overflow-hidden rounded-lg border border-slate-200 transition-colors">
- <img src="<%= report.photo_path %>" alt="Report Photo" class="w-full h-24 object-cover">
- </a>
- <% } %>
- </div>
+      <!-- Status Badge & Photo Evidence -->
+      <div class="flex flex-col items-start md:items-end gap-3 min-w-[160px]">
+        <% if (report.status === 'pending') { %>
+        <div class="inline-flex items-center gap-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Pending
+        </div>
+        <% } else if (report.status === 'in_progress') { %>
+        <div class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
+          <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          In Progress
+        </div>
+        <% } else if (report.status === 'resolved') { %>
+        <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          Resolved
+        </div>
+        <% } else if (report.status === 'rejected') { %>
+        <div class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold w-full justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          Rejected
+        </div>
+        <% } %>
+        
+        <!-- Photos (Before & After) -->
+        <div class="flex items-center gap-2 mt-1">
+          <% if (report.photo_path) { %>
+          <div class="flex flex-col items-center">
+            <a href="<%= report.photo_path %>" target="_blank" rel="noopener noreferrer" class="block w-24 h-24 overflow-hidden rounded-xl border border-slate-200 shadow-sm hover:opacity-90 transition-opacity relative group" title="Damage Photo (Initial)">
+              <img src="<%= report.photo_path %>" alt="Damage Photo" class="w-full h-full object-cover">
+              <span class="absolute bottom-0 inset-x-0 bg-slate-900/75 text-white text-[9px] text-center py-0.5 font-medium backdrop-blur-xs">Damage</span>
+            </a>
+          </div>
+          <% } %>
 
- </div>
- </div>
- <% }); %>
- </div>
- <% } %>
+          <% if (report.finished_photo_path) { %>
+          <div class="flex flex-col items-center">
+            <a href="<%= report.finished_photo_path %>" target="_blank" rel="noopener noreferrer" class="block w-24 h-24 overflow-hidden rounded-xl border-2 border-emerald-500 shadow-sm hover:opacity-90 transition-opacity relative group" title="Finished Photo (Proof of Repair)">
+              <img src="<%= report.finished_photo_path %>" alt="Finished Photo" class="w-full h-full object-cover">
+              <span class="absolute bottom-0 inset-x-0 bg-emerald-600 text-white text-[9px] text-center py-0.5 font-bold flex items-center justify-center gap-0.5 shadow-xs">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                Fixed
+              </span>
+            </a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Admin Reply Section (Visible to Reporter) -->
+    <% if (report.admin_reply) { %>
+    <div class="mt-4 bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 flex items-start gap-3 shadow-xs">
+      <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+          <span class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Admin Reply / Resolution Note</span>
+          <% if (report.resolved_at) { %>
+          <span class="text-[11px] text-emerald-700 font-medium">Resolved on <%= new Date(report.resolved_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
+          <% } %>
+        </div>
+        <p class="text-sm text-emerald-900 mt-1 whitespace-pre-wrap leading-relaxed"><%= report.admin_reply %></p>
+      </div>
+    </div>
+    <% } %>
+
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
 
  <% if (locals.pagination && pagination.totalPages > 1) { %>
  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-slate-200 text-xs text-slate-500 bg-white/80 backdrop-blur-xl p-4 rounded-xl shadow-sm">

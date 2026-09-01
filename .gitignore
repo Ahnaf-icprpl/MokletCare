@@ -101,3 +101,7 @@ dist
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Agent skills & config
+.agents/
+skills-lock.json
