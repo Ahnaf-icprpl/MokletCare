@@ -794,12 +794,14 @@
         if (formContainer) {
           formContainer.classList.remove('opacity-60', 'pointer-events-none');
         }
-      } else if (isApproved) {
+      } else if (isApproved || data.status === 'in_progress' || data.status === 'resolved') {
         if (bannerContainer) {
           bannerContainer.classList.remove('hidden');
           bannerContent.className = 'text-xs px-4 py-3 rounded-xl flex items-center gap-2.5 font-medium bg-emerald-50 border border-emerald-200 text-emerald-800';
           bannerIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
-          bannerText.innerHTML = '<strong class="font-bold text-emerald-950">✓ Approved by Admin:</strong> An Administrator has approved this request on the Approval Page. You can proceed with status updates and repair resolution.';
+          bannerText.innerHTML = isApproved
+            ? '<strong class="font-bold text-emerald-950">✓ Approved by Admin:</strong> An Administrator has approved this request on the Approval Page. You can proceed with status updates and repair resolution.'
+            : '<strong class="font-bold text-emerald-950">✓ Active Report:</strong> Report is in progress or completed. Staff can update notes, status, and finished photos.';
         }
         if (gateContainer) gateContainer.classList.add('hidden');
         if (formContainer) {

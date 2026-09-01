@@ -85,12 +85,9 @@ async function ensureAuthenticated(req, res, next) {
       .map(e => e.trim().toLowerCase())
       .filter(Boolean);
 
-    const isAdminEmail = primaryEmail && adminEmails.includes(primaryEmail.toLowerCase());
-
-    if (isAdminEmail) {
-      userRole = 'admin';
-    } else if (!userRole) {
-      userRole = 'reporter';
+    // Fallback: If no role was set in Clerk publicMetadata, check ADMIN_EMAIL or default to reporter
+    if (!userRole) {
+      userRole = isAdminEmail ? 'admin' : 'reporter';
     }
 
     req.user = {
@@ -102,7 +99,7 @@ async function ensureAuthenticated(req, res, next) {
     return next();
   } catch (err) {
     console.error('Error in authentication middleware:', err);
-    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+    if (req.xhr || (req.headers && req.headers.accept && req.headers.accept.includes('application/json'))) {
       return res.status(401).json({ error: 'Authentication failed.' });
     }
     return res.redirect('/login');
@@ -112,7 +109,7 @@ async function ensureAuthenticated(req, res, next) {
 function ensureRole(...allowedRoles) {
   return function(req, res, next) {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      if (req.xhr || (req.headers && req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(403).json({ error: 'Forbidden: Insufficient privileges.' });
       }
       if (req.user && req.user.role === 'admin') {
