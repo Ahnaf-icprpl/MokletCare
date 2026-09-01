@@ -16,7 +16,7 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
     let paramIdx = 1;
 
     if (statusFilter !== 'all') {
-      whereClause = `WHERE status = $${paramIdx++}`;
+      whereClause = `WHERE pr.status = $${paramIdx++}`;
       params.push(statusFilter);
     }
 
@@ -24,12 +24,22 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
     const pageParam = paramIdx;
     const offsetParam = paramIdx + 1;
 
-    // Get paginated requests
+    // Get paginated requests with linked report details
     const requestsQuery = `
-      SELECT *, COUNT(*) OVER()::int as full_count
-      FROM photo_requests
+      SELECT pr.*, 
+             r.room_location,
+             r.facility_type,
+             r.item_type,
+             r.damage_type,
+             r.urgency_level,
+             r.damage_description as report_damage_description,
+             r.status as report_current_status,
+             r.reporter_name,
+             COUNT(*) OVER()::int as full_count
+      FROM photo_requests pr
+      LEFT JOIN reports r ON r.id = pr.report_id
       ${whereClause}
-      ORDER BY created_at DESC
+      ORDER BY pr.created_at DESC
       LIMIT $${pageParam} OFFSET $${offsetParam}
     `;
 
@@ -79,23 +89,28 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
     const { reportId, photoUrl, photoDescription, recipientType, recipientEmail, message } = req.body;
 
     // Validate inputs
-    if (!reportId || !photoUrl || !recipientType || !recipientEmail) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!reportId) {
+      return res.status(400).json({ error: 'Missing reportId' });
     }
 
-    if (!['admin', 'reporter'].includes(recipientType)) {
+    const recType = recipientType || 'admin';
+    if (!['admin', 'reporter'].includes(recType)) {
       return res.status(400).json({ error: 'Invalid recipient type' });
     }
 
     // Check if report exists
-    const reportResult = await db.query('SELECT id, reporter_email FROM reports WHERE id = $1', [reportId]);
+    const reportResult = await db.query('SELECT id, reporter_email, photo_path, damage_description, room_location FROM reports WHERE id = $1', [reportId]);
     if (reportResult.rows.length === 0) {
       return res.status(404).json({ error: 'Report not found' });
     }
 
-    // Validate recipient email
     const report = reportResult.rows[0];
-    if (recipientType === 'reporter' && recipientEmail !== report.reporter_email) {
+    const recEmail = recType === 'admin' ? 'admin@mokletcare.local' : (recipientEmail || report.reporter_email);
+    const photoToUse = photoUrl || report.photo_path || '';
+    const descToUse = photoDescription || `Approval request for report #${report.id} (${report.room_location})`;
+
+    // Validate recipient email if reporter
+    if (recType === 'reporter' && recEmail !== report.reporter_email) {
       return res.status(400).json({ error: 'Invalid recipient email for reporter' });
     }
 
@@ -114,10 +129,10 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
       staffId,
       staffEmail,
       staffName,
-      recipientType,
-      recipientEmail,
-      photoUrl,
-      photoDescription || '',
+      recType,
+      recEmail,
+      photoToUse,
+      descToUse,
       message || ''
     ]);
 

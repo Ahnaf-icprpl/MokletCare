@@ -148,6 +148,12 @@ function formatOptionText(val, optionMap) {
     .join(' ');
 }
 
+function isHighOrAboveUrgency(urgency) {
+  if (!urgency) return false;
+  const u = String(urgency).toLowerCase().trim();
+  return u === 'high' || u === 'critical' || u === 'severe' || u.includes('tinggi') || u.includes('kritis') || u.includes('darurat') || u.includes('penting');
+}
+
 router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
   try {
     const optionMap = await getOptionLabelMap();
@@ -183,10 +189,13 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async functio
 
     reportParams.push(limit, offset);
     const reportsSql = `
-      SELECT *, COUNT(*) OVER()::int as full_count 
-      FROM reports 
+      SELECT r.*,
+             EXISTS(SELECT 1 FROM photo_requests pr WHERE pr.report_id = r.id AND pr.status = 'approved') as is_approved,
+             EXISTS(SELECT 1 FROM photo_requests pr WHERE pr.report_id = r.id AND pr.status = 'pending') as has_pending_approval,
+             COUNT(*) OVER()::int as full_count 
+      FROM reports r
       ${reportWhereClause} 
-      ORDER BY created_at DESC 
+      ORDER BY r.created_at DESC 
       LIMIT $${paramIdx++} OFFSET $${paramIdx++}
     `;
 
@@ -273,6 +282,7 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async functio
       success: req.query.success || null,
       optionMap,
       formatOptionText,
+      isHighOrAboveUrgency,
       clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
     });
   } catch (err) {
@@ -296,8 +306,8 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
     const cleanFinishedPhoto = typeof finished_photo_path === 'string' ? finished_photo_path.trim() : null;
     const cleanAdminReply = typeof admin_reply === 'string' ? admin_reply.trim() : null;
 
-    // Fetch existing report to know current status if not provided
-    const reportRes = await db.query('SELECT status, resolved_at, finished_photo_path, admin_reply FROM reports WHERE id = $1', [id]);
+    // Fetch existing report to know current status, urgency, and reply if not provided
+    const reportRes = await db.query('SELECT status, urgency_level, resolved_at, finished_photo_path, admin_reply FROM reports WHERE id = $1', [id]);
     if (reportRes.rows.length === 0) {
       if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(404).json({ error: 'Report not found.' });
@@ -307,6 +317,26 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
 
     const currentReport = reportRes.rows[0];
     const newStatus = status || currentReport.status || 'pending';
+
+    // Business flow enforcement: Staff must get Admin approval before proceeding (in_progress / resolved),
+    // EXCEPT for reports with High and above urgency
+    if (newStatus === 'in_progress' || newStatus === 'resolved') {
+      const isHigh = isHighOrAboveUrgency(currentReport.urgency_level);
+      if (!isHigh) {
+        const approvedRes = await db.query(
+          "SELECT 1 FROM photo_requests WHERE report_id = $1 AND status = 'approved' LIMIT 1",
+          [id]
+        );
+        if (approvedRes.rows.length === 0) {
+          const errMsg = 'Admin approval is required before proceeding with Low or Medium urgency reports. Please request approval from Admin first.';
+          if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+            return res.status(403).json({ error: errMsg });
+          }
+          return res.redirect('/dashboard?error=' + encodeURIComponent(errMsg));
+        }
+      }
+    }
+
     const newFinishedPhoto = (finished_photo_path !== undefined) ? (cleanFinishedPhoto || null) : currentReport.finished_photo_path;
     const newAdminReply = (admin_reply !== undefined) ? (cleanAdminReply || null) : currentReport.admin_reply;
     const newResolvedAt = (newStatus === 'resolved') 

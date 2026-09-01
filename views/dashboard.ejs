@@ -227,7 +227,9 @@
                 data-admin-reply="<%= (report.admin_reply || '').replace(/"/g, '&quot;') %>"
                 data-resolved-at="<%= report.resolved_at || '' %>"
                 data-status="<%= report.status %>"
-                data-created-at="<%= report.created_at %>">
+                data-created-at="<%= report.created_at %>"
+                data-is-approved="<%= report.is_approved ? 'true' : 'false' %>"
+                data-has-pending-approval="<%= report.has_pending_approval ? 'true' : 'false' %>">
               <td class="py-4 px-4" onclick="event.stopPropagation()">
                 <div class="flex items-center gap-1.5">
                   <a href="<%= report.photo_path %>" target="_blank" rel="noopener noreferrer" title="Damage Photo">
@@ -257,13 +259,31 @@
                 <%= report.room_location %>
               </td>
               <td class="py-4 px-4">
-                <% if (report.urgency_level === 'high' || report.urgency_level === 'critical' || report.urgency_level === 'severe' || report.urgency_level === 'Darurat / Penting') { %>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap"><%= urgencyLabel %></span>
-                <% } else if (report.urgency_level === 'medium' || report.urgency_level === 'Sedang') { %>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 whitespace-nowrap"><%= urgencyLabel %></span>
-                <% } else { %>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap"><%= urgencyLabel %></span>
-                <% } %>
+                <div class="space-y-1">
+                  <% const isHighUrgency = isHighOrAboveUrgency(report.urgency_level); %>
+                  <% if (isHighUrgency) { %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                    <div class="text-[10px] font-bold text-emerald-700 flex items-center gap-0.5">⚡ Direct Proceed</div>
+                  <% } else if (report.urgency_level === 'medium' || report.urgency_level === 'Sedang') { %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                    <% if (report.is_approved) { %>
+                      <div class="text-[10px] font-bold text-emerald-700 flex items-center gap-0.5">✓ Admin Approved</div>
+                    <% } else if (report.has_pending_approval) { %>
+                      <div class="text-[10px] font-bold text-amber-600 flex items-center gap-0.5">⏳ Approval Pending</div>
+                    <% } else { %>
+                      <div class="text-[10px] font-medium text-slate-400">Needs Approval</div>
+                    <% } %>
+                  <% } else { %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap"><%= urgencyLabel %></span>
+                    <% if (report.is_approved) { %>
+                      <div class="text-[10px] font-bold text-emerald-700 flex items-center gap-0.5">✓ Admin Approved</div>
+                    <% } else if (report.has_pending_approval) { %>
+                      <div class="text-[10px] font-bold text-amber-600 flex items-center gap-0.5">⏳ Approval Pending</div>
+                    <% } else { %>
+                      <div class="text-[10px] font-medium text-slate-400">Needs Approval</div>
+                    <% } %>
+                  <% } %>
+                </div>
               </td>
               <td class="py-4 px-4">
                 <% if (report.status === 'pending') { %>
@@ -538,9 +558,39 @@
           <p class="text-sm text-emerald-800 whitespace-pre-wrap leading-relaxed" id="modal-existing-reply-text"></p>
         </div>
 
+        <!-- Approval Flow Status Banner -->
+        <div id="modal-approval-banner" class="hidden">
+          <div id="modal-approval-banner-content" class="text-xs px-4 py-3 rounded-xl flex items-center gap-2.5 font-medium">
+            <span id="modal-approval-banner-icon"></span>
+            <span id="modal-approval-banner-text" class="leading-relaxed"></span>
+          </div>
+        </div>
+
+        <!-- Admin Approval Required Gate (For Low/Medium urgency when not yet approved) -->
+        <div id="modal-approval-gate" class="hidden bg-amber-50/90 border border-amber-200 rounded-2xl p-5 space-y-3 shadow-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-sm font-bold text-amber-900">Admin Approval Required to Proceed</h4>
+              <p class="text-xs text-amber-700 mt-1 leading-relaxed">
+                Staff must receive approval from an Administrator on the Approval Page before changing status or proceeding with work on Low/Medium urgency reports.
+              </p>
+            </div>
+          </div>
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-amber-200/70">
+            <div id="modal-approval-gate-note" class="text-xs font-semibold text-amber-800"></div>
+            <button type="button" id="modal-approval-gate-btn" onclick="openPhotoRequestModal()" class="w-full sm:w-auto text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2.5 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+              <span id="modal-approval-gate-btn-text">Request Admin Approval</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Admin Resolution & Reply Form Section -->
         <% if (user.role === 'admin' || user.role === 'staff') { %>
-        <div class="bg-slate-50/90 p-5 rounded-2xl border border-slate-200 space-y-4">
+        <div id="modal-form-container" class="bg-slate-50/90 p-5 rounded-2xl border border-slate-200 space-y-4 transition-opacity">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <div class="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">
@@ -821,12 +871,68 @@
       // Urgency Badge
       const urgencyBadge = document.getElementById('modal-urgency-badge');
       urgencyBadge.textContent = data.urgencyLabel;
-      if (data.urgencyLevel === 'high' || data.urgencyLevel === 'critical' || data.urgencyLevel === 'severe' || data.urgencyLevel === 'Darurat / Penting') {
+      const isHighUrgency = ['high', 'critical', 'severe', 'Darurat / Penting'].includes(data.urgencyLevel) || 
+        (data.urgencyLabel && (data.urgencyLabel.toLowerCase().includes('high') || data.urgencyLabel.toLowerCase().includes('critical') || data.urgencyLabel.toLowerCase().includes('tinggi') || data.urgencyLabel.toLowerCase().includes('kritis')));
+
+      if (isHighUrgency) {
         urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap';
       } else if (data.urgencyLevel === 'medium' || data.urgencyLevel === 'Sedang') {
         urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 whitespace-nowrap';
       } else {
         urgencyBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap';
+      }
+
+      // Approval Flow Checks: High & Above can proceed directly; Low/Medium require admin approval
+      const isApproved = data.isApproved === 'true';
+      const hasPendingApproval = data.hasPendingApproval === 'true';
+      const canProceed = isHighUrgency || isApproved || data.status === 'in_progress' || data.status === 'resolved';
+
+      const bannerContainer = document.getElementById('modal-approval-banner');
+      const bannerContent = document.getElementById('modal-approval-banner-content');
+      const bannerIcon = document.getElementById('modal-approval-banner-icon');
+      const bannerText = document.getElementById('modal-approval-banner-text');
+      const gateContainer = document.getElementById('modal-approval-gate');
+      const gateNote = document.getElementById('modal-approval-gate-note');
+      const gateBtnText = document.getElementById('modal-approval-gate-btn-text');
+      const formContainer = document.getElementById('modal-form-container');
+
+      if (isHighUrgentOrAbove(data.urgencyLevel, data.urgencyLabel)) {
+        if (bannerContainer) {
+          bannerContainer.classList.remove('hidden');
+          bannerContent.className = 'text-xs px-4 py-3 rounded-xl flex items-center gap-2.5 font-medium bg-emerald-50 border border-emerald-200 text-emerald-800';
+          bannerIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>';
+          bannerText.innerHTML = '<strong class="font-bold text-emerald-950">⚡ Direct Proceed (High Urgency):</strong> This report is marked high/critical priority and does not require prior Admin approval.';
+        }
+        if (gateContainer) gateContainer.classList.add('hidden');
+        if (formContainer) {
+          formContainer.classList.remove('opacity-60', 'pointer-events-none');
+        }
+      } else if (isApproved) {
+        if (bannerContainer) {
+          bannerContainer.classList.remove('hidden');
+          bannerContent.className = 'text-xs px-4 py-3 rounded-xl flex items-center gap-2.5 font-medium bg-emerald-50 border border-emerald-200 text-emerald-800';
+          bannerIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+          bannerText.innerHTML = '<strong class="font-bold text-emerald-950">✓ Approved by Admin:</strong> An Administrator has approved this request on the Approval Page. You can proceed with status updates and repair resolution.';
+        }
+        if (gateContainer) gateContainer.classList.add('hidden');
+        if (formContainer) {
+          formContainer.classList.remove('opacity-60', 'pointer-events-none');
+        }
+      } else {
+        if (bannerContainer) bannerContainer.classList.add('hidden');
+        if (gateContainer) {
+          gateContainer.classList.remove('hidden');
+          if (hasPendingApproval) {
+            gateNote.innerHTML = '<span class="text-amber-800">⏳ Approval request is <strong>Pending Review</strong> on the Admin Approval Page.</span>';
+            if (gateBtnText) gateBtnText.textContent = 'Resend Request to Admin';
+          } else {
+            gateNote.innerHTML = '<span class="text-amber-800">⚠️ Staff must request and receive Admin approval before proceeding.</span>';
+            if (gateBtnText) gateBtnText.textContent = 'Request Admin Approval';
+          }
+        }
+        if (formContainer) {
+          formContainer.classList.add('opacity-60', 'pointer-events-none');
+        }
       }
 
       // Populate Admin Action Form
@@ -858,6 +964,12 @@
       }
 
       document.getElementById('report-modal').classList.remove('hidden');
+    }
+
+    function isHighUrgentOrAbove(level, label) {
+      if (!level && !label) return false;
+      const str = ((level || '') + ' ' + (label || '')).toLowerCase();
+      return str.includes('high') || str.includes('critical') || str.includes('severe') || str.includes('tinggi') || str.includes('kritis') || str.includes('darurat') || str.includes('penting');
     }
 
     function removeFinishedPhoto(e) {
