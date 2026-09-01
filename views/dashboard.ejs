@@ -31,6 +31,11 @@
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        <% if (user.role === 'admin') { %>
+          <a href="/admin/permissions" class="text-xs bg-yellow-50 text-yellow-600 hover:bg-yellow-100 px-3.5 py-2 rounded-lg transition-colors border border-yellow-200 font-medium text-center">
+            Photo Permissions
+          </a>
+        <% } %>
         <a href="/" class="text-xs bg-white text-slate-600 hover:bg-slate-50 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">
           Report Portal
         </a>
@@ -491,6 +496,7 @@
 
       <!-- Modal Footer Status Update Action -->
       <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <% if (user.role === 'admin') { %>
         <form id="modal-status-form" method="POST" class="flex items-center gap-3 w-full sm:w-auto">
           <label for="modal-status-select" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Update Status:</label>
           <select id="modal-status-select" name="status" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm">
@@ -503,12 +509,62 @@
             Save Status
           </button>
         </form>
+        <% } else if (user.role === 'staff') { %>
+        <button onclick="openPhotoRequestModal()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">
+          Send Photo to Admin/Reporter
+        </button>
+        <% } %>
 
         <button onclick="closeReportModal()" class="text-xs bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-medium px-4 py-2 rounded-lg transition-colors w-full sm:w-auto text-center">
           Close
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Photo Request Modal (for Staff) -->
+  <div id="photo-request-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <h3 class="text-lg font-bold text-slate-900">Send Photo Request</h3>
+        <button onclick="closePhotoRequestModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/50 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2 block">Send to</label>
+          <select id="photo-recipient-type" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="admin">Admin</option>
+            <option value="reporter">Reporter</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2 block">Photo Description</label>
+          <textarea id="photo-description" placeholder="Describe the photo or additional details..." class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2 block">Message (Optional)</label>
+          <textarea id="photo-message" placeholder="Add a message..." class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p class="text-xs text-blue-700"><strong>Note:</strong> Photo URL will be taken from the report details shown above.</p>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button onclick="sendPhotoRequest()" class="flex-1 text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors">
+            Send Request
+          </button>
+          <button onclick="closePhotoRequestModal()" class="flex-1 text-xs bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-medium px-4 py-2 rounded-lg transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -522,8 +578,80 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
   <script>
+    let currentReportData = null;
+
+    function openPhotoRequestModal() {
+      currentReportData = document.getElementById('report-modal').dataset;
+      document.getElementById('photo-request-modal').classList.remove('hidden');
+    }
+
+    function closePhotoRequestModal() {
+      document.getElementById('photo-request-modal').classList.add('hidden');
+      document.getElementById('photo-description').value = '';
+      document.getElementById('photo-message').value = '';
+      currentReportData = null;
+    }
+
+    async function sendPhotoRequest() {
+      if (!currentReportData) {
+        alert('No report data found');
+        return;
+      }
+
+      const recipientType = document.getElementById('photo-recipient-type').value;
+      const photoDescription = document.getElementById('photo-description').value.trim();
+      const message = document.getElementById('photo-message').value.trim();
+
+      if (!photoDescription) {
+        alert('Please enter a photo description');
+        return;
+      }
+
+      try {
+        // Get reporter email from the current report modal
+        const reporterEmail = document.getElementById('modal-reporter-email').textContent.trim();
+        let recipientEmail = reporterEmail;
+
+        if (recipientType === 'admin') {
+          // For admin, use a generic admin email or prompt
+          recipientEmail = 'admin@mokletcare.local';
+        }
+
+        const response = await fetch('/api/photo-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            reportId: parseInt(currentReportData.id),
+            photoUrl: currentReportData.photoPath,
+            photoDescription,
+            recipientType,
+            recipientEmail,
+            message
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Photo request sent successfully!');
+          closePhotoRequestModal();
+        } else {
+          alert('Error: ' + (result.error || 'Failed to send request'));
+        }
+      } catch (err) {
+        console.error('Error sending photo request:', err);
+        alert('Error sending photo request. Please try again.');
+      }
+    }
+
     function openReportModal(row) {
       const data = row.dataset;
+      // Store report data globally for photo request
+      document.getElementById('report-modal').dataset.id = data.id;
+      document.getElementById('report-modal').dataset.photoPath = data.photoPath;
+      
       document.getElementById('modal-title').textContent = `Report Details #${data.id}`;
       document.getElementById('modal-location').textContent = data.roomLocation;
       document.getElementById('modal-item').textContent = data.itemLabel;

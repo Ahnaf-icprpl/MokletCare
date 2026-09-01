@@ -9,6 +9,7 @@ const { clerkMiddleware } = require('@clerk/express');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminPermissionsRouter = require('./routes/admin-permissions');
 
 var app = express();
 app.set('trust proxy', 1);
@@ -43,6 +44,7 @@ app.use(clerkMiddleware({
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/', adminPermissionsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
