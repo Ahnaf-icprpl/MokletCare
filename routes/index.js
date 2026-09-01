@@ -306,19 +306,19 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
     const newStatus = status || currentReport.status || 'pending';
     const newFinishedPhoto = (finished_photo_path !== undefined) ? (cleanFinishedPhoto || null) : currentReport.finished_photo_path;
     const newAdminReply = (admin_reply !== undefined) ? (cleanAdminReply || null) : currentReport.admin_reply;
+    const newResolvedAt = (newStatus === 'resolved') 
+      ? (currentReport.resolved_at || new Date()) 
+      : currentReport.resolved_at;
 
     await db.query(`
       UPDATE reports 
-      SET status = $1, 
+      SET status = $1::report_status, 
           finished_photo_path = $2, 
           admin_reply = $3,
-          resolved_at = CASE 
-            WHEN $1 = 'resolved' THEN COALESCE(resolved_at, NOW()) 
-            ELSE resolved_at 
-          END,
+          resolved_at = $4,
           updated_at = NOW() 
-      WHERE id = $4
-    `, [newStatus, newFinishedPhoto, newAdminReply, id]);
+      WHERE id = $5
+    `, [newStatus, newFinishedPhoto, newAdminReply, newResolvedAt, id]);
 
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
       return res.json({ success: true, message: 'Report reply and status updated successfully.' });
