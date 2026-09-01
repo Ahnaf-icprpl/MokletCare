@@ -9,7 +9,7 @@ router.get(['/admin/approval', '/approval', '/admin/approvals', '/admin/permissi
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.max(1, Math.min(100, parseInt(req.query.limit, 10) || 10));
     const offset = (page - 1) * limit;
-    const statusFilter = req.query.status || 'all';
+    const statusFilter = req.query.status ? req.query.status.trim() : 'pending';
 
     let whereClause = '';
     let params = [];
