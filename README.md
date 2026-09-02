@@ -355,8 +355,8 @@ docker run -d \
 | Name | Role | GitHub |
 | :--- | :--- | :--- |
 | **Dilshad Ahnaf** | Backend Developer | [@Ahnaf-icprpl](https://github.com/Ahnaf-icprpl) |
-| **Rafale Alfardean Herawan** | Frontend Developer | [@RafaleAlfardean](https://github.com/RafaleAlfardean) |
-| **Baruna Aryatama** | UI/UX Designer | [@BarunaAryatama](https://github.com/BarunaAryatama) |
+| **Rafale Alfardean Herawan** | Frontend Developer | [@RaffFidela](https://github.com/RaffFidela) |
+| **Baruna Aryatama** | UI/UX Designer | — |
 
 ---
 
