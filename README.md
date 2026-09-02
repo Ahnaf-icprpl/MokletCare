@@ -13,6 +13,10 @@
 [![Cloudinary](https://img.shields.io/badge/Storage-Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
+<br/><br/>
+
+<img src="docs/screenshots/dashboard-desktop.png" alt="MokletCare Hero Preview" width="880" />
+
 </div>
 
 ---
@@ -20,6 +24,7 @@
 ## 📌 Table of Contents
 
 - [Overview](#-overview)
+- [Application Preview](#-application-preview)
 - [Key Features](#-key-features)
   - [1. Student & Reporter Portal](#1-student--reporter-portal)
   - [2. Staff Maintenance Dashboard](#2-staff-maintenance-dashboard)
@@ -58,6 +63,38 @@ Students and staff can quickly capture and submit facility issues (e.g., broken 
   - **Maintenance Technicians (Staff)**: Centralized workspace to monitor tickets, prioritize repairs, upload completion proof, and interact with reporters.
   - **School Administration (Admin)**: Complete operational oversight, approval management for low/medium urgency requests, and role-based access delegation.
 - 💡 **Value Proposition**: Replaces fragmented group chats and manual paperwork with structured triage, real-time status visibility, Cloudinary-powered visual verification, and enterprise-grade Clerk RBAC governance.
+
+---
+
+## 📸 Application Preview
+
+### 🛠️ 1. Staff Maintenance Dashboard & Inspection Modal
+Centralized operations center for maintenance staff to inspect facility issues, track KPI statistics, filter reports, and update statuses with completion notes.
+
+| Desktop Dashboard View | Report Inspection & Action Modal | Mobile Dashboard View |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/dashboard-desktop.png" width="100%" alt="Dashboard Desktop" /> | <img src="docs/screenshots/report-details-modal.png" width="100%" alt="Report Details Modal" /> | <img src="docs/screenshots/dashboard-mobile.png" width="100%" alt="Dashboard Mobile" /> |
+| *Queue management with real-time KPI metrics* | *Photo proof inspection & status update* | *Responsive on-the-go maintenance view* |
+
+<br/>
+
+### 📝 2. Student & Reporter Incident Reporting Form
+Clean and accessible interface for students, teachers, and school staff to report damaged items with photo uploads.
+
+| Desktop Reporting Interface | Mobile Reporting Interface |
+| :---: | :---: |
+| <img src="docs/screenshots/report-form-desktop.png" width="100%" alt="Reporter Desktop" /> | <img src="docs/screenshots/report-form-mobile.png" width="55%" alt="Reporter Mobile" /> |
+| *Full incident form with location & dynamic item selectors* | *Mobile-first responsive submission form* |
+
+<br/>
+
+### 🔐 3. Authentication & Security Flow (Powered by Clerk)
+Seamless and secure authentication flow with OAuth SSO, email password login, and 6-digit OTP email verification.
+
+| Sign In Portal | Account Registration | Email OTP Verification |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/auth-signin.png" width="100%" alt="Clerk Sign-In" /> | <img src="docs/screenshots/auth-signup.png" width="100%" alt="Clerk Sign-Up" /> | <img src="docs/screenshots/auth-email-verification.png" width="100%" alt="Clerk OTP Verification" /> |
+| *Single Sign-On (Google/Apple) & email login* | *User registration with client validation* | *Secure 6-digit email verification code* |
 
 ---
 
