@@ -84,6 +84,7 @@ async function ensureAuthenticated(req, res, next) {
       .split(',')
       .map(e => e.trim().toLowerCase())
       .filter(Boolean);
+    const isAdminEmail = primaryEmail && adminEmails.includes(primaryEmail.toLowerCase());
 
     // Fallback: If no role was set in Clerk publicMetadata, check ADMIN_EMAIL or default to reporter
     if (!userRole) {
