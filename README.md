@@ -13,7 +13,9 @@
 [![Cloudinary](https://img.shields.io/badge/Storage-Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-<br/><br/>
+**Submission for ITECHNO CUP 2026 — Web Development Competition**
+
+<br/>
 
 <img src="docs/screenshots/dashboard-desktop.png" alt="MokletCare Hero Preview" width="880" />
 
@@ -21,52 +23,92 @@
 
 ---
 
-## 📌 Table of Contents
+## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Application Preview](#-application-preview)
-- [Key Features](#-key-features)
-  - [1. Student & Reporter Portal](#1-student--reporter-portal)
-  - [2. Staff Maintenance Dashboard](#2-staff-maintenance-dashboard)
-  - [3. Administrator & Governance Panel](#3-administrator--governance-panel)
-  - [4. Security & Performance](#4-security--performance)
-- [Role-Based Access Control (RBAC)](#-role-based-access-control-rbac)
-- [Tech Stack](#-tech-stack)
-- [Project Architecture & Directory Structure](#-project-architecture--directory-structure)
-- [Database Schema & Migrations](#-database-schema--migrations)
-- [Getting Started](#-getting-started)
+- [👥 Development Team](#-development-team)
+- [📖 Application Overview](#-application-overview)
+  - [Background](#background)
+  - [Proposed Solution](#proposed-solution)
+  - [Project Objectives & Value Proposition](#project-objectives--value-proposition)
+- [✨ Main Features & Key Advantages](#-main-features--key-advantages)
+  - [Core Features Matrix](#core-features-matrix)
+  - [Additional Capabilities](#additional-capabilities)
+- [📸 Application Preview & Screenshots](#-application-preview--screenshots)
+- [🛠️ Technology Used](#️-technology-used)
+  - [Tech Stack Overview](#tech-stack-overview)
+  - [Technology Rationale](#technology-rationale)
+  - [Core Dependencies](#core-dependencies)
+- [🏗️ System Architecture & Database Schema](#️-system-architecture--database-schema)
+  - [System Workflow Architecture](#system-workflow-architecture)
+  - [Database Schema & Data Model](#database-schema--data-model)
+  - [Directory Structure](#directory-structure)
+- [⚙️ Installation Guide](#️-installation-guide)
   - [Prerequisites](#prerequisites)
-  - [Installation Steps](#installation-steps)
-  - [Environment Variables](#environment-variables)
-  - [Running Database Migrations](#running-database-migrations)
-  - [Starting the Application](#starting-the-application)
-- [Available Scripts](#-available-scripts)
-- [Route & Endpoint Reference](#-route--endpoint-reference)
-- [Docker Deployment](#-docker-deployment)
-- [Development Team](#-development-team)
-- [Contributing](#-contributing)
-- [License](#-license)
+  - [Step-by-Step Installation](#step-by-step-installation)
+  - [Environment Configuration](#environment-configuration)
+  - [Database Migrations](#database-migrations)
+- [🚀 How to Use & Commands](#-how-to-use--commands)
+  - [CLI Commands](#cli-commands)
+  - [User & Role Workflow Guide](#user--role-workflow-guide)
+- [🛣️ API & Route Reference](#️-api--route-reference)
+- [🐳 Docker Deployment](#-docker-deployment)
+- [📄 License & Acknowledgments](#-license--acknowledgments)
 
 ---
 
-## 📖 Overview
+## 👥 Development Team
 
-**MokletCare** is an end-to-end web platform engineered to modernize facility management, damage reporting, and repair tracking in educational institutions. 
+| Name | Role | GitHub Profile |
+| :--- | :--- | :--- |
+| **Dilshad Ahnaf** | Backend Developer & System Architect | [@Ahnaf-icprpl](https://github.com/Ahnaf-icprpl) |
+| **Rafale Alfardean Herawan** | Frontend Developer | [@RaffFidela](https://github.com/RaffFidela) |
+| **Baruna Aryatama** | UI/UX Designer | — |
 
-Students and staff can quickly capture and submit facility issues (e.g., broken projectors, damaged furniture, electrical faults) with attached photographic evidence. Dedicated maintenance staff can track, filter, manage, and resolve tickets, while administrators supervise workflows, grant user privileges, and approve repair requests.
+---
 
-### 🎯 Project Objectives & Value Proposition
+## 📖 Application Overview
 
-- 🎯 **Primary Objective**: Provide a centralized, transparent, and responsive digital ecosystem for SMK Telkom Malang that accelerates the lifecycle of school facility maintenance—from incident reporting to administrative review and verified resolution.
+### Background
+Educational institutions—particularly technology-focused vocational schools like **SMK Telkom Malang**—rely heavily on hundreds of high-utilization hardware assets, computer labs, air conditioning units, network equipment, and classroom infrastructure. In traditional setups:
+1. **Reporting Bottlenecks**: Students and teachers report damages through unstructured WhatsApp messages, word of mouth, or physical paper forms, leading to lost tickets and forgotten repairs.
+2. **Lack of Transparency**: Reporters have zero visibility into whether their tickets were received, assigned, or fixed.
+3. **Budget & Authorization Confusion**: Technicians often lack clear guidelines on whether a minor vs. major repair requires administrative approval before procurement.
+
+### Proposed Solution
+**MokletCare** resolves these challenges by providing a unified, centralized, and transparent school facility incident management platform. With role-based workflows for **Reporters (Students/Teachers)**, **Maintenance Staff (Technicians)**, and **Administrators (Sarpras/Management)**, the system digitizes the entire lifecycle of facility repairs with photographic evidence, real-time status notifications, and governance controls.
+
+### Project Objectives & Value Proposition
+- 🎯 **Primary Objective**: Streamline and accelerate school facility maintenance from incident reporting to verified physical resolution with zero lost reports and complete auditability.
 - 📊 **Target Users**:
-  - **Students & Faculty (Reporters)**: Quick reporting of damaged, broken, or unsafe school facilities with photo proof and live status updates.
-  - **Maintenance Technicians (Staff)**: Centralized workspace to monitor tickets, prioritize repairs, upload completion proof, and interact with reporters.
-  - **School Administration (Admin)**: Complete operational oversight, approval management for low/medium urgency requests, and role-based access delegation.
-- 💡 **Value Proposition**: Replaces fragmented group chats and manual paperwork with structured triage, real-time status visibility, Cloudinary-powered visual verification, and enterprise-grade Clerk RBAC governance.
+  - **Students & Teachers (Reporters)**: Fast reporting with photo capture, categorized damaged items, and live status progress tracking.
+  - **Maintenance Staff (Technicians)**: Priority-based work queue with quick filtering, urgent issue fast-tracking, admin verification requests, and completion photo uploads.
+  - **School Administrators (Sarpras / Management)**: Strategic oversight, approval authorization for maintenance requests, and dynamic user permission delegation.
+- 💡 **Value Proposition**: Unlike generic ticketing tools or messy chat groups, MokletCare is purpose-built for school infrastructure with built-in urgency classification, dual-tier administrative approval gates, Cloudinary-powered visual audits, and secure SSO authentication via Clerk.
 
 ---
 
-## 📸 Application Preview
+## ✨ Main Features & Key Advantages
+
+### Core Features Matrix
+
+| Feature | Description | Key Advantage & Uniqueness |
+| :--- | :--- | :--- |
+| **Dynamic Incident Reporting** | Interactive reporting form with database-backed cascading dropdowns for rooms, facilities, items (with custom "other" specify option), damage types, and urgency levels. | Prevents vague reports; captures precise asset metadata and exact physical room locations. |
+| **Visual Media Evidence** | Seamless image upload to Cloudinary with automatic format validation, 5MB limit, and real-time frontend image preview. | Provides indisputable photo evidence of damage before work begins and photographic proof of completion. |
+| **Live Status Tracker (`/history`)** | Submitters view a paginated history of all personal reports with real-time status badges (`pending`, `in_progress`, `resolved`, `rejected`), staff notes, and completion photos. | Eliminates repetitive inquiries and ensures 100% transparency between students and maintenance teams. |
+| **Staff Triage & Operations Dashboard (`/dashboard`)** | Centralized maintenance queue featuring real-time KPI metric counters, status filters, and multi-field keyword search across rooms, reporters, and descriptions. | Technicians can sort, prioritize, and manage hundreds of maintenance requests simultaneously. |
+| **Two-Tier Approval Governance** | High/Critical urgency reports are fast-tracked immediately; Low/Medium urgency tickets require administrative approval before technicians can start work. | Prevents unauthorized procurement or non-budgeted maintenance while ensuring life-safety issues are resolved immediately. |
+| **Admin Approvals & RBAC Delegation (`/admin/approval`)** | Administrative command center to review staff photo requests with interactive statistical breakdowns, and assign user roles (`reporter`, `staff`, `admin`) via Clerk. | Granular control over permissions without needing direct database access or manual SQL queries. |
+
+### Additional Capabilities
+- 🛡️ **Multi-Tier Rate Limiting**: Global DDoS protection (5000 req/15min) paired with dedicated per-user upload (100/hr) and report creation (100/hr) throttling.
+- ⚡ **High-Performance Memory Caching**: 5-minute TTL caching for Clerk user profiles and 10-minute TTL caching for dropdown taxonomies to reduce database and API overhead.
+- 🔒 **SQL Injection Immunity**: 100% parameterized SQL queries via PostgreSQL client connection pool.
+- 📱 **Mobile-First Responsive Layout**: Built with Tailwind CSS v4, perfectly optimized for both desktop monitors and student mobile devices.
+
+---
+
+## 📸 Application Preview & Screenshots
 
 ### 🛠️ 1. Staff Maintenance Dashboard & Inspection Modal
 Centralized operations center for maintenance staff to inspect facility issues, track KPI statistics, filter reports, and update statuses with completion notes.
@@ -98,79 +140,197 @@ Seamless and secure authentication flow with OAuth SSO, email password login, an
 
 ---
 
-## ✨ Key Features
+## 🛠️ Technology Used
 
-### 1. Student & Reporter Portal
-- **Intuitive Reporting Flow**: Dynamic dropdowns populated from the database for room locations, facility categories, damaged items (with custom specify option), damage types, and urgency levels.
-- **Media Upload**: Direct image uploads to Cloudinary with real-time thumbnail previews and file validations (JPEG, PNG, WebP up to 5MB).
-- **Personal Report History (`/history`)**: Paginated tracking table showing ticket progression (`pending` 🟡, `in_progress` 🔵, `resolved` 🟢, `rejected` 🔴), along with official staff replies and repair completion photos.
+### Tech Stack Overview
 
-### 2. Staff Maintenance Dashboard (`/dashboard`)
-- **Centralized Work Queue**: View all incoming facility reports with quick-status filters (Pending, In Progress, Resolved, Rejected, or All Unresolved) and keyword search.
-- **KPI Metrics**: Real-time statistical counters for total, pending, in-progress, resolved, and rejected reports.
-- **Workflow Governance**:
-  - High and Critical urgency reports can be acted upon immediately.
-  - Low and Medium urgency reports require Admin authorization before transitioning to `in_progress` or `resolved`.
-- **Ticket Actions**: Send photo approval requests to Admin, update repair status, write official replies to reporters, and attach completion proof images.
+#### Frontend
+```text
+Rendering Engine : EJS (Embedded JavaScript Templates)
+Styling Engine   : Tailwind CSS v4 (@tailwindcss/cli)
+Icons & Assets   : Heroicons / Custom SVG UI Components
+Client Scripting : Vanilla JavaScript (Fetch API, DOM manipulation)
+```
 
-### 3. Administrator & Governance Panel (`/admin/approval`)
-- **Photo & Request Approvals**: Centralized queue to approve or decline staff maintenance and verification requests, complete with visual breakdown charts.
-- **User Permissions & RBAC Management**:
-  - Live query integration with Clerk Backend API.
-  - Paginated user list with email/name search.
-  - Dynamic role promotion and demotion (`reporter`, `staff`, `admin`) with synchronized metadata updates and instant cache invalidation.
+#### Backend
+```text
+Runtime          : Node.js (v18+ LTS / v20 / v22)
+Web Framework    : Express.js 4.22
+Database Driver  : node-postgres (pg v8.22 connection pool)
+Authentication   : Clerk Express SDK (@clerk/express) & JWT session claims
+File Processing  : Multer & multer-storage-cloudinary
+Security Layers  : express-rate-limit, cookie-parser, trust-proxy handling
+```
 
-### 4. Security & Performance
-- **Modern Authentication**: Powered by Clerk with session JWT verification, SSO/OAuth integration, and secure cookie handling.
-- **Smart Caching**: In-memory caching for Clerk user profiles (5 min TTL) and dropdown options (10 min TTL) to maximize throughput and minimize API latency.
-- **Multi-tiered Rate Limiting**:
-  - Global limiter: 5,000 requests per 15 minutes.
-  - Upload limiter: 100 uploads per hour per user.
-  - Report submission limiter: 100 reports per hour per user.
-- **SQL Injection Prevention**: Parameterized queries across all database interactions using `pg` connection pooling.
+#### Storage & Infrastructure
+```text
+Relational DB    : PostgreSQL 14+ (Local, Neon Serverless, or Supabase)
+Media Storage    : Cloudinary Cloud CDN
+Containerization : Docker (Alpine Linux Node 22)
+```
 
 ---
 
-## 👥 Role-Based Access Control (RBAC)
+### Technology Rationale
 
-| Feature / Action | Reporter (`reporter`) | Staff (`staff`) | Admin (`admin`) |
-| :--- | :---: | :---: | :---: |
-| Submit New Facility Report | ✅ | ✅ | 🔄 *(Redirects to Admin)* |
-| View Own Report History | ✅ | ✅ | 🔄 *(Redirects to Admin)* |
-| View Maintenance Dashboard | ❌ | ✅ | ❌ |
-| Update Report Status & Reply | ❌ | ✅ | ❌ |
-| Request Admin Photo Approval | ❌ | ✅ | ❌ |
-| Approve / Decline Requests | ❌ | ❌ | ✅ |
-| Manage User Roles & Permissions | ❌ | ❌ | ✅ |
-
----
-
-## 🛠️ Tech Stack
-
-- **Runtime & Framework**: [Node.js](https://nodejs.org/) (v18+) & [Express.js](https://expressjs.com/)
-- **Authentication**: [@clerk/express](https://clerk.com/docs)
-- **Database**: [PostgreSQL](https://www.postgresql.org/) with [`pg`](https://node-postgres.com/) connection pooling
-- **Cloud Media Storage**: [Cloudinary](https://cloudinary.com/) & [`multer-storage-cloudinary`](https://github.com/affanshahid/multer-storage-cloudinary)
-- **Styling & UI**: [Tailwind CSS v4](https://tailwindcss.com/) & [EJS Templating](https://ejs.co/)
-- **Security & Utilities**: `express-rate-limit`, `cookie-parser`, `dotenv`, `morgan`
-- **Containerization**: [Docker](https://www.docker.com/) (Node 22 Alpine)
+| Technology | Why It Was Chosen |
+| :--- | :--- |
+| **Node.js & Express.js** | Lightweight, event-driven I/O model capable of handling high concurrent traffic with minimal resource consumption. |
+| **PostgreSQL & `pg`** | Robust ACID compliance, native relational constraints, ENUM data types, and transactional migration reliability. |
+| **Tailwind CSS v4** | Next-generation ultra-fast CSS compiler producing minimal bundle sizes with a modern, maintainable design system. |
+| **Clerk Authentication** | Enterprise-grade identity provider supporting Google/Apple SSO, email OTP verification, session management, and RBAC metadata. |
+| **Cloudinary** | Automatic image optimization, CDN asset delivery, responsive image transformations, and secure media hosting. |
+| **EJS (Server-Side Rendering)** | Eliminates client-side hydration delays, provides fast First Contentful Paint (FCP), and guarantees secure authentication redirects. |
 
 ---
 
-## 📂 Project Architecture & Directory Structure
+### Core Dependencies
+
+```json
+{
+  "dependencies": {
+    "@clerk/express": "^2.1.54",
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "~1.4.4",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^4.22.2",
+    "express-rate-limit": "^8.6.0",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "~1.9.1",
+    "multer": "^2.2.0",
+    "multer-storage-cloudinary": "^4.0.0",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "concurrently": "^10.0.4",
+    "nodemon": "^3.1.14",
+    "tailwindcss": "^4.3.3"
+  }
+}
+```
+
+---
+
+## 🏗️ System Architecture & Database Schema
+
+### System Workflow Architecture
+
+```mermaid
+flowchart TD
+    subgraph Client["Client Tier (Web & Mobile Browser)"]
+        Reporter["👨‍🎓 Student / Reporter"]
+        Staff["👨‍🔧 Maintenance Staff"]
+        Admin["👨‍💼 School Administrator"]
+    end
+
+    subgraph AuthTier["Authentication & Edge Tier"]
+        ClerkAuth["🔐 Clerk Authentication (SSO / OTP / JWT)"]
+        RateLimiter["🛡️ Express Rate Limiter (Global / Upload / Report)"]
+    end
+
+    subgraph AppTier["Application Server (Express.js)"]
+        RouterIndex["App Router & Middleware"]
+        AuthMiddleware["RBAC Guard & In-Memory Cache"]
+        UploadHandler["Multer Cloudinary Handler"]
+    end
+
+    subgraph StorageTier["Data & Media Layer"]
+        PostgresDB[("🐘 PostgreSQL Database")]
+        CloudinaryCDN["☁️ Cloudinary Media CDN"]
+    end
+
+    Reporter -->|Submit Report & Photo| ClerkAuth
+    Staff -->|Triage & Resolve Reports| ClerkAuth
+    Admin -->|Approve Requests & Manage Roles| ClerkAuth
+
+    ClerkAuth --> RateLimiter
+    RateLimiter --> AuthMiddleware
+    AuthMiddleware --> RouterIndex
+
+    RouterIndex -->|Upload Evidence| UploadHandler
+    UploadHandler -->|Store Image| CloudinaryCDN
+
+    RouterIndex -->|CRUD Reports & Migrations| PostgresDB
+    RouterIndex -->|Manage Photo Requests| PostgresDB
+```
+
+---
+
+### Database Schema & Data Model
+
+```mermaid
+erDiagram
+    reports {
+        int id PK
+        varchar reporter_name
+        varchar reporter_email
+        varchar room_location
+        varchar facility_type
+        varchar item_type
+        varchar damage_type
+        varchar urgency_level
+        text damage_description
+        varchar photo_path
+        varchar finished_photo_path
+        text admin_reply
+        report_status status
+        timestamp resolved_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    photo_requests {
+        int id PK
+        int report_id FK
+        varchar staff_id
+        varchar staff_email
+        varchar staff_name
+        varchar recipient_type
+        varchar recipient_email
+        varchar photo_url
+        text photo_description
+        varchar status
+        text request_message
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    dropdown_options {
+        int id PK
+        varchar category
+        varchar value
+        varchar label
+        int sort_order
+    }
+
+    migrations_history {
+        int id PK
+        varchar filename UK
+        timestamp run_at
+    }
+
+    reports ||--o{ photo_requests : "triggers approval"
+```
+
+---
+
+### Directory Structure
 
 ```text
 MokletCare/
-├── Dockerfile                  # Production container definition
-├── app.js                      # Application entrypoint & middleware setup
-├── db.js                       # PostgreSQL connection pool configuration
-├── package.json                # Project dependencies and npm scripts
-├── .env.example                # Template for environment configuration
+├── Dockerfile                  # Production container configuration
+├── app.js                      # Express app initialization, rate limiting, and middleware
+├── db.js                       # PostgreSQL connection pooling with pg
+├── package.json                # NPM packages and lifecycle scripts
+├── .env.example                # Sample environment variables file
 │
 ├── middleware/
-│   └── auth.js                 # Clerk authentication & RBAC guards with memory cache
+│   └── auth.js                 # Clerk session validation, RBAC checks, and user memory cache
 │
-├── migrations/                 # Version-controlled SQL schema migrations
+├── migrations/                 # Transactional SQL migration scripts (001 - 014)
 │   ├── 001_create_reports_table.sql
 │   ├── 002_add_verification_fields_to_reports.sql
 │   ├── 003_add_detailed_damage_fields.sql
@@ -186,112 +346,106 @@ MokletCare/
 │   ├── 013_add_finished_photo_and_reply_to_reports.sql
 │   └── 014_drop_users_table.sql
 │
-├── public/                     # Static assets (CSS, JS, images, icons)
+├── public/                     # Static files (Compiled CSS, client JS, favicons)
 │   ├── javascripts/
 │   └── stylesheets/
-│       ├── input.css           # Tailwind CSS input styles
-│       └── style.css           # Compiled Tailwind CSS
+│       ├── input.css           # Tailwind CSS v4 source styles
+│       └── style.css           # Compiled output CSS
 │
 ├── routes/
-│   ├── index.js                # Core routes: reporting, history, staff dashboard, uploads
-│   └── approval.js             # Admin routes: approvals, role management, photo requests
+│   ├── index.js                # Public, Reporter, and Staff dashboard routes
+│   └── approval.js             # Admin approval queue and RBAC user permissions routes
 │
 ├── scripts/
-│   └── migrate.js              # Automated database migration runner
+│   └── migrate.js              # Database migration runner with automatic rollback
 │
-└── views/                      # Server-rendered EJS templates
-    ├── index.ejs               # Reporter form page
-    ├── history.ejs             # User report history & status tracker
-    ├── dashboard.ejs           # Staff maintenance dashboard
-    ├── approval.ejs            # Admin approval & permissions center
-    ├── login.ejs               # Clerk login & authentication view
-    ├── logout.ejs              # Logout session cleanup view
-    ├── sso-callback.ejs        # Clerk SSO OAuth callback handler
-    ├── privacy-policy.ejs      # Privacy policy
-    ├── tos.ejs                 # Terms of service
-    └── error.ejs               # Global error template
+├── docs/                       # Screenshots and visual documentation
+│   └── screenshots/
+│
+└── views/                      # EJS server-rendered templates
+    ├── index.ejs               # Incident reporting form
+    ├── history.ejs             # Reporter personal tracking table
+    ├── dashboard.ejs           # Staff maintenance operations center
+    ├── approval.ejs            # Admin approvals and permissions manager
+    ├── login.ejs               # Clerk authentication sign-in
+    ├── logout.ejs              # Session termination view
+    ├── sso-callback.ejs        # SSO OAuth redirect handler
+    ├── privacy-policy.ejs      # Privacy Policy document
+    ├── tos.ejs                 # Terms of Service document
+    └── error.ejs               # Error handler page
 ```
 
 ---
 
-## 🗄️ Database Schema & Migrations
-
-MokletCare features an incremental SQL migration system tracked via the `migrations_history` table:
-
-- **`reports`**: Stores incident tickets including room location, facility category, item, damage type, urgency (`pending`, `in_progress`, `resolved`, `rejected`), reporter contact details, uploaded image URLs, administrative replies, and completion photos.
-- **`photo_requests`**: Tracks approval requests initiated by staff members sent to administrators for low/medium urgency or specific photo authorizations.
-- **`dropdown_options`**: Dynamic options for facilities, items, damage classifications, and urgency rankings displayed in the reporting UI.
-- **`migrations_history`**: Tracks executed migration files to prevent re-execution.
-
----
-
-## 🚀 Getting Started
+## ⚙️ Installation Guide
 
 ### Prerequisites
-
-Ensure you have the following installed on your machine:
-- **Node.js**: v18.0.0 or higher ([Download](https://nodejs.org/))
-- **PostgreSQL**: v14.0 or higher (Local instance or Cloud provider like Neon / Supabase)
-- **Clerk Account**: Free tier at [clerk.com](https://clerk.com/)
-- **Cloudinary Account**: Free tier at [cloudinary.com](https://cloudinary.com/)
-
-### Installation Steps
-
-1. **Clone the Repository**:
-   ```bash
-   git clone git@github-school:Ahnaf-icprpl/MokletCare.git
-   cd MokletCare
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**:
-   Create a `.env` file in the root directory by copying `.env.example`:
-   ```bash
-   cp .env.example .env
-   ```
+Before running the application, make sure you have the following installed and configured:
+- **Node.js**: `v18.0.0` or higher ([Download Node.js](https://nodejs.org/))
+- **PostgreSQL**: `v14.0` or higher (Local database or Cloud like Neon / Supabase)
+- **Clerk Account**: For authentication API keys ([Clerk.com](https://clerk.com/))
+- **Cloudinary Account**: For media storage URL ([Cloudinary.com](https://cloudinary.com/))
+- **Git**: For version control
 
 ---
 
-### Environment Variables
+### Step-by-Step Installation
 
-Populate `.env` with your credentials:
+#### 1️⃣ Clone the Repository
+```bash
+git clone git@github-school:Ahnaf-icprpl/MokletCare.git
+cd MokletCare
+```
+
+#### 2️⃣ Install Dependencies
+```bash
+npm install
+```
+
+#### 3️⃣ Setup Environment Variables
+Create a `.env` file in the project root by copying the template:
+```bash
+cp .env.example .env
+```
+
+---
+
+### Environment Configuration
+
+Configure `.env` with your actual credentials:
 
 ```env
-# Server Configuration
+# Application Server
 PORT=5000
 NODE_ENV=development
 
-# Database Configuration (PostgreSQL URL)
+# PostgreSQL Database Connection
 DATABASE_URL=postgres://username:password@localhost:5432/mokletcare
 
-# Clerk Authentication
-CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
-CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
+# Clerk Authentication Keys (from Clerk Dashboard > API Keys)
+CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# Admin Emails (Comma-separated bootstrap emails assigned admin privileges automatically)
+# Administrator Bootstrap Emails (comma-separated)
 ADMIN_EMAILS=admin@mokletcare.sch.id,principal@mokletcare.sch.id
 ADMIN_EMAIL=admin@mokletcare.sch.id
 
-# Cloudinary Storage
+# Cloudinary Storage Configuration
 CLOUDINARY_URL=cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
 ```
 
 ---
 
-### Running Database Migrations
+### Database Migrations
 
-Apply all schema migrations to your PostgreSQL database:
+Run all database schema migrations to set up required tables, enum types, and index optimizations:
 
 ```bash
 npm run migrate
 ```
 
-*Output:*
+*Expected output:*
 ```text
 Connected to PostgreSQL.
 Running migration: 001_create_reports_table.sql...
@@ -302,117 +456,110 @@ Successfully run 14 migration(s).
 
 ---
 
-### Starting the Application
+## 🚀 How to Use & Commands
 
-#### Development Mode (with hot-reloading & Tailwind watch):
-```bash
-npm run dev
-```
+### CLI Commands
 
-#### Production Mode:
-```bash
-npm run build:css
-npm start
-```
-
-Open your browser and visit: **`http://localhost:5000`**
-
----
-
-## 📜 Available Scripts
-
-| Command | Description |
-| :--- | :--- |
-| `npm run dev` | Runs Tailwind CSS compiler in watch mode and starts Express server with `nodemon`. |
-| `npm run build:css` | Compiles `./public/stylesheets/input.css` into production-ready `./public/stylesheets/style.css`. |
-| `npm run migrate` | Executes pending SQL migration scripts against the configured PostgreSQL database. |
-| `npm start` | Starts the production Express server on the specified `PORT` (default `5000`). |
-
----
-
-## 🛣️ Route & Endpoint Reference
-
-### Public / Authentication Routes
-| Method | Route | Description |
+| Command | Action | Environment |
 | :--- | :--- | :--- |
-| `GET` | `/login` | User authentication sign-in page |
-| `GET` | `/logout` | User sign-out page and session termination |
-| `GET` | `/sso-callback` | Clerk OAuth / SSO callback handler |
-| `GET` | `/privacy-policy` | Privacy Policy page |
-| `GET` | `/tos` | Terms of Service page |
+| `npm run dev` | Runs Tailwind CSS compiler in watch mode alongside `nodemon` for hot-reloading. | Development |
+| `npm run build:css` | Compiles `./public/stylesheets/input.css` into minified `./public/stylesheets/style.css`. | Production / Build |
+| `npm run migrate` | Executes all pending SQL migration files with transactional rollback safety. | Setup / CI/CD |
+| `npm start` | Starts the production Express server on configured `PORT` (default: 5000). | Production |
 
-### Reporter / Student Routes
-| Method | Route | Auth Required | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/` | `reporter`, `staff` | Main facility incident reporting form |
-| `POST` | `/report` | `reporter`, `staff` | Submit new facility damage report |
-| `GET` | `/history` | `reporter`, `staff` | View user's submitted report history & statuses |
-| `POST` | `/upload-image` | Authenticated | Upload image to Cloudinary (returns secure URL) |
+---
 
-### Staff Maintenance Routes
-| Method | Route | Auth Required | Description |
+### User & Role Workflow Guide
+
+#### 1. For Students & Teachers (Reporters)
+1. **Access & Sign In**: Navigate to `http://localhost:5000/login` and authenticate using Google SSO or Email.
+2. **Submit Report (`/`)**: 
+   - Fill in Room Location (e.g. `Lab RPL 1`).
+   - Select Facility Type, Damaged Item, Damage Type, and Urgency Level.
+   - Describe the issue and upload a photo evidence.
+   - Click **Submit Report**.
+3. **Track Status (`/history`)**:
+   - Access **My Reports** from the navigation bar.
+   - Monitor real-time status badges, technician responses, and completion photos.
+
+#### 2. For Maintenance Staff (Technicians)
+1. **Open Dashboard (`/dashboard`)**: Log in with an account assigned the `staff` role.
+2. **Filter & Search**: Use status filter tabs (*Pending, In Progress, Resolved, Rejected*) or search keywords.
+3. **Inspect Ticket**: Click any report card to open the inspection modal.
+4. **Approval Request**: For Low/Medium urgency reports, send a photo verification request to the Admin.
+5. **Update Progress & Resolution**: Change status to `in_progress` or `resolved`, attach completion photos, and leave notes for the reporter.
+
+#### 3. For School Administrators (Admin)
+1. **Open Admin Center (`/admin/approval`)**: Log in with an email listed in `ADMIN_EMAILS` or granted `admin` role.
+2. **Review Requests**: Approve or reject photo verification requests sent by technicians.
+3. **User Management**: Search through users and toggle permissions (`reporter`, `staff`, `admin`) in real time.
+
+---
+
+## 🛣️ API & Route Reference
+
+### Authentication & Public Endpoints
+| HTTP Method | Route | Access Level | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/dashboard` | `staff` | Staff maintenance dashboard & report queue |
-| `POST` | `/dashboard/reports/:id/status` | `staff` | Update status, attach completion photo, or reply |
-| `POST` | `/dashboard/reports/:id/reply` | `staff` | Send official reply to report submitter |
+| `GET` | `/login` | Public | Clerk authentication sign-in and registration page |
+| `GET` | `/logout` | Public | User sign-out and session destruction |
+| `GET` | `/sso-callback` | Public | OAuth SSO callback redirect handler |
+| `GET` | `/privacy-policy` | Public | Privacy Policy compliance documentation |
+| `GET` | `/tos` | Public | Terms of Service documentation |
+
+### Reporter Endpoints
+| HTTP Method | Route | Access Level | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/` | `reporter`, `staff` | Facility incident reporting form page |
+| `POST` | `/report` | `reporter`, `staff` | Create and store a new facility damage report |
+| `GET` | `/history` | `reporter`, `staff` | Paginated personal report tracking history |
+| `POST` | `/upload-image` | Authenticated | Upload photo evidence to Cloudinary CDN |
+
+### Staff Maintenance Endpoints
+| HTTP Method | Route | Access Level | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/dashboard` | `staff` | Maintenance dashboard with KPI cards and triage queue |
+| `POST` | `/dashboard/reports/:id/status` | `staff` | Update ticket status, resolution photo, or admin reply |
+| `POST` | `/dashboard/reports/:id/reply` | `staff` | Submit official response to report submitter |
 | `POST` | `/api/photo-request` | `staff` | Request approval/verification for a report |
 
-### Administrator Routes
-| Method | Route | Auth Required | Description |
+### Administrator Endpoints
+| HTTP Method | Route | Access Level | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/admin/approval` | `admin` | Admin center: photo approvals & user management |
+| `GET` | `/admin/approval` | `admin` | Admin dashboard for photo approvals and user RBAC |
 | `POST` | `/admin/approval/:id/approve` | `admin` | Approve maintenance photo request |
 | `POST` | `/admin/approval/:id/reject` | `admin` | Decline maintenance photo request |
-| `POST` | `/admin/users/:id/role` | `admin` | Update user RBAC role in Clerk metadata |
+| `POST` | `/admin/users/:id/role` | `admin` | Update user permission role in Clerk metadata |
 
 ---
 
 ## 🐳 Docker Deployment
 
-You can containerize and deploy MokletCare using Docker:
+MokletCare includes a lightweight Alpine-based container configuration for frictionless deployment:
 
-### 1. Build the Docker Image
+### 1. Build Docker Image
 ```bash
 docker build -t mokletcare:latest .
 ```
 
-### 2. Run the Container
+### 2. Run Container
 ```bash
 docker run -d \
-  --name mokletcare \
+  --name mokletcare-app \
   -p 5000:5000 \
   --env-file .env \
+  --restart unless-stopped \
   mokletcare:latest
 ```
 
 ---
 
-## 👥 Development Team
+## 📄 License & Acknowledgments
 
-| Name | Role | GitHub |
-| :--- | :--- | :--- |
-| **Dilshad Ahnaf** | Backend Developer | [@Ahnaf-icprpl](https://github.com/Ahnaf-icprpl) |
-| **Rafale Alfardean Herawan** | Frontend Developer | [@RaffFidela](https://github.com/RaffFidela) |
-| **Baruna Aryatama** | UI/UX Designer | — |
+This project is developed and maintained for **SMK Telkom Malang** as a submission for **ITECHNO CUP 2026 — Web Development Competition**.
 
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is private and maintained for school educational and administrative purposes at **SMK Telkom Malang**.
+<br/>
 
 <div align="center">
-  <sub>Built with ❤️ for SMK Telkom Malang</sub>
+  <sub>Made with ❤️ by <b>Dilshad Ahnaf, Rafale Alfardean Herawan, and Baruna Aryatama</b> for <b>ITECHNO CUP 2026</b></sub>
 </div>
