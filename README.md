@@ -50,6 +50,15 @@
 
 Students and staff can quickly capture and submit facility issues (e.g., broken projectors, damaged furniture, electrical faults) with attached photographic evidence. Dedicated maintenance staff can track, filter, manage, and resolve tickets, while administrators supervise workflows, grant user privileges, and approve repair requests.
 
+### 🎯 Project Objectives & Value Proposition
+
+- 🎯 **Primary Objective**: Provide a centralized, transparent, and responsive digital ecosystem for SMK Telkom Malang that accelerates the lifecycle of school facility maintenance—from incident reporting to administrative review and verified resolution.
+- 📊 **Target Users**:
+  - **Students & Faculty (Reporters)**: Quick reporting of damaged, broken, or unsafe school facilities with photo proof and live status updates.
+  - **Maintenance Technicians (Staff)**: Centralized workspace to monitor tickets, prioritize repairs, upload completion proof, and interact with reporters.
+  - **School Administration (Admin)**: Complete operational oversight, approval management for low/medium urgency requests, and role-based access delegation.
+- 💡 **Value Proposition**: Replaces fragmented group chats and manual paperwork with structured triage, real-time status visibility, Cloudinary-powered visual verification, and enterprise-grade Clerk RBAC governance.
+
 ---
 
 ## ✨ Key Features
