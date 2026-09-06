@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+.agents
+skills-lock.json
+*.log
+docs/
+.DS_Store

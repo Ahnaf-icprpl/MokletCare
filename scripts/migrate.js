@@ -10,8 +10,16 @@ const runMigrations = async () => {
         process.exit(1);
     }
 
+    const isSslDisabled = process.env.DATABASE_SSL === 'false';
+    const isSslRequired = process.env.DATABASE_SSL === 'true' ||
+      (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('sslmode=require')) ||
+      (process.env.NODE_ENV === 'production' && !isSslDisabled);
+
+    const sslConfig = isSslDisabled ? false : (isSslRequired ? { rejectUnauthorized: false } : false);
+
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
+        ssl: sslConfig
     });
 
     try {

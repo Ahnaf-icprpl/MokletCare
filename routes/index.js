@@ -28,6 +28,17 @@ const reportLimiter = rateLimit({
   message: 'You have submitted too many reports recently. Please wait an hour before submitting another.'
 });
 
+// Ensure Cloudinary is initialized properly whether full URL or separate keys are provided
+if (process.env.CLOUDINARY_URL) {
+  // Cloudinary automatically parses CLOUDINARY_URL
+} else if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+}
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -154,7 +165,7 @@ function isHighOrAboveUrgency(urgency) {
   return u === 'high' || u === 'critical' || u === 'severe' || u.includes('tinggi') || u.includes('kritis') || u.includes('darurat') || u.includes('penting');
 }
 
-router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
+router.get('/dashboard', ensureAuthenticated, ensureRole('staff', 'admin'), async function(req, res, next) {
   try {
     const optionMap = await getOptionLabelMap();
 
@@ -241,9 +252,17 @@ router.get('/dashboard', ensureAuthenticated, ensureRole('staff'), async functio
   }
 });
 
-router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
+router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], ensureAuthenticated, ensureRole('staff', 'admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
+    const reportId = parseInt(id, 10);
+    if (isNaN(reportId) || reportId <= 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(400).json({ error: 'Invalid report ID specified.' });
+      }
+      return res.redirect('/dashboard?error=' + encodeURIComponent('Invalid report ID specified.'));
+    }
+
     const { status, finished_photo_path, admin_reply } = req.body;
     const allowedStatuses = ['pending', 'in_progress', 'resolved', 'rejected'];
 
@@ -258,7 +277,7 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
     const cleanAdminReply = typeof admin_reply === 'string' ? admin_reply.trim() : null;
 
     // Fetch existing report to know current status, urgency, and reply if not provided
-    const reportRes = await db.query('SELECT status, urgency_level, resolved_at, finished_photo_path, admin_reply FROM reports WHERE id = $1', [id]);
+    const reportRes = await db.query('SELECT status, urgency_level, resolved_at, finished_photo_path, admin_reply FROM reports WHERE id = $1', [reportId]);
     if (reportRes.rows.length === 0) {
       if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(404).json({ error: 'Report not found.' });
@@ -270,13 +289,14 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
     const newStatus = status || currentReport.status || 'pending';
 
     // Business flow enforcement: Staff must get Admin approval before proceeding (in_progress / resolved),
-    // EXCEPT for reports with High and above urgency
+    // EXCEPT for reports with High and above urgency OR if the action is performed directly by an Admin
     if (newStatus === 'in_progress' || newStatus === 'resolved') {
       const isHigh = isHighOrAboveUrgency(currentReport.urgency_level);
-      if (!isHigh) {
+      const isAdmin = req.user && req.user.role === 'admin';
+      if (!isHigh && !isAdmin) {
         const approvedRes = await db.query(
           "SELECT 1 FROM photo_requests WHERE report_id = $1 AND status = 'approved' LIMIT 1",
-          [id]
+          [reportId]
         );
         if (approvedRes.rows.length === 0) {
           const errMsg = 'Admin approval is required before proceeding with Low or Medium urgency reports. Please request approval from Admin first.';
@@ -302,7 +322,7 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
           resolved_at = $4,
           updated_at = NOW() 
       WHERE id = $5
-    `, [newStatus, newFinishedPhoto, newAdminReply, newResolvedAt, id]);
+    `, [newStatus, newFinishedPhoto, newAdminReply, newResolvedAt, reportId]);
 
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
       return res.json({ success: true, message: 'Report reply and status updated successfully.' });

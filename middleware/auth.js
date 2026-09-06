@@ -1,8 +1,21 @@
 const { clerkClient, getAuth } = require('@clerk/express');
 
-// In-memory cache for Clerk user profile data (TTL: 5 minutes)
+// In-memory cache for Clerk user profile data (TTL: 5 minutes, bounded size)
 const userProfileCache = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000;
+const MAX_CACHE_ENTRIES = 1000;
+
+function pruneExpiredUserCache() {
+  const now = Date.now();
+  for (const [key, value] of userProfileCache.entries()) {
+    if (now >= value.expiresAt) {
+      userProfileCache.delete(key);
+    }
+  }
+}
+
+// Periodically clean up expired cache entries every 10 minutes without holding the event loop
+setInterval(pruneExpiredUserCache, 10 * 60 * 1000).unref();
 
 async function getCachedClerkUser(userId) {
   const cached = userProfileCache.get(userId);
@@ -10,6 +23,13 @@ async function getCachedClerkUser(userId) {
     return cached.clerkUser;
   }
   const clerkUser = await clerkClient.users.getUser(userId);
+  if (userProfileCache.size >= MAX_CACHE_ENTRIES) {
+    pruneExpiredUserCache();
+    if (userProfileCache.size >= MAX_CACHE_ENTRIES) {
+      const firstKey = userProfileCache.keys().next().value;
+      if (firstKey) userProfileCache.delete(firstKey);
+    }
+  }
   userProfileCache.set(userId, { clerkUser, expiresAt: Date.now() + CACHE_TTL_MS });
   return clerkUser;
 }

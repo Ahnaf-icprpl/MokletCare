@@ -185,8 +185,8 @@ router.post(['/admin/users/:id/role', '/dashboard/users/:id/role', '/users/:id/r
   }
 });
 
-// POST: Staff sends photo request to admin/reporter
-router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), async function(req, res, next) {
+// POST: Staff/Admin sends photo request to admin/reporter
+router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff', 'admin'), async function(req, res, next) {
   try {
     const staffId = req.user.id;
     const staffEmail = req.user.emails && req.user.emails[0] ? req.user.emails[0].value : 'staff@school.id';
@@ -195,8 +195,9 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
     const { reportId, photoUrl, photoDescription, recipientType, recipientEmail, message } = req.body;
 
     // Validate inputs
-    if (!reportId) {
-      return res.status(400).json({ error: 'Missing reportId' });
+    const parsedReportId = parseInt(reportId, 10);
+    if (isNaN(parsedReportId) || parsedReportId <= 0) {
+      return res.status(400).json({ error: 'Valid reportId is required.' });
     }
 
     const recType = recipientType || 'admin';
@@ -205,7 +206,7 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
     }
 
     // Check if report exists
-    const reportResult = await db.query('SELECT id, reporter_email, photo_path, damage_description, room_location FROM reports WHERE id = $1', [reportId]);
+    const reportResult = await db.query('SELECT id, reporter_email, photo_path, damage_description, room_location FROM reports WHERE id = $1', [parsedReportId]);
     if (reportResult.rows.length === 0) {
       return res.status(404).json({ error: 'Report not found' });
     }
@@ -231,7 +232,7 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
     `;
 
     const result = await db.query(insertQuery, [
-      reportId,
+      parsedReportId,
       staffId,
       staffEmail,
       staffName,
@@ -256,9 +257,20 @@ router.post('/api/photo-request', ensureAuthenticated, ensureRole('staff'), asyn
 router.post(['/admin/approval/:id/approve', '/admin/permissions/:id/approve'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
+    const requestId = parseInt(id, 10);
+    if (isNaN(requestId) || requestId <= 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(400).json({ error: 'Invalid request ID specified.' });
+      }
+      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid request ID specified.'));
+    }
 
     // Update request status
-    await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['approved', id]);
+    await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['approved', requestId]);
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({ success: true, message: 'Request approved successfully.' });
+    }
 
     const referer = req.get('Referer');
     if (referer && (referer.includes('/admin/approval') || referer.includes('/approval') || referer.includes('/admin/permissions'))) {
@@ -274,9 +286,20 @@ router.post(['/admin/approval/:id/approve', '/admin/permissions/:id/approve'], e
 router.post(['/admin/approval/:id/reject', '/admin/approval/:id/decline', '/admin/permissions/:id/reject'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
   try {
     const { id } = req.params;
+    const requestId = parseInt(id, 10);
+    if (isNaN(requestId) || requestId <= 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(400).json({ error: 'Invalid request ID specified.' });
+      }
+      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid request ID specified.'));
+    }
 
     // Update request status
-    await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['rejected', id]);
+    await db.query('UPDATE photo_requests SET status = $1, updated_at = NOW() WHERE id = $2', ['rejected', requestId]);
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({ success: true, message: 'Request declined successfully.' });
+    }
 
     const referer = req.get('Referer');
     if (referer && (referer.includes('/admin/approval') || referer.includes('/approval') || referer.includes('/admin/permissions'))) {
