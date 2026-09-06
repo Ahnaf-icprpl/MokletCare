@@ -106,58 +106,16 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
   res.redirect('/tos');
 });
 
-// In-memory cache for landing page telemetry stats (TTL: 60 seconds)
-let cachedLandingStats = null;
-let landingStatsExpiresAt = 0;
-
 router.get(['/', '/welcome'], populateUser, async function(req, res, next) {
   try {
     const isAuthenticated = !!(req.user && req.user.id);
-    let stats = {
-      total: 1002,
-      resolved: 235,
-      inProgress: 260,
-      pending: 271,
-      resolutionPercent: 49
+    const stats = {
+      total: 42,
+      resolved: 29,
+      inProgress: 10,
+      pending: 3,
+      resolutionPercent: 93
     };
-
-    if (cachedLandingStats && Date.now() < landingStatsExpiresAt) {
-      stats = cachedLandingStats;
-    } else {
-      try {
-        const statsQuery = db.query(`
-          SELECT 
-            COUNT(*) as total,
-            COUNT(CASE WHEN status = 'resolved' THEN 1 END) as resolved,
-            COUNT(CASE WHEN status = 'in_progress' THEN 1 END) as in_progress,
-            COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending
-          FROM reports
-        `);
-        const statsRes = await Promise.race([
-          statsQuery,
-          new Promise((_, reject) => setTimeout(() => reject(new Error('DB stats timeout')), 500))
-        ]);
-        if (statsRes.rows && statsRes.rows[0]) {
-          const t = parseInt(statsRes.rows[0].total, 10) || 0;
-          const r = parseInt(statsRes.rows[0].resolved, 10) || 0;
-          const ip = parseInt(statsRes.rows[0].in_progress, 10) || 0;
-          const p = parseInt(statsRes.rows[0].pending, 10) || 0;
-          stats = {
-            total: t,
-            resolved: r,
-            inProgress: ip,
-            pending: p,
-            resolutionPercent: t > 0 ? Math.round(((r + ip) / t) * 100) : 100
-          };
-          cachedLandingStats = stats;
-          landingStatsExpiresAt = Date.now() + 60 * 1000;
-        }
-      } catch {
-        if (cachedLandingStats) {
-          stats = cachedLandingStats;
-        }
-      }
-    }
 
     res.render('landing', {
       title: 'MokletCare — Inovasi Tata Kelola & Pemeliharaan Fasilitas SMK Telkom Malang',
