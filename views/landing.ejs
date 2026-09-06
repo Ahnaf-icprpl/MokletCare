@@ -72,37 +72,38 @@
 
   <!-- 2. Sticky Glass Navigation Bar -->
   <nav class="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
       
-      <!-- Brand Identifiers -->
-      <a href="/" class="flex items-center gap-3 shrink-0 group focus:outline-none">
-        <div class="w-9 h-9 bg-red-600 flex items-center justify-center text-white font-bold text-lg tracking-wider shadow-sm group-hover:bg-red-700 transition-colors">
-          M
-        </div>
-        <div class="flex flex-col">
-          <span class="text-lg font-bold text-slate-900 tracking-tight leading-none">Moklet<span class="text-red-600">Care</span></span>
-          <span class="text-[10px] font-mono-code text-slate-500 uppercase tracking-wider">SMK Telkom Malang</span>
-        </div>
+      <!-- Brand Wordmark -->
+      <a href="/" class="group focus:outline-none py-1">
+        <span class="text-2xl font-extrabold text-slate-900 tracking-tight hover:opacity-90 transition-opacity">Moklet<span class="text-red-600">Care</span></span>
       </a>
 
-      <!-- Right Navigation Actions -->
-      <div class="hidden lg:flex items-center gap-3">
-        <% if (locals.user) { %>
+      <!-- Desktop Nav Links -->
+      <div class="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-8 text-xs lg:text-[13px] xl:text-sm font-medium text-slate-600">
+        <a href="#masalah" class="hover:text-red-600 transition-colors">Tentang</a>
+        <a href="#alur" class="hover:text-red-600 transition-colors">Cara Kerja</a>
+        <a href="#peran" class="hover:text-red-600 transition-colors">Pengguna</a>
+        <a href="#preview" class="hover:text-red-600 transition-colors">Tampilan</a>
+      </div>
+
+      <!-- Action Buttons / Session Status -->
+      <% if (locals.user) { %>
+        <div class="hidden sm:flex items-center gap-2 sm:gap-3">
           <div class="flex items-center gap-2 lg:gap-3 pl-2">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-slate-800"><%= user.name %></span>
+            <div class="text-right hidden xl:block">
+              <div class="text-xs font-bold text-slate-800 truncate max-w-[120px] lg:max-w-[160px]"><%= user.displayName %></div>
               <span class="text-[10px] font-mono-code uppercase px-1.5 py-0.5 bg-slate-100 text-slate-700"><%= user.role %></span>
             </div>
-            <% if (user.role === 'admin') { %>
-              <a href="/admin/approval" class="text-xs bg-red-50 text-red-700 hover:bg-red-100 font-semibold px-3 py-2 transition-colors shrink-0">
-                Pusat Persetujuan
+            <% if (user.role === "admin") { %>
+              <a href="/admin/approval" class="hidden 2xl:inline-flex text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 transition-colors">
+                Persetujuan
               </a>
             <% } %>
-            <% if (['teknisi', 'sarpras'].includes(user.role)) { %>
-              <a href="/dashboard" class="text-xs bg-slate-100 text-slate-800 hover:bg-slate-200 font-semibold px-3 py-2 transition-colors shrink-0">
-                Dashboard Kerja
-              </a>
-            <% } %>
+
+            <a href="/report" class="text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 sm:px-3.5 py-2 transition-colors shrink-0">
+              Buat Laporan
+            </a>
             <a href="/history" class="hidden md:inline-flex text-xs bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-2 transition-colors shrink-0">
               Riwayat
             </a>
@@ -110,10 +111,10 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </a>
           </div>
-        <% } %>
-      </div>
+        </div>
+      <% } %>
 
-      <!-- Mobile Menu Hamburger Button -->
+      <!-- Mobile Hamburger Toggle -->
       <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Toggle Menu">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
