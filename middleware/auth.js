@@ -99,6 +99,14 @@ async function ensureAuthenticated(req, res, next) {
       fullName = fullName || 'User';
     }
 
+    // Backend security check: Reject authentication from Apple accounts
+    if (primaryEmail && primaryEmail.toLowerCase().endsWith('@privaterelay.appleid.com')) {
+      if (req.xhr || (req.headers && req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(403).json({ error: 'Apple login is disabled. Please sign in with Google.' });
+      }
+      return res.redirect('/login?error=' + encodeURIComponent('Apple login is disabled. Please sign in with Google.'));
+    }
+
     // Check if user's email is an admin email from process.env (ADMIN_EMAIL or ADMIN_EMAILS)
     const adminEmails = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '')
       .split(',')

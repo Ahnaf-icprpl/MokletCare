@@ -134,7 +134,7 @@ Seamless and secure authentication flow with OAuth SSO, email password login, an
 | Sign In Portal | Account Registration | Email OTP Verification |
 | :---: | :---: | :---: |
 | <img src="docs/screenshots/auth-signin.png" width="100%" alt="Clerk Sign-In" /> | <img src="docs/screenshots/auth-signup.png" width="100%" alt="Clerk Sign-Up" /> | <img src="docs/screenshots/auth-email-verification.png" width="100%" alt="Clerk OTP Verification" /> |
-| *Single Sign-On (Google/Apple) & email login* | *User registration with client validation* | *Secure 6-digit email verification code* |
+| *Single Sign-On (Google) & email login* | *User registration with client validation* | *Secure 6-digit email verification code* |
 
 ---
 
@@ -176,7 +176,7 @@ Containerization : Docker (Alpine Linux Node 22)
 | **Node.js & Express.js** | Lightweight, event-driven I/O model capable of handling high concurrent traffic with minimal resource consumption. |
 | **PostgreSQL & `pg`** | Robust ACID compliance, native relational constraints, ENUM data types, and transactional migration reliability. |
 | **Tailwind CSS v4** | Next-generation ultra-fast CSS compiler producing minimal bundle sizes with a modern, maintainable design system. |
-| **Clerk Authentication** | Enterprise-grade identity provider supporting Google/Apple SSO, email OTP verification, session management, and RBAC metadata. |
+| **Clerk Authentication** | Enterprise-grade identity provider supporting Google SSO, email OTP verification, session management, and RBAC metadata. |
 | **Cloudinary** | Automatic image optimization, CDN asset delivery, responsive image transformations, and secure media hosting. |
 | **EJS (Server-Side Rendering)** | Eliminates client-side hydration delays, provides fast First Contentful Paint (FCP), and guarantees secure authentication redirects. |
 

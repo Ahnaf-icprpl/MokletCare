@@ -76,6 +76,11 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/sso-callback', function(req, res, next) {
+  // Reject any Apple SSO callback attempts on the backend
+  const queryStr = JSON.stringify(req.query || {}).toLowerCase();
+  if (queryStr.includes('apple') || req.query.strategy === 'oauth_apple') {
+    return res.redirect('/login?error=' + encodeURIComponent('Apple login is disabled. Please sign in with Google.'));
+  }
   res.render('sso-callback', {
     title: 'Authenticating | MokletCare',
     clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
