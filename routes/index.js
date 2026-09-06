@@ -107,13 +107,11 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
 });
 
 router.get('/welcome', function(req, res, next) {
-  // If already authenticated, redirect to report form
   const auth = getAuth(req);
-  if (auth && auth.userId) {
-    return res.redirect('/');
-  }
+  const isAuthenticated = !!(auth && auth.userId);
   res.render('landing', {
-    title: 'MokletCare — Facility Damage Reporting Portal'
+    title: 'MokletCare — Facility Damage Reporting Portal',
+    isAuthenticated: isAuthenticated
   });
 });
 
