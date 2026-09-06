@@ -24,26 +24,26 @@
   <div class="relative z-10 w-full max-w-6xl">
     
     <!-- Top Navigation Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 bg-white/80 backdrop-blur-xl border border-red-100 rounded-2xl p-6 shadow-sm">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 bg-white/80 backdrop-blur-xl border border-red-100 rounded-2xl p-6">
       <div>
         <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Approval Page</h1>
         <p class="text-xs text-slate-500">Logged in as <strong class="text-slate-800"><%= locals.user ? user.displayName : 'Admin' %></strong> (<span class="capitalize font-semibold text-red-600">Admin</span>)</p>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-wrap">
-        <a href="/" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+        <a href="/" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center">
           Report Portal
         </a>
-        <a href="/history" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+        <a href="/history" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center">
           My Reports
         </a>
-        <a href="/dashboard" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+        <a href="/dashboard" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center">
           Maintenance Dashboard
         </a>
-        <a href="#approvals" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+        <a href="#approvals" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center">
           Photo Approvals
         </a>
-        <a href="#users" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+        <a href="#users" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center">
           User Permissions
         </a>
         <a href="/logout" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors border border-red-200 font-semibold text-center">
@@ -68,7 +68,7 @@
     <% } %>
 
     <!-- Charts Section -->
-    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 md:p-8 mb-8">
       <div class="flex flex-col lg:flex-row justify-between items-start gap-8">
         <div class="flex-1">
           <h2 class="text-xl font-bold text-slate-900 mb-6">Approval Request Status Distribution</h2>
@@ -108,7 +108,7 @@
     </div>
 
     <!-- Approval Requests Section -->
-    <div id="approvals" class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+    <div id="approvals" class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 md:p-8 mb-8">
       <div class="mb-6">
         <h2 class="text-xl font-bold text-slate-900 mb-2">Staff Photo Approval Requests</h2>
         <p class="text-xs text-slate-500">Review and approve or reject photo requests submitted by staff</p>
@@ -124,7 +124,7 @@
         ]; %>
         <% statuses.forEach(function(s) { %>
           <% const isActive = requestPagination.status === s.key || (s.key === 'pending' && !requestPagination.status); %>
-          <a href="/admin/approval?status=<%= s.key %>" class="px-3 py-1.5 rounded-lg text-xs transition-colors whitespace-nowrap <%= isActive ? 'font-semibold bg-red-600 text-white shadow-sm' : 'font-medium bg-slate-100 text-slate-600 hover:bg-slate-200' %>">
+          <a href="/admin/approval?status=<%= s.key %>" class="px-3 py-1.5 rounded-lg text-xs transition-colors whitespace-nowrap <%= isActive ? 'font-semibold bg-red-600 text-white' : 'font-medium bg-slate-100 text-slate-600 hover:bg-slate-200' %>">
             <%= s.label %>
           </a>
         <% }); %>
@@ -144,7 +144,7 @@
             <!-- Photo Preview -->
             <div class="md:col-span-1">
               <a href="<%= req.photo_url %>" target="_blank" rel="noopener noreferrer" class="block group relative overflow-hidden rounded-lg">
-                <img src="<%= req.photo_url %>" alt="Photo" class="w-full h-44 object-cover rounded-lg border border-slate-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                <img src="<%= req.photo_url %>" alt="Photo" class="w-full h-44 object-cover rounded-lg border border-slate-200 group-hover:opacity-90 transition-opacity">
                 <span class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">Click to Expand</span>
               </a>
             </div>
@@ -208,13 +208,13 @@
               <div class="flex items-center gap-2 pt-2">
                 <% if (req.status === 'pending') { %>
                 <form action="/admin/approval/<%= req.id %>/approve" method="POST" class="flex-1">
-                  <button type="submit" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
+                  <button type="submit" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <span>Approve</span>
                   </button>
                 </form>
                 <form action="/admin/approval/<%= req.id %>/decline" method="POST" class="flex-1">
-                  <button type="submit" class="w-full text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
+                  <button type="submit" class="w-full text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     <span>Decline</span>
                   </button>
@@ -264,7 +264,7 @@
     </div>
 
     <!-- User Permissions & Role Management Section (Full Control) -->
-    <div id="users" class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+    <div id="users" class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 md:p-8 mb-8">
       <!-- Section Header + Controls -->
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
         <div>
@@ -331,7 +331,7 @@
               </td>
               <td class="py-4 px-4 text-right">
                 <form action="/admin/users/<%= u.id %>/role" method="POST" class="inline-flex items-center gap-2 justify-end" onsubmit="handleRoleFormSubmit(event, this, '<%= u.id %>')">
-                  <select name="role" onchange="updateUserRole(this, '<%= u.id %>')" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer shadow-xs">
+                  <select name="role" onchange="updateUserRole(this, '<%= u.id %>')" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer">
                     <option value="reporter" <%= u.role === 'reporter' ? 'selected' : '' %>>Reporter (Standard)</option>
                     <option value="staff" <%= u.role === 'staff' ? 'selected' : '' %>>Staff (Report Manager)</option>
                     <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin (Full Control)</option>
@@ -537,7 +537,7 @@
 
       const toast = document.createElement('div');
       const isSuccess = type === 'success';
-      toast.className = `px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${isSuccess ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-red-600 text-white border-red-500'}`;
+      toast.className = `px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${isSuccess ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-red-600 text-white border-red-500'}`;
       toast.innerHTML = `
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isSuccess ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}"></path>
