@@ -48,7 +48,7 @@ async function ensureAuthenticated(req, res, next) {
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
       return res.status(401).json({ error: 'Unauthorized. Please log in.' });
     }
-    return res.redirect('/welcome');
+    return res.redirect('/login');
   }
 
   try {

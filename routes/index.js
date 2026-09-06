@@ -66,7 +66,7 @@ const { ensureAuthenticated, ensureRole } = require('../middleware/auth');
 router.get('/login', function(req, res, next) {
   const auth = getAuth(req);
   if (auth && auth.userId) {
-    return res.redirect('/');
+    return res.redirect('/report');
   }
   res.render('login', { 
     title: 'Login | MokletCare',
@@ -106,7 +106,7 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
   res.redirect('/tos');
 });
 
-router.get('/welcome', function(req, res, next) {
+router.get(['/', '/welcome'], function(req, res, next) {
   const auth = getAuth(req);
   const isAuthenticated = !!(auth && auth.userId);
   res.render('landing', {
@@ -115,7 +115,7 @@ router.get('/welcome', function(req, res, next) {
   });
 });
 
-router.get('/', ensureAuthenticated, async function(req, res, next) {
+router.get('/report', ensureAuthenticated, async function(req, res, next) {
   try {
     const result = await db.query('SELECT * FROM dropdown_options ORDER BY sort_order ASC');
     const facilities = result.rows.filter(r => r.category === 'facility');
@@ -386,25 +386,25 @@ router.post('/report', ensureAuthenticated, reportLimiter, async function(req, r
 
     // Server-side validation with user-friendly error redirects
     if (!room || room.length > 100) {
-      return res.redirect('/?error=' + encodeURIComponent('Please specify a valid location / room.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please specify a valid location / room.'));
     }
     if (!facility || facility.length > 100) {
-      return res.redirect('/?error=' + encodeURIComponent('Please select a facility type.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please select a facility type.'));
     }
     if (!finalItem || finalItem.length > 100) {
-      return res.redirect('/?error=' + encodeURIComponent('Please select or specify a damaged item.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please select or specify a damaged item.'));
     }
     if (!damage_type || damage_type.length > 100) {
-      return res.redirect('/?error=' + encodeURIComponent('Please select a damage type.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please select a damage type.'));
     }
     if (!urgency || urgency.length > 50) {
-      return res.redirect('/?error=' + encodeURIComponent('Please select an urgency level.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please select an urgency level.'));
     }
     if (!description || description.length > 2000) {
-      return res.redirect('/?error=' + encodeURIComponent('Please provide a damage description (up to 2000 characters).'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please provide a damage description (up to 2000 characters).'));
     }
     if (!photo_path || photo_path.length > 1000 || !/^https?:\/\//i.test(photo_path)) {
-      return res.redirect('/?error=' + encodeURIComponent('Please upload a photo of the damaged facility before submitting.'));
+      return res.redirect('/report?error=' + encodeURIComponent('Please upload a photo of the damaged facility before submitting.'));
     }
 
     // Parameterized SQL Query against SQL injection

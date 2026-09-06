@@ -28,7 +28,7 @@
 
   <div class="relative z-10 w-full max-w-md my-8">
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-extrabold text-red-600 mb-3 tracking-tight">MokletCare</h1>
+      <h1 class="text-4xl font-extrabold text-red-600 mb-3 tracking-tight"><a href="/" class="hover:opacity-90 transition-opacity">MokletCare</a></h1>
       <p class="text-slate-600 text-lg font-light">Facility Damage Reporting Portal</p>
     </div>
 
@@ -109,7 +109,7 @@
           const token = await window.Clerk.session.getToken();
           if (token) {
             document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
-            window.location.replace('/');
+            window.location.replace('/report');
             return;
           }
         }
@@ -121,7 +121,7 @@
         await authRedirect({
           strategy: strategy,
           redirectUrl: '/sso-callback',
-          redirectUrlComplete: '/'
+          redirectUrlComplete: '/report'
         });
       } catch (err) {
         console.error('OAuth error:', err);
@@ -130,7 +130,7 @@
             const token = await window.Clerk.session?.getToken();
             if (token) {
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
-              window.location.replace('/');
+              window.location.replace('/report');
               return;
             }
           } catch(retryErr) {
@@ -164,7 +164,7 @@
             const token = await window.Clerk.session.getToken();
             if (token) {
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
-              window.location.replace('/?redirected=1');
+              window.location.replace('/report?redirected=1');
               return;
             }
           } catch (e) {

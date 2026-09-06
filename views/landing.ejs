@@ -47,7 +47,7 @@
   <!-- ======== NAVBAR ======== -->
   <nav class="relative z-20 w-full">
     <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-      <a href="/welcome" class="flex items-center gap-2.5">
+      <a href="/" class="flex items-center gap-2.5">
         <div class="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
         </div>
@@ -57,7 +57,7 @@
         <a href="#features" class="hidden sm:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-1.5">Features</a>
         <a href="#how-it-works" class="hidden sm:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-1.5">How It Works</a>
         <a href="#team" class="hidden sm:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-1.5">Team</a>
-        <a href="<%= locals.isAuthenticated ? '/' : '/login' %>" class="text-sm bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors">
+        <a href="<%= locals.isAuthenticated ? '/report' : '/login' %>" class="text-sm bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors">
           <%= locals.isAuthenticated ? 'Go to App' : 'Get Started' %>
         </a>
       </div>
@@ -82,7 +82,7 @@
             Empowering students and staff to maintain a safe, functional school environment. One report at a time.
           </p>
           <div class="animate-fade-in-up delay-300 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-            <a href="<%= locals.isAuthenticated ? '/' : '/login' %>" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-xl transition-all text-center flex items-center justify-center gap-2.5 text-base">
+            <a href="<%= locals.isAuthenticated ? '/report' : '/login' %>" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-xl transition-all text-center flex items-center justify-center gap-2.5 text-base">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               <%= locals.isAuthenticated ? 'Go to App' : 'Start Reporting Now' %>
             </a>
@@ -367,7 +367,7 @@
       <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-10 sm:p-14">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Ready to Make a Difference?</h2>
         <p class="text-red-100 text-lg font-light mb-8 max-w-xl mx-auto">Help keep SMK Telkom Malang's facilities in top shape. Your reports drive real action.</p>
-        <a href="<%= locals.isAuthenticated ? '/' : '/login' %>" class="inline-flex items-center gap-2.5 bg-white text-red-600 font-bold px-8 py-4 rounded-xl hover:bg-red-50 transition-colors text-base">
+        <a href="<%= locals.isAuthenticated ? '/report' : '/login' %>" class="inline-flex items-center gap-2.5 bg-white text-red-600 font-bold px-8 py-4 rounded-xl hover:bg-red-50 transition-colors text-base">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
           <%= locals.isAuthenticated ? 'Go to App' : 'Sign In with Google' %>
         </a>

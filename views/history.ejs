@@ -57,7 +57,7 @@
       <% if (locals.user && user.role === 'admin') { %>
       <a href="/admin/approval" class="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center">Approval Page</a>
       <% } %>
-      <a href="/" class="text-sm bg-white text-slate-600 px-4 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">New Report</a>
+      <a href="/report" class="text-sm bg-white text-slate-600 px-4 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">New Report</a>
       <a href="/logout" class="text-sm bg-red-50 text-red-600 px-4 py-2 rounded-lg transition-colors border border-red-200 font-medium text-center">Logout</a>
     </div>
   </div>
@@ -78,7 +78,7 @@
  <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
  <h3 class="text-lg font-medium text-slate-700">No reports found</h3>
  <p class="text-slate-500 mt-2">You haven't submitted any facility damage reports yet.</p>
- <a href="/" class="inline-block mt-6 bg-red-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors">Submit a Report</a>
+ <a href="/report" class="inline-block mt-6 bg-red-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors">Submit a Report</a>
  </div>
  <% } else { %>
   <div class="space-y-4">

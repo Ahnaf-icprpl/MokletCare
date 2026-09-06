@@ -60,7 +60,7 @@
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
             }
           }
-          window.location.href = '/';
+          window.location.href = '/report';
         } catch (err) {
           console.error('SSO callback error:', err);
           window.location.href = '/login?error=' + encodeURIComponent('Authentication failed. Please try again.');
