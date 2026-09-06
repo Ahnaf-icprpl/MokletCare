@@ -22,7 +22,7 @@
   <% } %>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MokletCare — Inovasi Digital Manajemen dan Pelaporan Fasilitas Kampus SMK Telkom Malang.">
+  <meta name="description" content="MokletCare — Inovasi Digital Manajemen dan Pelaporan Fasilitas Sekolah SMK Telkom Malang.">
   <title><%= title %></title>
   <link rel="stylesheet" href="/stylesheets/style.css?v=<%= locals.assetVersion || '2.0.4' %>">
   
@@ -56,7 +56,6 @@
     }
     ::-webkit-scrollbar-thumb {
       background: #cbd5e1;
-      border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
@@ -72,51 +71,50 @@
   </div>
 
   <!-- 2. Sticky Glass Navigation Bar -->
-  <nav class="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/90 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
+  <nav class="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
-      <!-- Brand Wordmark -->
-      <a href="/" class="group focus:outline-none py-1">
-        <span class="text-2xl font-extrabold text-slate-900 tracking-tight hover:opacity-90 transition-opacity">Moklet<span class="text-red-600">Care</span></span>
+      <!-- Brand Identifiers -->
+      <a href="/" class="flex items-center gap-3 shrink-0 group focus:outline-none">
+        <div class="w-9 h-9 bg-red-600 flex items-center justify-center text-white font-bold text-lg tracking-wider shadow-sm group-hover:bg-red-700 transition-colors">
+          M
+        </div>
+        <div class="flex flex-col">
+          <span class="text-lg font-bold text-slate-900 tracking-tight leading-none">Moklet<span class="text-red-600">Care</span></span>
+          <span class="text-[10px] font-mono-code text-slate-500 uppercase tracking-wider">SMK Telkom Malang</span>
+        </div>
       </a>
 
-      <!-- Desktop Nav Links -->
-      <div class="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-8 text-xs lg:text-[13px] xl:text-sm font-medium text-slate-600">
-        <a href="#masalah" class="hover:text-red-600 transition-colors">Tentang</a>
-        <a href="#alur" class="hover:text-red-600 transition-colors">Cara Kerja</a>
-        <a href="#peran" class="hover:text-red-600 transition-colors">Pengguna</a>
-        <a href="#preview" class="hover:text-red-600 transition-colors">Tampilan</a>
-      </div>
-
-      <!-- Action Buttons / Session Status -->
-      <% if (locals.user) { %>
-        <div class="hidden sm:flex items-center gap-2 sm:gap-3">
-          <div class="flex items-center gap-2 lg:gap-3 pl-2 sm:border-l border-slate-200">
-            <div class="text-right hidden xl:block">
-              <div class="text-xs font-bold text-slate-800 truncate max-w-[120px] lg:max-w-[160px]"><%= user.displayName %></div>
-              <span class="text-[10px] font-mono-code uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200"><%= user.role %></span>
+      <!-- Right Navigation Actions -->
+      <div class="hidden lg:flex items-center gap-3">
+        <% if (locals.user) { %>
+          <div class="flex items-center gap-2 lg:gap-3 pl-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-slate-800"><%= user.name %></span>
+              <span class="text-[10px] font-mono-code uppercase px-1.5 py-0.5 bg-slate-100 text-slate-700"><%= user.role %></span>
             </div>
-            <% if (user.role === "admin") { %>
-              <a href="/admin/approval" class="hidden 2xl:inline-flex text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg transition-colors">
-                Persetujuan
+            <% if (user.role === 'admin') { %>
+              <a href="/admin/approval" class="text-xs bg-red-50 text-red-700 hover:bg-red-100 font-semibold px-3 py-2 transition-colors shrink-0">
+                Pusat Persetujuan
               </a>
             <% } %>
-
-            <a href="/report" class="text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 sm:px-3.5 py-2 rounded-lg transition-colors shrink-0">
-              Buat Laporan
-            </a>
-            <a href="/history" class="hidden md:inline-flex text-xs bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-2 rounded-lg transition-colors border border-slate-200 shrink-0">
+            <% if (['teknisi', 'sarpras'].includes(user.role)) { %>
+              <a href="/dashboard" class="text-xs bg-slate-100 text-slate-800 hover:bg-slate-200 font-semibold px-3 py-2 transition-colors shrink-0">
+                Dashboard Kerja
+              </a>
+            <% } %>
+            <a href="/history" class="hidden md:inline-flex text-xs bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-2 transition-colors shrink-0">
               Riwayat
             </a>
-            <a href="/logout" title="Keluar" class="text-xs text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-200 transition-colors shrink-0">
+            <a href="/logout" title="Keluar" class="text-xs text-red-600 hover:bg-red-50 p-2 transition-colors shrink-0">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </a>
           </div>
-        </div>
-      <% } %>
+        <% } %>
+      </div>
 
-      <!-- Mobile Hamburger Toggle -->
-      <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Toggle Menu">
+      <!-- Mobile Menu Hamburger Button -->
+      <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Toggle Menu">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -131,14 +129,14 @@
     <div id="mobile-backdrop" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"></div>
 
     <!-- Full-Width Top-Stuck Overlay Sheet -->
-    <div class="fixed top-0 inset-x-0 w-full bg-white border-b border-slate-200 z-10">
+    <div class="fixed top-0 inset-x-0 w-full bg-white z-10">
       
       <!-- Top Bar: Logo & Close Button (matches sticky navbar height & layout) -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-6 border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
         <a href="/" class="group focus:outline-none close-overlay-link py-1">
           <span class="text-2xl font-extrabold text-slate-900 tracking-tight hover:opacity-90 transition-opacity">Moklet<span class="text-red-600">Care</span></span>
         </a>
-        <button type="button" id="mobile-close-btn" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Tutup Menu">
+        <button type="button" id="mobile-close-btn" class="p-2 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Tutup Menu">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -147,49 +145,49 @@
 
       <!-- Menu List: Full Available Width -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 space-y-1">
-        <a href="#masalah" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+        <a href="#masalah" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 transition-colors">
           <span>Tentang</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+        <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 transition-colors">
           <span>Cara Kerja</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+        <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 transition-colors">
           <span>Pengguna</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+        <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 transition-colors">
           <span>Tampilan</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
 
       <!-- Mobile Session & Actions Footer -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 border-t border-slate-100 bg-slate-50/70 space-y-2">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 bg-slate-50/70 space-y-2">
         <% if (locals.user) { %>
           <div class="flex items-center justify-between px-1 pb-2">
             <div>
               <div class="text-xs font-bold text-slate-800"><%= user.displayName %></div>
               <div class="text-[10px] text-slate-500 font-mono-code"><%= user.email || '' %></div>
             </div>
-            <span class="text-[10px] font-mono-code uppercase px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200"><%= user.role %></span>
+            <span class="text-[10px] font-mono-code uppercase px-2 py-0.5 bg-white text-slate-700"><%= user.role %></span>
           </div>
           <div class="grid grid-cols-2 gap-2">
-            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
+            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
               <span>Buat Laporan</span>
             </a>
-            <a href="/history" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
+            <a href="/history" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 bg-white text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
               <span>Riwayat Laporan</span>
             </a>
           </div>
           <% if (user.role === "admin") { %>
-            <a href="/admin/approval" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-slate-900 text-white text-xs font-semibold text-center hover:bg-slate-800 transition-colors mt-2">
+            <a href="/admin/approval" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-slate-900 text-white text-xs font-semibold text-center hover:bg-slate-800 transition-colors mt-2">
               <span>Pusat Persetujuan Sarpras</span>
             </a>
           <% } %>
           <% if (user.role === "admin" || user.role === "staff") { %>
-            <a href="/dashboard" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold text-center hover:bg-slate-200 transition-colors mt-1">
+            <a href="/dashboard" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-slate-100 text-slate-800 text-xs font-semibold text-center hover:bg-slate-200 transition-colors mt-1">
               <span>Dashboard Pemeliharaan</span>
             </a>
           <% } %>
@@ -200,10 +198,10 @@
           </div>
         <% } else { %>
           <div class="space-y-2">
-            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
+            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
               <span>Buat Laporan</span>
             </a>
-            <a href="/login" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
+            <a href="/login" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 bg-white text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
               <span>Masuk</span>
             </a>
           </div>
@@ -214,12 +212,12 @@
   </div>
 
   <!-- 3. HERO SECTION -->
-  <section class="relative z-10 pt-8 pb-14 sm:pt-14 sm:pb-18 md:pt-20 md:pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80">
+  <section class="relative z-10 pt-8 pb-14 sm:pt-14 sm:pb-18 md:pt-20 md:pb-24 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto text-center space-y-6">
       
       <!-- Hero Headline -->
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-        Inovasi Cerdas Fasilitas Kampus, <span class="text-red-600">Setiap Laporan Tertangani Tuntas.</span>
+        Inovasi Cerdas Fasilitas Sekolah, <span class="text-red-600">Setiap Laporan Tertangani Tuntas.</span>
       </h1>
 
       <!-- Narrative Description -->
@@ -229,28 +227,28 @@
 
       <!-- CTA Action Cluster -->
       <div class="flex items-center justify-center pt-2">
-        <a href="/report" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-6 py-3.5 rounded-xl transition-all hover:-translate-y-0.5 focus:outline-none">
+        <a href="/report" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-6 py-3.5 transition-all hover:-translate-y-0.5 focus:outline-none">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           <span>Laporkan Kerusakan Fasilitas</span>
         </a>
       </div>
 
       <!-- Live Operational Telemetry Bar -->
-      <div class="pt-8 mt-4 border-t border-slate-200">
+      <div class="pt-8 mt-4">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div class="p-3 sm:p-4 bg-white/70 rounded-xl border border-slate-200 text-center">
+          <div class="p-3 sm:p-4 bg-white/70 text-center">
             <div class="font-mono-code text-2xl font-bold text-slate-900">42</div>
             <div class="text-[11px] text-slate-500 font-medium mt-0.5">Total Laporan Masuk</div>
           </div>
-          <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
+          <div class="p-4 bg-white/70">
             <div class="font-mono-code text-2xl font-bold text-emerald-600">29</div>
             <div class="text-[11px] text-slate-500 font-medium mt-0.5">Perbaikan Tuntas</div>
           </div>
-          <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
+          <div class="p-4 bg-white/70">
             <div class="font-mono-code text-2xl font-bold text-amber-600">10</div>
             <div class="text-[11px] text-slate-500 font-medium mt-0.5">Dalam Penanganan</div>
           </div>
-          <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
+          <div class="p-4 bg-white/70">
             <div class="font-mono-code text-2xl font-bold text-slate-900">93%</div>
             <div class="text-[11px] text-slate-500 font-medium mt-0.5">Tingkat Penanganan</div>
           </div>
@@ -261,7 +259,7 @@
   </section>
 
   <!-- 4. SECTION: PROBLEM VS SOLUTION ("Tantangan & Transformasi Sarpras") -->
-  <section id="masalah" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
+  <section id="masalah" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
     <div class="max-w-7xl mx-auto space-y-12">
       
       <!-- Section Header -->
@@ -279,9 +277,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <!-- Left Column: Cara Lama (Pain Points) -->
-        <div class="bg-red-50/40 border border-red-200/80 rounded-2xl p-6 sm:p-8 space-y-5">
-          <div class="flex items-center gap-3 border-b border-red-200/80 pb-4">
-            <div class="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-sm">
+        <div class="bg-red-50/40 p-6 sm:p-8 space-y-5">
+          <div class="flex items-center gap-3 pb-4">
+            <div class="w-8 h-8 bg-red-100 text-red-700 flex items-center justify-center font-bold text-sm">
               ✕
             </div>
             <div>
@@ -323,9 +321,9 @@
         </div>
 
         <!-- Right Column: Standar MokletCare -->
-        <div class="bg-emerald-50/40 border border-emerald-200/80 rounded-2xl p-6 sm:p-8 space-y-5">
-          <div class="flex items-center gap-3 border-b border-emerald-200/80 pb-4">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+        <div class="bg-emerald-50/40 p-6 sm:p-8 space-y-5">
+          <div class="flex items-center gap-3 pb-4">
+            <div class="w-8 h-8 bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
               ✓
             </div>
             <div>
@@ -372,7 +370,7 @@
   </section>
 
   <!-- 5. SECTION: 4-STAGE OPERATIONAL LIFECYCLE ("Alur Penanganan Sarpras") -->
-  <section id="alur" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-slate-50">
+  <section id="alur" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
     <div class="max-w-7xl mx-auto space-y-12">
       
       <!-- Section Header -->
@@ -389,10 +387,10 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Stage 1 -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between hover:border-red-300 transition-colors">
+        <div class="bg-white p-6 flex flex-col justify-between transition-colors">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="w-8 h-8 rounded-lg bg-red-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">01</span>
+              <span class="w-8 h-8 bg-red-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">01</span>
               <span class="text-[11px] font-mono-code text-slate-400">PELAPORAN AWAL</span>
             </div>
             <h3 class="text-base font-bold text-slate-900">Pelaporan Cepat & Terarah</h3>
@@ -400,16 +398,16 @@
               Siswa atau guru memilih lokasi ruangan (misalnya: <em>Lab RPL 1</em>), nama perangkat yang bermasalah, jenis kendala, melampirkan foto bukti, serta menentukan tingkat urgensi.
             </p>
           </div>
-          <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
+          <div class="pt-4 mt-4 text-[11px] text-slate-500 font-mono-code">
             Durasi: <strong class="text-slate-800">&lt; 60 Detik</strong>
           </div>
         </div>
 
         <!-- Stage 2 -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between hover:border-red-300 transition-colors">
+        <div class="bg-white p-6 flex flex-col justify-between transition-colors">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="w-8 h-8 rounded-lg bg-slate-900 text-white font-mono-code font-bold text-xs flex items-center justify-center">02</span>
+              <span class="w-8 h-8 bg-slate-900 text-white font-mono-code font-bold text-xs flex items-center justify-center">02</span>
               <span class="text-[11px] font-mono-code text-slate-400">KOORDINASI</span>
             </div>
             <h3 class="text-base font-bold text-slate-900">Prioritas & Persetujuan Kebutuhan</h3>
@@ -417,16 +415,16 @@
               Kerusakan berkategori <strong>Tinggi / Kritis</strong> otomatis masuk prioritas tindakan cepat. Kebutuhan perbaikan yang memerlukan pengadaan komponen baru diajukan ke pimpinan untuk persetujuan.
             </p>
           </div>
-          <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
+          <div class="pt-4 mt-4 text-[11px] text-slate-500 font-mono-code">
             Alur: <strong class="text-red-600">Koordinasi Bertingkat</strong>
           </div>
         </div>
 
         <!-- Stage 3 -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between hover:border-red-300 transition-colors">
+        <div class="bg-white p-6 flex flex-col justify-between transition-colors">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="w-8 h-8 rounded-lg bg-amber-500 text-white font-mono-code font-bold text-xs flex items-center justify-center">03</span>
+              <span class="w-8 h-8 bg-amber-500 text-white font-mono-code font-bold text-xs flex items-center justify-center">03</span>
               <span class="text-[11px] font-mono-code text-slate-400">PENANGANAN</span>
             </div>
             <h3 class="text-base font-bold text-slate-900">Tindakan Perbaikan di Lokasi</h3>
@@ -434,16 +432,16 @@
               Petugas teknisi memperbarui status menjadi "Dalam Penanganan", membawa perkakas yang tepat ke ruangan, dan melakukan perbaikan fasilitas secara langsung.
             </p>
           </div>
-          <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
+          <div class="pt-4 mt-4 text-[11px] text-slate-500 font-mono-code">
             Proses: <strong class="text-slate-800">Tindakan Lapangan</strong>
           </div>
         </div>
 
         <!-- Stage 4 -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between hover:border-red-300 transition-colors">
+        <div class="bg-white p-6 flex flex-col justify-between transition-colors">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">04</span>
+              <span class="w-8 h-8 bg-emerald-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">04</span>
               <span class="text-[11px] font-mono-code text-slate-400">VERIFIKASI</span>
             </div>
             <h3 class="text-base font-bold text-slate-900">Unggah Bukti Hasil & Penyelesaian</h3>
@@ -451,7 +449,7 @@
               Teknisi mengunggah foto bukti pengerjaan dan menyertakan catatan penyelesaian. Pelapor dapat langsung memeriksa bukti perbaikan pada menu Riwayat Laporan.
             </p>
           </div>
-          <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
+          <div class="pt-4 mt-4 text-[11px] text-slate-500 font-mono-code">
             Hasil: <strong class="text-emerald-600">Terverifikasi Tuntas</strong>
           </div>
         </div>
@@ -462,7 +460,7 @@
   </section>
 
   <!-- 6. SECTION: THREE-ROLE ARCHITECTURE ("Satu Platform, Tiga Peran") -->
-  <section id="peran" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
+  <section id="peran" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
     <div class="max-w-7xl mx-auto space-y-12">
       
       <!-- Section Header -->
@@ -479,9 +477,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         
         <!-- Role 1: Pelapor (Siswa & Guru) -->
-        <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between hover: transition-all">
+        <div class="bg-slate-50/50 p-6 flex flex-col justify-between transition-all">
           <div class="space-y-4">
-            <div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+            <div class="w-12 h-12 bg-red-100 text-red-600 flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             </div>
             <div>
@@ -489,7 +487,7 @@
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Siswa & Guru</h3>
               <p class="text-xs text-slate-500 mt-1">Pelaporan cepat, intuitif, dan tanpa repot mencari kontak petugas secara manual.</p>
             </div>
-            <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-200">
+            <ul class="space-y-2.5 text-xs text-slate-600 pt-2">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>Masuk praktis menggunakan akun Google sekolah</span>
@@ -511,9 +509,9 @@
         </div>
 
         <!-- Role 2: Teknisi Sarpras (Staff) -->
-        <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between hover: transition-all">
+        <div class="bg-slate-50/50 p-6 flex flex-col justify-between transition-all">
           <div class="space-y-4">
-            <div class="w-12 h-12 rounded-xl bg-red-600 text-white flex items-center justify-center">
+            <div class="w-12 h-12 bg-red-600 text-white flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
             <div>
@@ -521,7 +519,7 @@
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Teknisi Sarpras</h3>
               <p class="text-xs text-slate-500 mt-1">Daftar tugas terpusat, prioritas jelas, dan pelaporan perbaikan yang terarah.</p>
             </div>
-            <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-red-100">
+            <ul class="space-y-2.5 text-xs text-slate-600 pt-2">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>Dasbor pemantauan lengkap dengan ringkasan status perbaikan secara langsung</span>
@@ -543,9 +541,9 @@
         </div>
 
         <!-- Role 3: Manajemen & Kepala Sarpras (Admin) -->
-        <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between hover: transition-all">
+        <div class="bg-slate-50/50 p-6 flex flex-col justify-between transition-all">
           <div class="space-y-4">
-            <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+            <div class="w-12 h-12 bg-slate-900 text-white flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
             <div>
@@ -553,7 +551,7 @@
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Kepala Sarpras & Pimpinan</h3>
               <p class="text-xs text-slate-500 mt-1">Pengambilan keputusan cepat, persetujuan transparan, dan pengawasan terpadu.</p>
             </div>
-            <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-200">
+            <ul class="space-y-2.5 text-xs text-slate-600 pt-2">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>Pusat persetujuan permohonan sarpras dengan ringkasan pengajuan secara langsung</span>
@@ -580,7 +578,7 @@
   </section>
 
   <!-- 7. SECTION: SYSTEM SHOWCASE & SCREENSHOTS ("Galeri Antarmuka Nyata") -->
-  <section id="preview" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
+  <section id="preview" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
     <div class="max-w-7xl mx-auto space-y-10">
       
       <!-- Section Header -->
@@ -595,16 +593,16 @@
 
       <!-- Screenshot Tabs Navigation -->
       <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-3 px-2 scrollbar-none snap-x" id="gallery-tabs">
-        <button type="button" data-tab="tab-dashboard" class="gallery-tab-btn active shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-red-600 text-white transition-all">
+        <button type="button" data-tab="tab-dashboard" class="gallery-tab-btn active shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-red-600 text-white transition-all">
           1. Dasbor Penanganan Fasilitas
         </button>
-        <button type="button" data-tab="tab-form" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+        <button type="button" data-tab="tab-form" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
           2. Formulir Laporan Cepat
         </button>
-        <button type="button" data-tab="tab-modal" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+        <button type="button" data-tab="tab-modal" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
           3. Panel Pemeriksaan & Hasil
         </button>
-        <button type="button" data-tab="tab-auth" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+        <button type="button" data-tab="tab-auth" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
           4. Akses Akun Sekolah
         </button>
       </div>
@@ -614,7 +612,7 @@
         
         <!-- Tab 1 Content -->
         <div id="tab-dashboard" class="gallery-content block space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 border border-slate-200/80 bg-white">
+          <div class="shadow-xl shadow-slate-200/60 bg-white">
             <picture>
               <source type="image/webp" srcset="/images/screenshots/dashboard-desktop.webp">
               <img src="/images/screenshots/dashboard-desktop.png" alt="Dasbor Penanganan Fasilitas" loading="lazy" width="1280" height="720" class="w-full h-auto block">
@@ -628,7 +626,7 @@
 
         <!-- Tab 2 Content -->
         <div id="tab-form" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 border border-slate-200/80 bg-white">
+          <div class="shadow-xl shadow-slate-200/60 bg-white">
             <picture>
               <source type="image/webp" srcset="/images/screenshots/report-form-desktop.webp">
               <img src="/images/screenshots/report-form-desktop.png" alt="Formulir Laporan Cepat" loading="lazy" width="1280" height="720" class="w-full h-auto block">
@@ -642,7 +640,7 @@
 
         <!-- Tab 3 Content -->
         <div id="tab-modal" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 border border-slate-200/80 bg-white">
+          <div class="shadow-xl shadow-slate-200/60 bg-white">
             <picture>
               <source type="image/webp" srcset="/images/screenshots/report-details-modal.webp">
               <img src="/images/screenshots/report-details-modal.png" alt="Panel Pemeriksaan & Hasil" loading="lazy" width="1280" height="720" class="w-full h-auto block">
@@ -656,7 +654,7 @@
 
         <!-- Tab 4 Content -->
         <div id="tab-auth" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 border border-slate-200/80 bg-white">
+          <div class="shadow-xl shadow-slate-200/60 bg-white">
             <picture>
               <source type="image/webp" srcset="/images/screenshots/auth-signin.webp">
               <img src="/images/screenshots/auth-signin.png" alt="Akses Akun Sekolah" loading="lazy" width="1280" height="720" class="w-full h-auto block">
@@ -674,13 +672,13 @@
   </section>
 
   <!-- 8. SECTION: COMPETITION & DEVELOPMENT TEAM DOSSIER ("ITECHNO CUP 2026") -->
-  <section class="relative z-10 py-16 sm:py-20 px-4 sm:px-8 border-b border-slate-200 bg-slate-50">
+  <section class="relative z-10 py-16 sm:py-20 px-4 sm:px-8 bg-slate-50">
     <div class="max-w-5xl mx-auto">
       
-      <div class="bg-white text-slate-900 p-6 sm:p-10 lg:p-12 border border-slate-200 shadow-sm relative">
+      <div class="bg-white text-slate-900 p-6 sm:p-10 lg:p-12 shadow-sm relative">
         <div class="relative z-10 space-y-8">
           
-          <div class="border-b border-slate-200 pb-6">
+          <div class="pb-6">
             <div class="space-y-2">
               <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-600 text-white text-[11px] font-bold tracking-wider uppercase">
                 ITECHNO CUP 2026 · Web Development Competition
@@ -694,7 +692,7 @@
           <!-- Team Members Grid -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div class="bg-slate-50 border border-slate-200/90 p-6 space-y-3 hover:border-slate-300 hover:bg-slate-100/60 transition-colors">
+            <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Arsitektur Sistem & Rekayasa Logika</div>
               <div class="text-lg font-bold text-slate-900 tracking-tight">Dilshad <span class="underline underline-offset-4">Ahnaf</span></div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Perancangan arsitektur alur kerja sistem, pengelolaan data terpusat, dan integrasi keamanan akses pengguna.</p>
@@ -706,7 +704,7 @@
               </div>
             </div>
 
-            <div class="bg-slate-50 border border-slate-200/90 p-6 space-y-3 hover:border-slate-300 hover:bg-slate-100/60 transition-colors">
+            <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Pengembangan Tampilan Web</div>
               <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Rafale</span> Alfardean Herawan</div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Penyusunan antarmuka interaktif, implementasi tata letak responsif, dan kenyamanan visual pengguna.</p>
@@ -718,7 +716,7 @@
               </div>
             </div>
 
-            <div class="bg-slate-50 border border-slate-200/90 p-6 space-y-3 hover:border-slate-300 hover:bg-slate-100/60 transition-colors">
+            <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Desain Pengalaman Pengguna</div>
               <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Baruna</span> Aryatama</div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Perancangan alur interaksi pengguna, standarisasi sistem desain visual, dan pengujian kegunaan produk.</p>
@@ -732,7 +730,7 @@
 
           </div>
 
-          <div class="flex items-center justify-end pt-4 text-xs border-t border-slate-200">
+          <div class="flex items-center justify-end pt-4 text-xs">
             <a href="https://github.com/Ahnaf-icprpl/MokletCare" target="_blank" rel="noopener noreferrer" class="text-slate-900 hover:text-red-600 inline-flex items-center gap-1.5 font-semibold transition-colors">
               <span>Github link</span>
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -756,16 +754,16 @@
         Jelajahi kemudahan pelaporan fasilitas dalam waktu kurang dari 60 detik. Temukan bagaimana penanganan sarana sekolah dapat berjalan lebih terarah, cepat, dan transparan.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
-        <a href="/report" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-red-600 hover:bg-red-50 text-sm font-bold px-7 py-3.5 rounded-xl transition-transform hover:-translate-y-0.5">
+        <a href="/report" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-red-600 hover:bg-red-50 text-sm font-bold px-7 py-3.5 transition-transform hover:-translate-y-0.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           <span>Mulai Laporkan Fasilitas</span>
         </a>
         <% if (locals.user) { %>
-          <a href="/history" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white border border-red-400/50 text-sm font-semibold px-7 py-3.5 rounded-xl transition-colors">
+          <a href="/history" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white text-sm font-semibold px-7 py-3.5 transition-colors">
             <span>Lihat Riwayat Laporan</span>
           </a>
         <% } else { %>
-          <a href="/login" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white border border-red-400/50 text-sm font-semibold px-7 py-3.5 rounded-xl transition-colors">
+          <a href="/login" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white text-sm font-semibold px-7 py-3.5 transition-colors">
             <span>Masuk Portal Akun</span>
           </a>
         <% } %>
@@ -774,8 +772,8 @@
   </section>
 
   <!-- 11. INSTITUTIONAL FOOTER -->
-  <footer class="relative z-10 bg-slate-950 text-slate-400 text-xs pt-10 sm:pt-14 pb-8 px-4 sm:px-6 lg:px-8 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-slate-800/80">
+  <footer class="relative z-10 bg-slate-950 text-slate-400 text-xs pt-10 sm:pt-14 pb-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-10">
       
       <!-- Col 1: Brand & Address -->
       <div class="sm:col-span-2 space-y-4">
