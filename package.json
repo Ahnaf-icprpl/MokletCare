@@ -6,7 +6,9 @@
     "start": "node app.js",
     "dev": "concurrently \"npm run build:css -- --watch\" \"nodemon -e js,ejs app.js\"",
     "build:css": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css",
-    "migrate": "node ./scripts/migrate.js"
+    "migrate": "node ./scripts/migrate.js",
+    "lint": "eslint .",
+    "lint:ejs": "node -e 'const fs=require(\"fs\"),path=require(\"path\"),ejs=require(\"ejs\");fs.readdirSync(\"views\").filter(f=>f.endsWith(\".ejs\")).forEach(f=>ejs.compile(fs.readFileSync(path.join(\"views\",f),\"utf8\"),{filename:path.join(\"views\",f)}));console.log(\"All EJS templates valid!\");'"
   },
   "dependencies": {
     "@clerk/express": "^2.1.54",
@@ -25,8 +27,11 @@
     "pg": "^8.22.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.3.3",
     "concurrently": "^10.0.4",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
     "nodemon": "^3.1.14",
     "tailwindcss": "^4.3.3"
   }

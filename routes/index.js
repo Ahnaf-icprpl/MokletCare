@@ -2,11 +2,10 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 var multer = require('multer');
-var path = require('path');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const rateLimit = require('express-rate-limit');
-const { clerkClient, getAuth } = require('@clerk/express');
+const { getAuth } = require('@clerk/express');
 
 // Rate limiter for image uploads (100 per hour per user)
 const uploadLimiter = rateLimit({
@@ -62,7 +61,7 @@ const upload = multer({
   }
 });
 
-const { ensureAuthenticated, ensureRole, clearUserCache, getCachedClerkUser } = require('../middleware/auth');
+const { ensureAuthenticated, ensureRole } = require('../middleware/auth');
 
 router.get('/login', function(req, res, next) {
   const auth = getAuth(req);
@@ -145,7 +144,7 @@ async function getOptionLabelMap() {
     cachedOptionMap = map;
     optionMapExpiresAt = Date.now() + (10 * 60 * 1000);
     return map;
-  } catch (err) {
+  } catch {
     return cachedOptionMap || {};
   }
 }
