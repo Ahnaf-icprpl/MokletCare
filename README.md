@@ -128,7 +128,7 @@ Clean and accessible interface for students, teachers, and school staff to repor
 
 <br/>
 
-### 🔐 3. Authentication & Security Flow (Powered by Clerk)
+### 🔐 3. Authentication & Security Flow
 Seamless and secure authentication flow with OAuth SSO, email password login, and 6-digit OTP email verification.
 
 | Sign In Portal | Account Registration | Email OTP Verification |
