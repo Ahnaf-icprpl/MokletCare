@@ -132,41 +132,49 @@
     <!-- Dimmer Backdrop -->
     <div id="mobile-backdrop" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"></div>
 
-    <!-- Compact Overlay Card (Wraps only as necessary) -->
-    <div class="fixed top-16 sm:top-20 inset-x-4 max-w-xs sm:max-w-sm ml-auto bg-white rounded-2xl border border-slate-200 p-2 sm:p-3 z-10 space-y-0.5">
-      <div class="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 mb-1">
-        <span class="text-xs font-bold text-slate-700 font-mono-code uppercase">Menu</span>
-        <button type="button" id="mobile-close-btn" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none" aria-label="Tutup Menu">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Full-Width Top-Stuck Overlay Sheet -->
+    <div class="fixed top-0 inset-x-0 w-full bg-white border-b border-slate-200 z-10">
+      
+      <!-- Top Bar: Logo & Close Button (matches sticky navbar height & layout) -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-6 border-b border-slate-100">
+        <a href="/" class="group focus:outline-none close-overlay-link py-1">
+          <span class="text-2xl font-extrabold text-slate-900 tracking-tight hover:opacity-90 transition-opacity">Moklet<span class="text-red-600">Care</span></span>
+        </a>
+        <button type="button" id="mobile-close-btn" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Tutup Menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
 
-      <a href="#masalah" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>Tantangan</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>Alur Sarpras</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>Tiga Peran</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#arsitektur" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>Arsitektur</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>Screenshots</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#faq" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
-        <span>FAQ</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </a>
+      <!-- Menu List: Full Available Width -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 space-y-1">
+        <a href="#masalah" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>Tantangan</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>Alur Sarpras</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>Tiga Peran</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#arsitektur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>Arsitektur</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>Screenshots</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#faq" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
+          <span>FAQ</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
     </div>
   </div>
 
@@ -223,9 +231,7 @@
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded border border-red-200">
-          Transformasi Operasional
-        </span>
+
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Mengapa Pesan Grup WhatsApp & Formulir Kertas Tidak Lagi Cukup?
         </h2>
@@ -336,9 +342,6 @@
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded border border-red-200">
-          Siklus Operasional
-        </span>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Alur Kerja 4 Tahap dari Laporan Hingga Perbaikan Selesai
         </h2>
@@ -429,9 +432,6 @@
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded border border-red-200">
-          Ekosistem Peran
-        </span>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Dirancang Khusus untuk Tiga Pemangku Kepentingan Sekolah
         </h2>
@@ -473,18 +473,10 @@
               </li>
             </ul>
           </div>
-          <div class="pt-6">
-            <a href="/report" class="w-full inline-flex items-center justify-center text-xs font-semibold py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 transition-colors">
-              Mulai Buat Laporan
-            </a>
-          </div>
         </div>
 
         <!-- Role 2: Teknisi Sarpras (Staff) -->
-        <div class="rounded-2xl border-2 border-red-500/80 bg-red-50/20 p-6 flex flex-col justify-between hover: transition-all relative">
-          <div class="absolute -top-3 right-6 bg-red-600 text-white text-[10px] font-mono-code font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-            Fokus Operasional
-          </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between hover: transition-all">
           <div class="space-y-4">
             <div class="w-12 h-12 rounded-xl bg-red-600 text-white flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -512,11 +504,6 @@
                 <span>Request verifikasi foto ke Admin jika butuh sparepart</span>
               </li>
             </ul>
-          </div>
-          <div class="pt-6">
-            <a href="#preview" class="w-full inline-flex items-center justify-center text-xs font-semibold py-2.5 px-4 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors">
-              Lihat Screenshots
-            </a>
           </div>
         </div>
 
@@ -550,11 +537,6 @@
               </li>
             </ul>
           </div>
-          <div class="pt-6">
-            <a href="/admin/approval" class="w-full inline-flex items-center justify-center text-xs font-semibold py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 transition-colors">
-              Pusat Otorisasi Admin
-            </a>
-          </div>
         </div>
 
       </div>
@@ -568,9 +550,6 @@
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-400 font-bold bg-red-950/60 px-2.5 py-1 rounded border border-red-800/80">
-          Spesifikasi Teknis
-        </span>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
           Dibangun dengan Fondasi Rekayasa Perangkat Lunak yang Tangguh
         </h2>
@@ -665,9 +644,6 @@
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded border border-red-200">
-          Bukti Nyata Antarmuka
-        </span>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Eksplorasi Antarmuka Aplikasi MokletCare
         </h2>
@@ -762,9 +738,6 @@
       
       <!-- Section Header -->
       <div class="text-center space-y-3">
-        <span class="text-xs font-mono-code uppercase tracking-wider text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded border border-red-200">
-          Bantuan & Panduan
-        </span>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Pertanyaan Umum Pemeliharaan Fasilitas
         </h2>
@@ -907,9 +880,6 @@
   <!-- 11. FINAL CALL TO ACTION ("Mulai Rawat Fasilitas Sekolah") -->
   <section class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-red-600 text-white">
     <div class="max-w-4xl mx-auto text-center space-y-6">
-      <span class="inline-block text-xs font-mono-code font-bold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full border border-white/20">
-        Aksi Cepat & Terverifikasi
-      </span>
       <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
         Fasilitas Rusak Menghambat Praktikum Hari Ini?
       </h2>
@@ -946,6 +916,11 @@
         <div class="space-y-1 text-slate-500 font-mono-code text-[11px]">
           <div>SMK Telkom Malang</div>
           <div>Jl. Danau Ranau, Sawojajar, Kec. Kedungkandang, Kota Malang, Jawa Timur 65139</div>
+          <div class="pt-1 flex flex-wrap gap-x-3 gap-y-1">
+            <span>Email: <a href="mailto:support@mokletcare.my.id" class="text-slate-300 hover:text-white transition-colors">support@mokletcare.my.id</a></span>
+            <span>&bull;</span>
+            <span>Web: <a href="https://mokletcare.my.id" class="text-slate-300 hover:text-white transition-colors">mokletcare.my.id</a></span>
+          </div>
         </div>
       </div>
 
