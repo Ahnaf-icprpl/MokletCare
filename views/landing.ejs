@@ -95,8 +95,8 @@
       </div>
 
       <!-- Action Buttons / Session Status -->
-      <div class="hidden sm:flex items-center gap-2 sm:gap-3">
-        <% if (locals.user) { %>
+      <% if (locals.user) { %>
+        <div class="hidden sm:flex items-center gap-2 sm:gap-3">
           <div class="flex items-center gap-2 lg:gap-3 pl-2 sm:border-l border-slate-200">
             <div class="text-right hidden xl:block">
               <div class="text-xs font-bold text-slate-800 truncate max-w-[120px] lg:max-w-[160px]"><%= user.displayName %></div>
@@ -118,15 +118,8 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </a>
           </div>
-        <% } else { %>
-          <a href="/login" class="text-xs font-semibold text-slate-700 hover:text-red-600 px-2.5 sm:px-3 py-2 transition-colors shrink-0">
-            Masuk Akun
-          </a>
-          <a href="/report" class="text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors shrink-0 whitespace-nowrap">
-            Laporkan Kerusakan
-          </a>
-        <% } %>
-      </div>
+        </div>
+      <% } %>
 
       <!-- Mobile Hamburger Toggle -->
       <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none shrink-0" aria-label="Toggle Menu">
@@ -136,36 +129,50 @@
       </button>
 
     </div>
-
-    <!-- Mobile Drawer Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 py-4 space-y-3">
-      <div class="flex flex-col space-y-2 text-sm font-medium text-slate-700">
-        <a href="#masalah" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">Tantangan</a>
-        <a href="#alur" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">Alur Sarpras</a>
-        <a href="#peran" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">Tiga Peran</a>
-        <a href="#arsitektur" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">Arsitektur</a>
-        <a href="#preview" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">Screenshots</a>
-        <a href="#faq" class="px-2 py-1.5 hover:bg-slate-50 rounded-lg">FAQ</a>
-      </div>
-      <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-        <% if (locals.user) { %>
-          <div class="text-xs text-slate-500 pb-1">
-            Logged in: <strong class="text-slate-800"><%= user.displayName %></strong> (<%= user.role %>)
-          </div>
-          <% if (user.role === "admin") { %>
-            <a href="/admin/approval" class="w-full text-center text-xs bg-red-600 text-white font-semibold py-2.5 rounded-lg">Approval Sarpras</a>
-          <% } %>
-
-          <a href="/report" class="w-full text-center text-xs bg-red-600 text-white font-semibold py-2.5 rounded-lg">Lapor Kerusakan Baru</a>
-          <a href="/history" class="w-full text-center text-xs border border-slate-200 text-slate-700 font-semibold py-2.5 rounded-lg">Riwayat Laporan Saya</a>
-          <a href="/logout" class="w-full text-center text-xs bg-red-50 text-red-600 font-semibold py-2 rounded-lg">Keluar Sesi</a>
-        <% } else { %>
-          <a href="/login" class="w-full text-center text-xs border border-slate-200 text-slate-700 font-semibold py-2.5 rounded-lg">Masuk dengan Akun Sekolah</a>
-          <a href="/report" class="w-full text-center text-xs bg-red-600 text-white font-semibold py-2.5 rounded-lg">Laporkan Kerusakan Fasilitas</a>
-        <% } %>
-      </div>
-    </div>
   </nav>
+
+  <!-- Mobile Navigation True Overlay -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden lg:hidden" aria-modal="true" role="dialog">
+    <!-- Dimmer Backdrop -->
+    <div id="mobile-backdrop" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Compact Overlay Card (Wraps only as necessary) -->
+    <div class="fixed top-16 sm:top-20 inset-x-4 max-w-xs sm:max-w-sm ml-auto bg-white rounded-2xl border border-slate-200 p-2 sm:p-3 z-10 space-y-0.5">
+      <div class="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 mb-1">
+        <span class="text-xs font-bold text-slate-700 font-mono-code uppercase">Menu</span>
+        <button type="button" id="mobile-close-btn" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none" aria-label="Tutup Menu">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <a href="#masalah" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>Tantangan</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>Alur Sarpras</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>Tiga Peran</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#arsitektur" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>Arsitektur</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>Screenshots</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#faq" class="close-overlay-link flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/60 rounded-xl transition-colors">
+        <span>FAQ</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
 
   <!-- 3. HERO SECTION -->
   <section class="relative z-10 pt-8 pb-14 sm:pt-14 sm:pb-18 md:pt-20 md:pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80">
@@ -178,7 +185,7 @@
 
       <!-- Narrative Description -->
       <p class="text-slate-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mx-auto font-light px-2">
-        Hentikan pelaporan kerusakan fasilitas lewat grup WhatsApp yang tercecer dan terlupakan. MokletCare mendigitalisasi seluruh siklus pemeliharaan SMK Telkom Malang dengan taksonomi aset presisi, bukti foto Cloudinary sebelum-sesudah, dan otorisasi anggaran bertingkat.
+        Tidak ada lagi aduan fasilitas yang terselip di grup obrolan. <strong class="font-semibold text-slate-800">MokletCare</strong> mendigitalisasi tata kelola sarana & prasarana SMK Telkom Malang—mulai dari pelaporan instan berfoto bukti, penanganan teknisi tanggap, hingga verifikasi perbaikan yang tuntas dan transparan.
       </p>
 
       <!-- CTA Action Cluster -->
@@ -988,19 +995,45 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // 1. Mobile Menu Drawer Toggle
+      // 1. Mobile Menu True Overlay Controller
       const mobileBtn = document.getElementById("mobile-menu-btn");
-      const mobileMenu = document.getElementById("mobile-menu");
-      if (mobileBtn && mobileMenu) {
-        mobileBtn.addEventListener("click", function() {
-          const isHidden = mobileMenu.classList.contains("hidden");
-          if (isHidden) {
-            mobileMenu.classList.remove("hidden");
-          } else {
-            mobileMenu.classList.add("hidden");
-          }
-        });
+      const mobileOverlay = document.getElementById("mobile-menu-overlay");
+      const mobileCloseBtn = document.getElementById("mobile-close-btn");
+      const mobileBackdrop = document.getElementById("mobile-backdrop");
+
+      function openMobileMenu() {
+        if (!mobileOverlay) return;
+        mobileOverlay.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
       }
+
+      function closeMobileMenu() {
+        if (!mobileOverlay) return;
+        mobileOverlay.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      if (mobileBtn) {
+        mobileBtn.addEventListener("click", openMobileMenu);
+      }
+      if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener("click", closeMobileMenu);
+      }
+      if (mobileBackdrop) {
+        mobileBackdrop.addEventListener("click", closeMobileMenu);
+      }
+
+      // Close when clicking any anchor inside the overlay
+      document.querySelectorAll(".close-overlay-link").forEach(function(link) {
+        link.addEventListener("click", closeMobileMenu);
+      });
+
+      // Close on Escape key
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && mobileOverlay && !mobileOverlay.classList.contains("hidden")) {
+          closeMobileMenu();
+        }
+      });
 
       // Google Analytics Event Helper
       function trackGA(eventName, params) {
