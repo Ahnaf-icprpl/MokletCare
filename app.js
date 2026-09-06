@@ -12,6 +12,9 @@ if (!process.env.DATABASE_URL) {
 if (!process.env.CLERK_SECRET_KEY) {
   console.warn('WARNING: CLERK_SECRET_KEY is not defined in environment variables.');
 }
+if (!process.env.CLOUDINARY_URL && !(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET)) {
+  console.warn('WARNING: CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) is not defined in environment variables.');
+}
 
 const { clerkMiddleware } = require('@clerk/express');
 const { pool } = require('./db');

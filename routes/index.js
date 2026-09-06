@@ -29,7 +29,7 @@ const reportLimiter = rateLimit({
 
 // Ensure Cloudinary is initialized properly whether full URL or separate keys are provided
 if (process.env.CLOUDINARY_URL) {
-  // Cloudinary automatically parses CLOUDINARY_URL
+  cloudinary.config(true);
 } else if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -365,13 +365,21 @@ router.post(['/dashboard/reports/:id/status', '/dashboard/reports/:id/reply'], e
 
 router.post('/upload-image', ensureAuthenticated, uploadLimiter, function(req, res, next) {
   upload.single('file')(req, res, function(err) {
-    if (err instanceof multer.MulterError) {
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'File size exceeds the 5MB limit.' });
+    if (err) {
+      console.error('[Upload Error]:', err);
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ error: 'File size exceeds the 5MB limit.' });
+        }
+        return res.status(400).json({ error: err.message || 'File upload error.' });
       }
-      return res.status(400).json({ error: err.message });
-    } else if (err) {
-      return res.status(400).json({ error: err.message || 'File upload failed.' });
+
+      const rawMsg = typeof err === 'string' ? err : (err.message || '');
+      // Catch misconfigured Cloudinary credentials and return actionable 500 error
+      if (rawMsg.includes('api_key') || rawMsg.includes('cloud_name') || rawMsg.includes('api_secret')) {
+        return res.status(500).json({ error: 'Cloud storage service is misconfigured or API credentials are invalid.' });
+      }
+      return res.status(400).json({ error: rawMsg || 'File upload failed.' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded.' });
