@@ -75,6 +75,7 @@
     data-clerk-publishable-key="<%= locals.clerkPublishableKey || '' %>"
     src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
     type="text/javascript"
+    onload="ensureClerkReady()"
   ></script>
 
   <script>
@@ -89,34 +90,81 @@
       document.getElementById('error-alert').classList.add('hidden');
     }
 
+    let clerkReadyPromise = null;
+
+    function ensureClerkReady() {
+      if (window.Clerk && window.Clerk.loaded) {
+        return Promise.resolve(window.Clerk);
+      }
+      if (clerkReadyPromise) {
+        return clerkReadyPromise;
+      }
+      clerkReadyPromise = new Promise((resolve, reject) => {
+        let attempts = 0;
+        const maxAttempts = 150; // 15 seconds max polling
+        const poll = async () => {
+          if (window.Clerk) {
+            try {
+              if (!window.Clerk.loaded) {
+                await window.Clerk.load();
+              }
+              resolve(window.Clerk);
+            } catch (err) {
+              clerkReadyPromise = null;
+              reject(err);
+            }
+          } else {
+            attempts++;
+            if (attempts >= maxAttempts) {
+              clerkReadyPromise = null;
+              reject(new Error('Authentication service took too long to load. Please refresh the page.'));
+            } else {
+              setTimeout(poll, 100);
+            }
+          }
+        };
+        poll();
+      });
+      return clerkReadyPromise;
+    }
+
     async function loginWithOAuth(strategy) {
       hideError();
       if (strategy === 'oauth_apple' || strategy !== 'oauth_google') {
         showError('Only Google Single Sign-On is supported.');
         return;
       }
-      if (!window.Clerk) {
-        showError('Authentication service is loading. Please try again in a moment.');
-        return;
+
+      // Disable button and indicate loading while connecting
+      const googleBtn = document.getElementById('google-btn');
+      const googleBtnSpan = googleBtn ? googleBtn.querySelector('span') : null;
+      const originalText = googleBtnSpan ? googleBtnSpan.textContent : 'Continue with Google';
+
+      if (googleBtn) {
+        googleBtn.disabled = true;
+        if (googleBtnSpan) googleBtnSpan.textContent = 'Connecting...';
       }
 
-      // Disable button while redirecting
-      const googleBtn = document.getElementById('google-btn');
-      if (googleBtn) googleBtn.disabled = true;
-
       try {
-        if (window.Clerk.session) {
-          const token = await window.Clerk.session.getToken();
+        const clerk = await ensureClerkReady();
+
+        if (clerk.session) {
+          const token = await clerk.session.getToken();
           if (token) {
             document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
             window.location.replace('/report');
             return;
           }
         }
+
         // Prefer top-level Clerk.authenticateWithRedirect, fallback to client.signIn
-        const authRedirect = window.Clerk.authenticateWithRedirect 
-          ? window.Clerk.authenticateWithRedirect.bind(window.Clerk)
-          : window.Clerk.client.signIn.authenticateWithRedirect.bind(window.Clerk.client.signIn);
+        const authRedirect = clerk.authenticateWithRedirect 
+          ? clerk.authenticateWithRedirect.bind(clerk)
+          : (clerk.client && clerk.client.signIn ? clerk.client.signIn.authenticateWithRedirect.bind(clerk.client.signIn) : null);
+
+        if (!authRedirect) {
+          throw new Error('Authentication client could not be initialized. Please try again.');
+        }
 
         await authRedirect({
           strategy: strategy,
@@ -127,7 +175,8 @@
         console.error('OAuth error:', err);
         if (err.errors && err.errors[0] && err.errors[0].code === 'session_exists') {
           try {
-            const token = await window.Clerk.session?.getToken();
+            const clerk = window.Clerk;
+            const token = await clerk?.session?.getToken();
             if (token) {
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
               window.location.replace('/report');
@@ -139,29 +188,30 @@
         }
         let errorMsg = (err.errors && err.errors[0]) 
           ? (err.errors[0].longMessage || err.errors[0].message) 
-          : 'Sign in failed. Please try again.';
+          : (err.message || 'Sign in failed. Please try again.');
 
         if (errorMsg.includes('allowed values for parameter strategy') || (err.errors && err.errors[0] && err.errors[0].meta?.paramName === 'strategy')) {
           errorMsg = `Google authentication is not enabled in your Clerk Dashboard. Go to Clerk Dashboard > Configure > User & Authentication > Social Connections and enable Google.`;
         }
 
         showError(errorMsg);
-        if (googleBtn) googleBtn.disabled = false;
+        if (googleBtn) {
+          googleBtn.disabled = false;
+          if (googleBtnSpan) googleBtnSpan.textContent = originalText;
+        }
       }
     }
 
-    window.addEventListener('load', async () => {
+    function initLoginFlow() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('error')) {
         showError(urlParams.get('error'));
       }
-      if (!window.Clerk) return;
-      try {
-        await window.Clerk.load();
+      ensureClerkReady().then(async (clerk) => {
         const isRedirected = urlParams.has('redirected');
-        if (window.Clerk.session && !isRedirected) {
+        if (clerk.session && !isRedirected) {
           try {
-            const token = await window.Clerk.session.getToken();
+            const token = await clerk.session.getToken();
             if (token) {
               document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
               window.location.replace('/report?redirected=1');
@@ -170,13 +220,19 @@
           } catch (e) {
             console.error('Session sync error:', e);
           }
-        } else if (isRedirected && window.Clerk.session) {
+        } else if (isRedirected && clerk.session) {
           console.warn('Server redirected back to login despite active client session. Breaking redirect loop.');
         }
-      } catch (err) {
-        console.error('Error loading Clerk JS:', err);
-      }
-    });
+      }).catch((err) => {
+        console.error('Error preloading Clerk:', err);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLoginFlow);
+    } else {
+      initLoginFlow();
+    }
   </script>
 </body>
 </html>

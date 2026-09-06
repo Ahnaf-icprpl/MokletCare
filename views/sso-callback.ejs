@@ -46,27 +46,71 @@
     data-clerk-publishable-key="<%= locals.clerkPublishableKey || '' %>"
     src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
     type="text/javascript"
+    onload="processCallback()"
   ></script>
 
   <script>
-    window.addEventListener('load', async () => {
-      if (window.Clerk) {
-        try {
-          await window.Clerk.load();
-          await window.Clerk.handleRedirectCallback({});
-          if (window.Clerk.session) {
-            const token = await window.Clerk.session.getToken();
-            if (token) {
-              document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
+    let clerkReadyPromise = null;
+
+    function ensureClerkReady() {
+      if (window.Clerk && window.Clerk.loaded) {
+        return Promise.resolve(window.Clerk);
+      }
+      if (clerkReadyPromise) return clerkReadyPromise;
+      clerkReadyPromise = new Promise((resolve, reject) => {
+        let attempts = 0;
+        const maxAttempts = 150;
+        const poll = async () => {
+          if (window.Clerk) {
+            try {
+              if (!window.Clerk.loaded) {
+                await window.Clerk.load();
+              }
+              resolve(window.Clerk);
+            } catch (err) {
+              clerkReadyPromise = null;
+              reject(err);
+            }
+          } else {
+            attempts++;
+            if (attempts >= maxAttempts) {
+              clerkReadyPromise = null;
+              reject(new Error('Authentication service timeout. Please try again.'));
+            } else {
+              setTimeout(poll, 100);
             }
           }
-          window.location.href = '/report';
-        } catch (err) {
-          console.error('SSO callback error:', err);
-          window.location.href = '/login?error=' + encodeURIComponent('Authentication failed. Please try again.');
+        };
+        poll();
+      });
+      return clerkReadyPromise;
+    }
+
+    let callbackHandled = false;
+    async function processCallback() {
+      if (callbackHandled) return;
+      callbackHandled = true;
+      try {
+        const clerk = await ensureClerkReady();
+        await clerk.handleRedirectCallback({});
+        if (clerk.session) {
+          const token = await clerk.session.getToken();
+          if (token) {
+            document.cookie = `__session=${token}; path=/; max-age=86400; SameSite=Lax`;
+          }
         }
+        window.location.replace('/report');
+      } catch (err) {
+        console.error('SSO callback error:', err);
+        window.location.replace('/login?error=' + encodeURIComponent('Authentication failed. Please try again.'));
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', processCallback);
+    } else {
+      processCallback();
+    }
   </script>
 </body>
 </html>

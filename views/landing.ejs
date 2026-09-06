@@ -22,7 +22,7 @@
   <% } %>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MokletCare — Sistem Pelaporan Insiden dan Manajemen Pemeliharaan Fasilitas Sekolah Terpadu untuk SMK Telkom Malang. Dibuat untuk ITECHNO CUP 2026.">
+  <meta name="description" content="MokletCare — Inovasi Digital Manajemen dan Pelaporan Fasilitas Kampus SMK Telkom Malang.">
   <title><%= title %></title>
   <link rel="stylesheet" href="/stylesheets/style.css?v=<%= locals.assetVersion || '2.0.4' %>">
   
@@ -83,10 +83,9 @@
       <!-- Desktop Nav Links -->
       <div class="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-8 text-xs lg:text-[13px] xl:text-sm font-medium text-slate-600">
         <a href="#masalah" class="hover:text-red-600 transition-colors">Tantangan</a>
-        <a href="#alur" class="hover:text-red-600 transition-colors">Alur Sarpras</a>
+        <a href="#alur" class="hover:text-red-600 transition-colors">Alur Inovasi</a>
         <a href="#peran" class="hover:text-red-600 transition-colors">Tiga Peran</a>
-        <a href="#arsitektur" class="hover:text-red-600 transition-colors">Arsitektur</a>
-        <a href="#preview" class="hover:text-red-600 transition-colors">Screenshots</a>
+        <a href="#preview" class="hover:text-red-600 transition-colors">Antarmuka</a>
         <a href="#faq" class="hover:text-red-600 transition-colors">FAQ</a>
       </div>
 
@@ -100,20 +99,29 @@
             </div>
             <% if (user.role === "admin") { %>
               <a href="/admin/approval" class="hidden 2xl:inline-flex text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg transition-colors">
-                Approval Sarpras
+                Persetujuan Sarpras
               </a>
             <% } %>
 
             <a href="/report" class="text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3 sm:px-3.5 py-2 rounded-lg transition-colors shrink-0">
-              Lapor Fasilitas
+              Laporkan Fasilitas
             </a>
             <a href="/history" class="hidden md:inline-flex text-xs bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-2 rounded-lg transition-colors border border-slate-200 shrink-0">
-              Riwayat
+              Riwayat Laporan
             </a>
             <a href="/logout" title="Keluar dari sesi" class="text-xs text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-200 transition-colors shrink-0">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </a>
           </div>
+        </div>
+      <% } else { %>
+        <div class="hidden sm:flex items-center gap-2 sm:gap-3">
+          <a href="/login" class="text-xs font-semibold text-slate-700 hover:text-red-600 px-3 py-2 transition-colors">
+            Masuk Portal
+          </a>
+          <a href="/report" class="text-xs bg-red-600 hover:bg-red-700 text-white font-semibold px-3.5 py-2 rounded-lg transition-colors shrink-0">
+            Laporkan Fasilitas
+          </a>
         </div>
       <% } %>
 
@@ -154,25 +162,66 @@
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
         <a href="#alur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
-          <span>Alur Sarpras</span>
+          <span>Alur Inovasi</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
         <a href="#peran" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
           <span>Tiga Peran</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="#arsitektur" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
-          <span>Arsitektur</span>
-          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a>
         <a href="#preview" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
-          <span>Screenshots</span>
+          <span>Antarmuka</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
         <a href="#faq" class="close-overlay-link flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition-colors">
           <span>FAQ</span>
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
+      </div>
+
+      <!-- Mobile Session & Actions Footer -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 border-t border-slate-100 bg-slate-50/70 space-y-2">
+        <% if (locals.user) { %>
+          <div class="flex items-center justify-between px-1 pb-2">
+            <div>
+              <div class="text-xs font-bold text-slate-800"><%= user.displayName %></div>
+              <div class="text-[10px] text-slate-500 font-mono-code"><%= user.email || '' %></div>
+            </div>
+            <span class="text-[10px] font-mono-code uppercase px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200"><%= user.role %></span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
+              <span>Laporkan Fasilitas</span>
+            </a>
+            <a href="/history" class="close-overlay-link flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
+              <span>Riwayat Laporan</span>
+            </a>
+          </div>
+          <% if (user.role === "admin") { %>
+            <a href="/admin/approval" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-slate-900 text-white text-xs font-semibold text-center hover:bg-slate-800 transition-colors mt-2">
+              <span>Pusat Persetujuan Sarpras</span>
+            </a>
+          <% } %>
+          <% if (user.role === "admin" || user.role === "staff") { %>
+            <a href="/dashboard" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold text-center hover:bg-slate-200 transition-colors mt-1">
+              <span>Dashboard Pemeliharaan</span>
+            </a>
+          <% } %>
+          <div class="pt-2 text-center">
+            <a href="/logout" class="close-overlay-link text-xs text-red-600 hover:text-red-700 font-medium inline-flex items-center gap-1">
+              <span>Keluar dari sesi</span>
+            </a>
+          </div>
+        <% } else { %>
+          <div class="space-y-2">
+            <a href="/report" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-red-600 text-white text-xs font-semibold text-center hover:bg-red-700 transition-colors">
+              <span>Laporkan Kerusakan Fasilitas</span>
+            </a>
+            <a href="/login" class="close-overlay-link flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold text-center hover:bg-slate-100 transition-colors">
+              <span>Masuk Portal Akun</span>
+            </a>
+          </div>
+        <% } %>
       </div>
 
     </div>
@@ -184,12 +233,12 @@
       
       <!-- Hero Headline -->
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-        Infrastruktur Sekolah Terkendali, <span class="text-red-600">Setiap Laporan Tertangani.</span>
+        Inovasi Cerdas Fasilitas Kampus, <span class="text-red-600">Setiap Laporan Tertangani Tuntas.</span>
       </h1>
 
       <!-- Narrative Description -->
-      <p class="text-slate-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mx-auto font-light px-2">
-        Tidak ada lagi aduan fasilitas yang terselip di grup obrolan. <strong class="font-semibold text-slate-800">MokletCare</strong> mendigitalisasi tata kelola sarana & prasarana SMK Telkom Malang—mulai dari pelaporan instan berfoto bukti, penanganan teknisi tanggap, hingga verifikasi perbaikan yang tuntas dan transparan.
+      <p class="text-slate-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mx-auto font-medium px-2">
+        MokletCare hadir sebagai terobosan digital untuk mentransformasi tata kelola sarana & prasarana di lingkungan SMK Telkom Malang. Menggagas alur pelaporan modern berfoto bukti, koordinasi tanggap teknisi, hingga transparansi perbaikan yang tuntas dan terpercaya—menggantikan koordinasi manual yang rentan tercecer.
       </p>
 
       <!-- CTA Action Cluster -->
@@ -209,11 +258,11 @@
           </div>
           <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
             <div class="font-mono-code text-2xl font-bold text-emerald-600"><%= stats.resolved %></div>
-            <div class="text-[11px] text-slate-500 font-medium mt-0.5">Fasilitas Selesai</div>
+            <div class="text-[11px] text-slate-500 font-medium mt-0.5">Perbaikan Tuntas</div>
           </div>
           <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
             <div class="font-mono-code text-2xl font-bold text-amber-600"><%= stats.inProgress %></div>
-            <div class="text-[11px] text-slate-500 font-medium mt-0.5">Sedang Dikerjakan</div>
+            <div class="text-[11px] text-slate-500 font-medium mt-0.5">Dalam Penanganan</div>
           </div>
           <div class="p-4 bg-white/70 rounded-xl border border-slate-200">
             <div class="font-mono-code text-2xl font-bold text-slate-900"><%= stats.resolutionPercent %>%</div>
@@ -233,10 +282,10 @@
       <div class="text-center max-w-3xl mx-auto space-y-3">
 
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Mengapa Pesan Grup WhatsApp & Formulir Kertas Tidak Lagi Cukup?
+          Mengapa Pengelolaan Fasilitas Membutuhkan Pendekatan Baru?
         </h2>
         <p class="text-slate-600 text-sm sm:text-base font-light">
-          SMK Telkom Malang memiliki puluhan laboratorium komputer, ratusan perangkat komputasi, dan fasilitas berutilisasi tinggi. Cara lama menghasilkan kekacauan administrasi dan kelambatan perbaikan.
+          Dengan puluhan laboratorium komputer dan fasilitas belajar berintensitas tinggi di SMK Telkom Malang, inovasi sistem digital dirancang untuk mengakhiri cara lama yang rentan tercecer dan kurang terkoordinasi.
         </p>
       </div>
 
@@ -250,8 +299,8 @@
               ✕
             </div>
             <div>
-              <h3 class="text-base font-bold text-red-950">Metode Tradisional (Chat WA & Kertas)</h3>
-              <p class="text-xs text-red-700">Rentan hilang, tanpa standarisasi, tanpa akuntabilitas</p>
+              <h3 class="text-base font-bold text-red-950">Metode Manual (Pesan Singkat & Kertas)</h3>
+              <p class="text-xs text-red-700">Rentan hilang, tanpa format baku, dan sulit dipantau</p>
             </div>
           </div>
 
@@ -260,28 +309,28 @@
               <span class="text-red-500 font-bold text-base leading-none mt-0.5">•</span>
               <div>
                 <strong class="text-slate-900">Laporan Tertimbun & Terlupakan:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Pesan kerusakan di grup WhatsApp cepat tenggelam oleh ratusan obrolan lain sehingga perbaikan sering terabaikan berminggu-minggu.</p>
+                <p class="text-xs text-slate-600 mt-0.5">Pesan kerusakan di grup obrolan cepat tenggelam oleh percakapan lain sehingga perbaikan sering terabaikan berminggu-minggu.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-red-500 font-bold text-base leading-none mt-0.5">•</span>
               <div>
                 <strong class="text-slate-900">Deskripsi Ambigu & Tanpa Lokasi Jelas:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Laporan sering hanya berupa "Pak, PC di lab rusak". Teknisi tidak tahu ruang lab mana, PC nomor berapa, dan komponen apa yang harus dibawa.</p>
+                <p class="text-xs text-slate-600 mt-0.5">Laporan singkat seperti "komputer di lab rusak" membuat petugas bingung menentukan ruang, nomor perangkat, dan perkakas yang harus dibawa.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-red-500 font-bold text-base leading-none mt-0.5">•</span>
               <div>
-                <strong class="text-slate-900">Pelapor Mengalami Ketiadaan Transparansi:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Siswa dan guru tidak tahu apakah laporannya sudah dibaca, ditolak karena tidak ada anggaran, atau sedang ditangani.</p>
+                <strong class="text-slate-900">Status Penanganan Tidak Terlihat bagi Pelapor:</strong>
+                <p class="text-xs text-slate-600 mt-0.5">Siswa dan guru tidak tahu apakah laporannya sudah dibaca, menunggu suku cadang, atau sedang ditangani.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-red-500 font-bold text-base leading-none mt-0.5">•</span>
               <div>
                 <strong class="text-slate-900">Tanpa Bukti Fisik Saat Perbaikan Selesai:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Tidak ada dokumentasi visual resmi saat pengerjaan ditutup, menyulitkan audit pertanggungjawaban Sarpras tahunan.</p>
+                <p class="text-xs text-slate-600 mt-0.5">Tidak ada dokumentasi foto resmi saat pengerjaan ditutup, menyulitkan pertanggungjawaban kondisi fasilitas sekolah.</p>
               </div>
             </li>
           </ul>
@@ -294,7 +343,7 @@
               ✓
             </div>
             <div>
-              <h3 class="text-base font-bold text-emerald-950">Standar Sistem MokletCare</h3>
+              <h3 class="text-base font-bold text-emerald-950">Inovasi Terpadu MokletCare</h3>
               <p class="text-xs text-emerald-700">Terpusat, tervalidasi foto, dan akuntabel di setiap langkah</p>
             </div>
           </div>
@@ -303,29 +352,29 @@
             <li class="flex items-start gap-3">
               <span class="text-emerald-600 font-bold text-base leading-none mt-0.5">•</span>
               <div>
-                <strong class="text-slate-900">Tiket Terpusat dengan ID Referensi Unik:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Setiap keluhan tercatat dalam database PostgreSQL dengan nomor tiket unik, waktu masuk, dan riwayat status yang permanen.</p>
+                <strong class="text-slate-900">Laporan Digital dengan Nomor Referensi Unik:</strong>
+                <p class="text-xs text-slate-600 mt-0.5">Setiap laporan tersimpan rapi secara digital dengan nomor tiket unik, waktu pencatatan, dan jejak status yang jelas.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-emerald-600 font-bold text-base leading-none mt-0.5">•</span>
               <div>
-                <strong class="text-slate-900">Taksonomi Kerusakan 5 Tingkat Terstruktur:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Dropdown wajib memilih Lokasi Ruang, Jenis Fasilitas, Barang, Tipe Kerusakan, dan Tingkat Urgensi sehingga teknisi siap dengan perkakas yang tepat.</p>
+                <strong class="text-slate-900">Klasifikasi Terstruktur & Lengkap:</strong>
+                <p class="text-xs text-slate-600 mt-0.5">Pilihan terarah untuk lokasi ruangan, jenis fasilitas, nama barang, tipe kendala, dan tingkat kepentingan membantu persiapan perbaikan lebih tepat.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-emerald-600 font-bold text-base leading-none mt-0.5">•</span>
               <div>
-                <strong class="text-slate-900">Transparansi Real-Time di Halaman Riwayat:</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Pelapor dapat memeriksa perkembangan tiketnya kapan saja di menu <code class="font-mono-code text-[11px] bg-white px-1.5 py-0.5 rounded border border-emerald-300">/history</code> lengkap dengan catatan staf.</p>
+                <strong class="text-slate-900">Pemantauan Terbuka di Riwayat Laporan:</strong>
+                <p class="text-xs text-slate-600 mt-0.5">Pelapor dapat memeriksa perkembangan status kapan saja melalui menu Riwayat Laporan lengkap dengan catatan tim penanganan.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <span class="text-emerald-600 font-bold text-base leading-none mt-0.5">•</span>
               <div>
-                <strong class="text-slate-900">Bukti Ganda Cloudinary (Sebelum & Sesudah):</strong>
-                <p class="text-xs text-slate-600 mt-0.5">Foto awal kerusakan menjadi dasar verifikasi, dan foto hasil pengerjaan diunggah teknisi sebagai bukti sahih sebelum tiket ditutup.</p>
+                <strong class="text-slate-900">Dokumentasi Foto Sebelum & Sesudah:</strong>
+                <p class="text-xs text-slate-600 mt-0.5">Foto awal kerusakan menjadi dasar pengecekan awal, dan foto hasil pengerjaan diunggah teknisi sebagai bukti nyata sebelum tiket ditutup.</p>
               </div>
             </li>
           </ul>
@@ -343,10 +392,10 @@
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Alur Kerja 4 Tahap dari Laporan Hingga Perbaikan Selesai
+          Alur Inovasi 4 Tahap Menuju Fasilitas yang Selalu Prima
         </h2>
         <p class="text-slate-600 text-sm sm:text-base font-light">
-          Setiap laporan diproses melalui alur kerja baku yang menjamin kecepatan penanganan tanpa mengorbankan kendali anggaran.
+          Sebuah konsep alur kerja cerdas yang menjamin kecepatan penanganan tanpa mengorbankan ketertiban koordinasi.
         </p>
       </div>
 
@@ -358,11 +407,11 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="w-8 h-8 rounded-lg bg-red-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">01</span>
-              <span class="text-[11px] font-mono-code text-slate-400">INPUT PELAPOR</span>
+              <span class="text-[11px] font-mono-code text-slate-400">PELAPORAN AWAL</span>
             </div>
-            <h3 class="text-base font-bold text-slate-900">Penginputan Insiden Terstruktur</h3>
+            <h3 class="text-base font-bold text-slate-900">Pelaporan Cepat & Terarah</h3>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Siswa atau guru memilih lokasi ruangan (misal: <em>Lab RPL 1</em>), item yang rusak, jenis kerusakan, melampirkan foto bukti maksimal 5MB, serta menetapkan tingkat urgensi.
+              Siswa atau guru memilih lokasi ruangan (misalnya: <em>Lab RPL 1</em>), nama perangkat yang bermasalah, jenis kendala, melampirkan foto bukti, serta menentukan tingkat urgensi.
             </p>
           </div>
           <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
@@ -375,15 +424,15 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="w-8 h-8 rounded-lg bg-slate-900 text-white font-mono-code font-bold text-xs flex items-center justify-center">02</span>
-              <span class="text-[11px] font-mono-code text-slate-400">GOVERNANCE</span>
+              <span class="text-[11px] font-mono-code text-slate-400">KOORDINASI</span>
             </div>
-            <h3 class="text-base font-bold text-slate-900">Triage & Dual-Tier Policy</h3>
+            <h3 class="text-base font-bold text-slate-900">Prioritas & Persetujuan Kebutuhan</h3>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Kerusakan berkategori <strong>High / Critical</strong> otomatis masuk jalur cepat (fast-track). Kerusakan <strong>Low / Medium</strong> yang membutuhkan pembelian suku cadang diajukan ke Admin Sarpras via modal verifikasi foto.
+              Kerusakan berkategori <strong>Tinggi / Kritis</strong> otomatis masuk prioritas tindakan cepat. Kebutuhan perbaikan yang memerlukan pengadaan komponen baru diajukan ke pimpinan untuk persetujuan.
             </p>
           </div>
           <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
-            Gate: <strong class="text-red-600">Dual-Tier Approval</strong>
+            Alur: <strong class="text-red-600">Koordinasi Bertingkat</strong>
           </div>
         </div>
 
@@ -392,15 +441,15 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="w-8 h-8 rounded-lg bg-amber-500 text-white font-mono-code font-bold text-xs flex items-center justify-center">03</span>
-              <span class="text-[11px] font-mono-code text-slate-400">EKSEKUSI</span>
+              <span class="text-[11px] font-mono-code text-slate-400">PENANGANAN</span>
             </div>
-            <h3 class="text-base font-bold text-slate-900">Perbaikan Fisik di Lokasi</h3>
+            <h3 class="text-base font-bold text-slate-900">Tindakan Perbaikan di Lokasi</h3>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Teknisi Sarpras mengubah status ke <code>in_progress</code>, membawa peralatan yang sesuai, melakukan perbaikan di ruang sekolah, dan mengambil foto hasil pengerjaan di tempat.
+              Petugas teknisi memperbarui status menjadi "Dalam Penanganan", membawa perkakas yang tepat ke ruangan, dan melakukan perbaikan fasilitas secara langsung.
             </p>
           </div>
           <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
-            Tindakan: <strong class="text-slate-800">Teknisi Bertugas</strong>
+            Proses: <strong class="text-slate-800">Tindakan Lapangan</strong>
           </div>
         </div>
 
@@ -411,13 +460,13 @@
               <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-mono-code font-bold text-xs flex items-center justify-center">04</span>
               <span class="text-[11px] font-mono-code text-slate-400">VERIFIKASI</span>
             </div>
-            <h3 class="text-base font-bold text-slate-900">Upload Bukti & Penutupan</h3>
+            <h3 class="text-base font-bold text-slate-900">Unggah Bukti Hasil & Penyelesaian</h3>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Teknisi mengunggah foto hasil akhir, menyertakan catatan teknis, lalu menetapkan status <code>resolved</code>. Pelapor langsung melihat bukti penutupan di menu <code>/history</code>.
+              Teknisi mengunggah foto bukti pengerjaan dan menyertakan catatan penyelesaian. Pelapor dapat langsung memeriksa bukti perbaikan pada menu Riwayat Laporan.
             </p>
           </div>
           <div class="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-500 font-mono-code">
-            Hasil: <strong class="text-emerald-600">Terverifikasi 100%</strong>
+            Hasil: <strong class="text-emerald-600">Terverifikasi Tuntas</strong>
           </div>
         </div>
 
@@ -433,10 +482,10 @@
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Dirancang Khusus untuk Tiga Pemangku Kepentingan Sekolah
+          Dirancang Khusus untuk Kebutuhan Lingkungan Sekolah
         </h2>
         <p class="text-slate-600 text-sm sm:text-base font-light">
-          Setiap pengguna mendapatkan antarmuka yang disesuaikan dengan tanggung jawabnya, terlindungi oleh sistem otorisasi berbasis peran (RBAC).
+          Setiap pemangku kepentingan mendapatkan ruang kerja yang nyaman sesuai peran dan tanggung jawabnya, dengan pembagian akses yang teratur.
         </p>
       </div>
 
@@ -450,26 +499,26 @@
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             </div>
             <div>
-              <span class="text-[11px] font-mono-code text-red-600 font-semibold uppercase">Role: Reporter</span>
+              <span class="text-[11px] font-mono-code text-red-600 font-semibold uppercase">Peran: Pelapor</span>
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Siswa & Guru</h3>
-              <p class="text-xs text-slate-500 mt-1">Pelaporan cepat, intuitif, dan tanpa repot mencari kontak teknisi.</p>
+              <p class="text-xs text-slate-500 mt-1">Pelaporan cepat, intuitif, dan tanpa repot mencari kontak petugas secara manual.</p>
             </div>
             <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-200">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Login mudah via Google SSO akun Telkom Schools</span>
+                <span>Masuk praktis menggunakan akun Google sekolah</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Dropdown taksonomi dinamis (Ruang, Barang, Urgensi)</span>
+                <span>Pilihan kategori kerusakan terstruktur (Ruangan, Barang, Urgensi)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Preview foto real-time sebelum submit ke Cloudinary</span>
+                <span>Pratinjau foto seketika sebelum formulir dikirim</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Lacak status di <code>/history</code> lengkap dengan foto bukti selesai</span>
+                <span>Pantau status tiket di menu Riwayat Laporan beserta foto bukti selesai</span>
               </li>
             </ul>
           </div>
@@ -482,26 +531,26 @@
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
             <div>
-              <span class="text-[11px] font-mono-code text-red-600 font-semibold uppercase">Role: Staff</span>
+              <span class="text-[11px] font-mono-code text-red-600 font-semibold uppercase">Peran: Teknisi / Staf</span>
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Teknisi Sarpras</h3>
-              <p class="text-xs text-slate-500 mt-1">Antrean triage terpusat, prioritas jelas, dan pelaporan lapangan terarah.</p>
+              <p class="text-xs text-slate-500 mt-1">Daftar tugas terpusat, prioritas jelas, dan pelaporan perbaikan yang terarah.</p>
             </div>
             <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-red-100">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Dashboard <code>/dashboard</code> dengan penghitung metrik KPI tiket</span>
+                <span>Dasbor pemantauan lengkap dengan ringkasan status perbaikan secara langsung</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Filter status (Pending, In Progress, Resolved, Rejected)</span>
+                <span>Penyaringan status tiket (Menunggu, Dalam Penanganan, Selesai, Ditolak)</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Modal inspeksi terintegrasi dengan aksi ubah status instan</span>
+                <span>Panel periksa tiket lengkap dengan pembaruan status pengerjaan langsung di lapangan</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Request verifikasi foto ke Admin jika butuh sparepart</span>
+                <span>Pengajuan persetujuan pengadaan suku cadang ke Kepala Sarpras</span>
               </li>
             </ul>
           </div>
@@ -514,26 +563,26 @@
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
             <div>
-              <span class="text-[11px] font-mono-code text-slate-700 font-semibold uppercase">Role: Admin</span>
+              <span class="text-[11px] font-mono-code text-slate-700 font-semibold uppercase">Peran: Admin / Kepala Sarpras</span>
               <h3 class="text-xl font-bold text-slate-900 mt-0.5">Kepala Sarpras & Pimpinan</h3>
-              <p class="text-xs text-slate-500 mt-1">Otorisasi anggaran, audit pertanggungjawaban, dan manajemen hak akses.</p>
+              <p class="text-xs text-slate-500 mt-1">Pengambilan keputusan cepat, persetujuan transparan, dan pengawasan terpadu.</p>
             </div>
             <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-200">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Pusat otorisasi <code>/admin/approval</code> dengan statistik permohonan</span>
+                <span>Pusat persetujuan permohonan sarpras dengan ringkasan pengajuan secara langsung</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Persetujuan / penolakan pengadaan alat dalam satu klik</span>
+                <span>Keputusan persetujuan atau penolakan pengadaan sarpras secara efisien</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Delegasi role instan via Clerk metadata (Reporter, Staff, Admin)</span>
+                <span>Pengaturan hak akses pengguna yang tertata dan aman</span>
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Akses penuh superuser tanpa batasan hak akses</span>
+                <span>Kendali penuh atas seluruh tata kelola data dan riwayat laporan sekolah</span>
               </li>
             </ul>
           </div>
@@ -544,127 +593,33 @@
     </div>
   </section>
 
-  <!-- 7. SECTION: TECHNICAL ARCHITECTURE MATRIX ("Spesifikasi Arsitektur Sistem") -->
-  <section id="arsitektur" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-slate-900 text-white">
-    <div class="max-w-7xl mx-auto space-y-12">
-      
-      <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto space-y-3">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Dibangun dengan Fondasi Rekayasa Perangkat Lunak yang Tangguh
-        </h2>
-        <p class="text-slate-400 text-sm sm:text-base font-light">
-          Arsitektur full-stack modern yang mengutamakan kecepatan pemuatan, integritas data relasional, dan keamanan identitas enterprise.
-        </p>
-      </div>
-
-      <!-- 6 Technical Pillars Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        <!-- Pillar 1: Node.js & SSR -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">ENGINE</span>
-            <span class="text-xs text-slate-400 font-mono-code">v4.22</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">Express & EJS Server-Side Rendering</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Menghilangkan jeda hidrasi sisi klien dengan First Contentful Paint (FCP) instan. Memastikan antarmuka dapat diakses mulus bahkan pada koneksi seluler siswa yang terbatas.
-          </p>
-        </div>
-
-        <!-- Pillar 2: PostgreSQL & ACID -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded border border-blue-800">STORAGE</span>
-            <span class="text-xs text-slate-400 font-mono-code">v14+</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">PostgreSQL ACID & 14 Migrasi SQL</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Kepatuhan relasional ACID dengan foreign key constraints, tipe ENUM status bawaan, indeks performa pencarian, serta eksekusi migrasi otomatis dengan rollback transaksional.
-          </p>
-        </div>
-
-        <!-- Pillar 3: Cloudinary CDN -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">MEDIA</span>
-            <span class="text-xs text-slate-400 font-mono-code">5MB Limit</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">Cloudinary Visual CDN Pipeline</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Validasi format MIME ketat (JPEG, PNG, WebP) dengan batasan ukuran 5MB, kompresi otomatis di cloud, dan pengiriman gambar latensi rendah melalui Global CDN.
-          </p>
-        </div>
-
-        <!-- Pillar 4: Clerk Auth & RBAC -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800">IDENTITY</span>
-            <span class="text-xs text-slate-400 font-mono-code">SSO + OTP</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">Clerk Identity & Role Delegation</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Autentikasi Single Sign-On Google Workspace sekolah, verifikasi email OTP 6 digit, dan klaim sesi JWT berbasis role tanpa risiko kebocoran password di database lokal.
-          </p>
-        </div>
-
-        <!-- Pillar 5: In-Memory Caching -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">PERFORMANCE</span>
-            <span class="text-xs text-slate-400 font-mono-code">Dual TTL</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">Two-Tier In-Memory Caching</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Caching profil Clerk 5 menit dan taksonomi dropdown 10 menit di memori server, memangkas overhead query database dan API eksternal hingga lebih dari 70%.
-          </p>
-        </div>
-
-        <!-- Pillar 6: Security & Rate Limits -->
-        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-mono-code text-xs font-bold text-red-400 bg-red-950/60 px-2 py-0.5 rounded border border-red-800">SECURITY</span>
-            <span class="text-xs text-slate-400 font-mono-code">Defense-in-Depth</span>
-          </div>
-          <h3 class="text-lg font-bold text-white">Rate Limiting & Security Headers</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Pembatasan 100 laporan/jam per pengguna untuk mencegah spam tiket, proteksi header nosniff, anti-clickjacking SAMEORIGIN, serta sanitasi parameter SQL menyeluruh.
-          </p>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 8. SECTION: SYSTEM SHOWCASE & SCREENSHOTS ("Galeri Antarmuka Nyata") -->
+  <!-- 7. SECTION: SYSTEM SHOWCASE & SCREENSHOTS ("Galeri Antarmuka Nyata") -->
   <section id="preview" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
     <div class="max-w-7xl mx-auto space-y-10">
       
       <!-- Section Header -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Eksplorasi Antarmuka Aplikasi MokletCare
+          Eksplorasi Konsep & Tampilan MokletCare
         </h2>
         <p class="text-slate-600 text-sm sm:text-base font-light">
-          Setiap modul dirancang bersih, intuitif, dan optimal untuk layar desktop maupun perangkat seluler.
+          Setiap tampilan dirancang bersih, intuitif, dan optimal untuk layar komputer maupun perangkat seluler.
         </p>
       </div>
 
       <!-- Screenshot Tabs Navigation -->
       <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-3 px-2 scrollbar-none snap-x" id="gallery-tabs">
         <button type="button" data-tab="tab-dashboard" class="gallery-tab-btn active shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-red-600 text-white transition-all">
-          1. Dashboard Pemeliharaan Staf
+          1. Dasbor Penanganan Fasilitas
         </button>
         <button type="button" data-tab="tab-form" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          2. Formulir Pelaporan Insiden
+          2. Formulir Laporan Cepat
         </button>
         <button type="button" data-tab="tab-modal" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          3. Modal Inspeksi & Verifikasi
+          3. Panel Pemeriksaan & Hasil
         </button>
         <button type="button" data-tab="tab-auth" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          4. Autentikasi Google SSO
+          4. Akses Akun Sekolah
         </button>
       </div>
 
@@ -680,8 +635,8 @@
             </picture>
           </div>
           <div class="px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-300 gap-2 font-mono-code">
-            <span>MODUL: <strong class="text-white">Staff Maintenance Command Center</strong></span>
-            <span class="text-slate-400">KPI counters, multi-field search, priority badges, & pagination</span>
+            <span>MODUL: <strong class="text-white">Dasbor Penanganan Fasilitas</strong></span>
+            <span class="text-slate-400">Ringkasan status terkini, pencarian cepat, penyaringan laporan, dan navigasi yang mudah</span>
           </div>
         </div>
 
@@ -694,8 +649,8 @@
             </picture>
           </div>
           <div class="px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-300 gap-2 font-mono-code">
-            <span>MODUL: <strong class="text-white">Incident Submission Portal</strong></span>
-            <span class="text-slate-400">Cascading taxonomies, room locations, & Cloudinary photo upload</span>
+            <span>MODUL: <strong class="text-white">Formulir Laporan Cepat</strong></span>
+            <span class="text-slate-400">Kategori terarah, penentuan lokasi ruangan, dan lampiran foto bukti kerusakan</span>
           </div>
         </div>
 
@@ -708,8 +663,8 @@
             </picture>
           </div>
           <div class="px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-300 gap-2 font-mono-code">
-            <span>MODUL: <strong class="text-white">Inspection & Resolution Modal</strong></span>
-            <span class="text-slate-400">Photographic audit, status mutation, admin replies, & photo requests</span>
+            <span>MODUL: <strong class="text-white">Panel Pemeriksaan & Hasil</strong></span>
+            <span class="text-slate-400">Pemeriksaan foto, pembaruan status kerja, catatan teknis, dan verifikasi selesai</span>
           </div>
         </div>
 
@@ -718,12 +673,12 @@
           <div class="rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
             <picture>
               <source type="image/webp" srcset="/images/screenshots/auth-signin.webp">
-              <img src="/images/screenshots/auth-signin.png" alt="Google SSO Authentication" loading="lazy" width="1280" height="720" class="w-full h-auto object-contain">
+              <img src="/images/screenshots/auth-signin.png" alt="Autentikasi Akun Google" loading="lazy" width="1280" height="720" class="w-full h-auto object-contain">
             </picture>
           </div>
           <div class="px-2 py-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-300 gap-2 font-mono-code">
-            <span>MODUL: <strong class="text-white">Enterprise Identity Gateway</strong></span>
-            <span class="text-slate-400">Google Single Sign-On, 6-digit OTP verification, & session cookies</span>
+            <span>MODUL: <strong class="text-white">Akses Akun Sekolah</strong></span>
+            <span class="text-slate-400">Masuk mudah dengan akun Google sekolah, perlindungan data, dan sesi yang aman</span>
           </div>
         </div>
 
@@ -732,17 +687,17 @@
     </div>
   </section>
 
-  <!-- 9. SECTION: FAQ ACCORDION ("Pertanyaan Umum Sarpras") -->
+  <!-- 8. SECTION: FAQ ACCORDION ("Pertanyaan Umum Sarpras") -->
   <section id="faq" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-slate-50">
     <div class="max-w-4xl mx-auto space-y-10">
       
       <!-- Section Header -->
       <div class="text-center space-y-3">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Pertanyaan Umum Pemeliharaan Fasilitas
+          Pertanyaan Seputar Inovasi MokletCare
         </h2>
         <p class="text-slate-600 text-sm font-light">
-          Informasi seputar kebijakan pelaporan, waktu respons, dan wewenang pengelolaan di SMK Telkom Malang.
+          Pelajari bagaimana konsep sistem ini dirancang untuk mempermudah perawatan fasilitas di lingkungan SMK Telkom Malang.
         </p>
       </div>
 
@@ -752,55 +707,55 @@
         <!-- FAQ 1 -->
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all faq-item">
           <button type="button" class="w-full px-4 sm:px-6 py-3.5 sm:py-4.5 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none faq-trigger">
-            <span class="text-sm font-bold text-slate-900">Siapa saja yang berhak mengirimkan laporan kerusakan fasilitas?</span>
+            <span class="text-sm font-bold text-slate-900">Siapa saja yang dapat mengirimkan laporan fasilitas di MokletCare?</span>
             <svg class="w-5 h-5 text-slate-400 shrink-0 transform transition-transform duration-200 faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="px-6 pb-4.5 text-xs text-slate-600 leading-relaxed hidden faq-answer border-t border-slate-100 pt-3">
-            Seluruh civitas akademika SMK Telkom Malang yang memiliki akun Google aktif (siswa seluruh jurusan RPL, TKJ, SIJA, maupun dewan guru dan staf kependidikan) dapat masuk melalui portal Google SSO dan langsung melaporkan kerusakan sarana prasarana.
+            Seluruh sivitas akademika SMK Telkom Malang yang memiliki akun Google aktif (siswa jurusan RPL, TKJ, SIJA, maupun guru dan tenaga kependidikan) dapat masuk menggunakan akun Google sekolah dan langsung melaporkan kendala sarana dan prasarana.
           </div>
         </div>
 
         <!-- FAQ 2 -->
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all faq-item">
           <button type="button" class="w-full px-4 sm:px-6 py-3.5 sm:py-4.5 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none faq-trigger">
-            <span class="text-sm font-bold text-slate-900">Berapa lama rata-rata waktu penanganan laporan kerusakan?</span>
+            <span class="text-sm font-bold text-slate-900">Bagaimana alur penanganan laporan berdasarkan tingkat urgensi?</span>
             <svg class="w-5 h-5 text-slate-400 shrink-0 transform transition-transform duration-200 faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="px-6 pb-4.5 text-xs text-slate-600 leading-relaxed hidden faq-answer border-t border-slate-100 pt-3">
-            Laporan berkategori <strong>High / Critical</strong> (misal: korsleting listrik, saklar terbakar, atau AC ruang server mati) otomatis mendapatkan prioritas jalur cepat dan diinspeksi dalam waktu kurang dari 2 jam. Untuk perbaikan kategori <strong>Low / Medium</strong>, pengerjaan disesuaikan dengan antrean kerja harian teknisi Sarpras.
+            Laporan berkategori <strong>Tinggi / Kritis</strong> (misalnya: korsleting listrik, sakelar rusak membahayakan, atau pendingin ruang server mati) dirancang otomatis mendapatkan prioritas tindakan cepat. Untuk perbaikan kategori <strong>Rendah / Sedang</strong>, pengerjaan disesuaikan dengan antrean kerja harian tim fasilitas.
           </div>
         </div>
 
         <!-- FAQ 3 -->
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all faq-item">
           <button type="button" class="w-full px-4 sm:px-6 py-3.5 sm:py-4.5 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none faq-trigger">
-            <span class="text-sm font-bold text-slate-900">Mengapa foto bukti kerusakan wajib disertakan saat melapor?</span>
+            <span class="text-sm font-bold text-slate-900">Mengapa foto kondisi fasilitas perlu dilampirkan saat melapor?</span>
             <svg class="w-5 h-5 text-slate-400 shrink-0 transform transition-transform duration-200 faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="px-6 pb-4.5 text-xs text-slate-600 leading-relaxed hidden faq-answer border-t border-slate-100 pt-3">
-            Foto bukti fisik membantu teknisi mengidentifikasi tipe kerusakan, merek peralatan, serta suku cadang yang tepat sebelum berangkat ke lokasi, menghindari waktu terbuang akibat salah membawa perkakas kerja.
+            Foto bukti fisik membantu tim teknisi memahami kondisi kerusakan dan perlengkapan yang dibutuhkan sebelum menuju ruangan, sehingga proses penanganan dapat berlangsung lebih cepat dan efektif.
           </div>
         </div>
 
         <!-- FAQ 4 -->
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all faq-item">
           <button type="button" class="w-full px-4 sm:px-6 py-3.5 sm:py-4.5 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none faq-trigger">
-            <span class="text-sm font-bold text-slate-900">Bagaimana jika barang atau ruangan yang rusak belum ada dalam pilihan form?</span>
+            <span class="text-sm font-bold text-slate-900">Bagaimana jika ruangan atau barang yang dilaporkan tidak ada di daftar pilihan?</span>
             <svg class="w-5 h-5 text-slate-400 shrink-0 transform transition-transform duration-200 faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="px-6 pb-4.5 text-xs text-slate-600 leading-relaxed hidden faq-answer border-t border-slate-100 pt-3">
-            Kolom lokasi ruangan bersifat input teks bebas (misal: "Lab SIJA 2 Baris 3"), dan dropdown jenis barang menyediakan opsi "Lainnya" dengan kolom isian spesifik untuk mencantumkan nama peralatan yang belum tercatat.
+            Kolom lokasi ruangan dapat diisi secara leluasa sesuai kebutuhan spesifik, dan pilihan jenis barang menyediakan opsi "Lainnya" yang dilengkapi isian khusus untuk mencantumkan nama peralatan yang bersangkutan.
           </div>
         </div>
 
         <!-- FAQ 5 -->
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all faq-item">
           <button type="button" class="w-full px-4 sm:px-6 py-3.5 sm:py-4.5 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none faq-trigger">
-            <span class="text-sm font-bold text-slate-900">Apakah teknisi dapat langsung membeli suku cadang pengganti?</span>
+            <span class="text-sm font-bold text-slate-900">Bagaimana proses pengadaan komponen pengganti ditangani dalam sistem ini?</span>
             <svg class="w-5 h-5 text-slate-400 shrink-0 transform transition-transform duration-200 faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="px-6 pb-4.5 text-xs text-slate-600 leading-relaxed hidden faq-answer border-t border-slate-100 pt-3">
-            Sistem menerapkan Dual-Tier Governance: untuk perbaikan non-darurat yang membutuhkan anggaran pembelian suku cadang baru, staf teknisi mengirimkan permohonan verifikasi foto ke portal <code>/admin/approval</code> agar diotorisasi oleh Kepala Sarpras terlebih dahulu.
+            Sistem mengusung konsep persetujuan terpadu: saat perbaikan memerlukan pengadaan komponen baru, teknisi mengajukan bukti foto ke halaman persetujuan agar ditinjau dan disetujui oleh Kepala Sarpras terlebih dahulu.
           </div>
         </div>
 
@@ -809,7 +764,7 @@
     </div>
   </section>
 
-  <!-- 10. SECTION: COMPETITION & DEVELOPMENT TEAM DOSSIER ("ITECHNO CUP 2026") -->
+  <!-- 9. SECTION: COMPETITION & DEVELOPMENT TEAM DOSSIER ("ITECHNO CUP 2026") -->
   <section class="relative z-10 py-16 sm:py-20 px-4 sm:px-8 border-b border-slate-200 bg-white">
     <div class="max-w-5xl mx-auto space-y-8">
       
@@ -822,7 +777,7 @@
                 ITECHNO CUP 2026 · WEB DEVELOPMENT COMPETITION
               </div>
               <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2 tracking-tight">
-                Tim Pengembang MokletCare
+                Karya Inovasi Tim MokletCare
               </h2>
             </div>
             <div class="text-xs text-slate-400 font-mono-code">
@@ -834,36 +789,36 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 space-y-2">
-              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">Backend & Architecture</div>
+              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">Arsitektur Sistem & Rekayasa Logika</div>
               <div class="text-base font-bold text-white">Dilshad Ahnaf</div>
-              <p class="text-xs text-slate-400">System Architect, Express.js, PostgreSQL Migrations, & Clerk Security.</p>
+              <p class="text-xs text-slate-400">Perancangan arsitektur alur kerja sistem, pengelolaan data terpusat, dan integrasi keamanan akses.</p>
               <div class="pt-2 text-xs font-mono-code text-slate-500">
                 <a href="https://github.com/Ahnaf-icprpl" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:text-red-300">@Ahnaf-icprpl</a>
               </div>
             </div>
 
             <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 space-y-2">
-              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">Frontend Development</div>
+              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">Pengembangan Tampilan Web</div>
               <div class="text-base font-bold text-white">Rafale Alfardean Herawan</div>
-              <p class="text-xs text-slate-400">Tailwind CSS v4, EJS Templating, Responsive Layout, & Client Scripting.</p>
+              <p class="text-xs text-slate-400">Penyusunan antarmuka interaktif, tata letak responsif, dan kenyamanan visual pengguna.</p>
               <div class="pt-2 text-xs font-mono-code text-slate-500">
                 <a href="https://github.com/RaffFidela" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:text-red-300">@RaffFidela</a>
               </div>
             </div>
 
             <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 space-y-2">
-              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">UI/UX Design</div>
+              <div class="text-xs font-mono-code text-red-400 font-semibold uppercase">Desain Pengalaman Pengguna</div>
               <div class="text-base font-bold text-white">Baruna Aryatama</div>
-              <p class="text-xs text-slate-400">User Experience Wireframing, Institutional Brand Assets, & Design Tokens.</p>
+              <p class="text-xs text-slate-400">Perancangan pengalaman interaksi, tata visual ramah pengguna, dan keselarasan identitas desain.</p>
               <div class="pt-2 text-xs font-mono-code text-slate-500">
-                <span class="text-slate-400">UI/UX Designer</span>
+                <span class="text-slate-400">Desain Antarmuka & Visual</span>
               </div>
             </div>
 
           </div>
 
           <div class="flex flex-wrap items-center justify-between gap-4 pt-4 text-xs text-slate-400 font-mono-code border-t border-slate-800">
-            <div>Dibuat dengan dedikasi untuk keunggulan fasilitas SMK Telkom Malang.</div>
+            <div>Digagas dengan semangat inovasi untuk mendukung keunggulan fasilitas SMK Telkom Malang.</div>
             <a href="https://github.com/Ahnaf-icprpl/MokletCare" target="_blank" rel="noopener noreferrer" class="text-white hover:text-red-400 flex items-center gap-1.5 underline">
               <span>Lihat Repositori Proyek</span>
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -877,28 +832,34 @@
     </div>
   </section>
 
-  <!-- 11. FINAL CALL TO ACTION ("Mulai Rawat Fasilitas Sekolah") -->
+  <!-- 10. FINAL CALL TO ACTION ("Mulai Rawat Fasilitas Sekolah") -->
   <section class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-red-600 text-white">
     <div class="max-w-4xl mx-auto text-center space-y-6">
       <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-        Fasilitas Rusak Menghambat Praktikum Hari Ini?
+        Menghadirkan Masa Depan Tata Kelola Fasilitas Sekolah
       </h2>
       <p class="text-red-100 text-sm sm:text-base max-w-2xl mx-auto font-light leading-relaxed">
-        Kirimkan laporan insiden sekarang dalam waktu kurang dari 60 detik. Teknisi Sarpras siap menerima notifikasi dan memproses perbaikan secara akuntabel.
+        Jelajahi kemudahan pelaporan fasilitas dalam waktu kurang dari 60 detik. Temukan bagaimana penanganan sarana sekolah dapat berjalan lebih terarah, cepat, dan transparan.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
         <a href="/report" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-red-600 hover:bg-red-50 text-sm font-bold px-7 py-3.5 rounded-xl transition-transform hover:-translate-y-0.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          <span>Buat Laporan Sekarang</span>
+          <span>Mulai Laporkan Fasilitas</span>
         </a>
-        <a href="/login" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white border border-red-400/50 text-sm font-semibold px-7 py-3.5 rounded-xl transition-colors">
-          <span>Masuk Portal Akun</span>
-        </a>
+        <% if (locals.user) { %>
+          <a href="/history" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white border border-red-400/50 text-sm font-semibold px-7 py-3.5 rounded-xl transition-colors">
+            <span>Lihat Riwayat Laporan</span>
+          </a>
+        <% } else { %>
+          <a href="/login" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-700/60 hover:bg-red-700 text-white border border-red-400/50 text-sm font-semibold px-7 py-3.5 rounded-xl transition-colors">
+            <span>Masuk Portal Akun</span>
+          </a>
+        <% } %>
       </div>
     </div>
   </section>
 
-  <!-- 12. INSTITUTIONAL FOOTER -->
+  <!-- 11. INSTITUTIONAL FOOTER -->
   <footer class="relative z-10 bg-slate-950 text-slate-400 text-xs pt-10 sm:pt-14 pb-8 px-4 sm:px-6 lg:px-8 border-t border-slate-800">
     <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-slate-800/80">
       
@@ -909,6 +870,7 @@
         </div>
         <div class="space-y-1 text-slate-500 font-mono-code text-[11px]">
           <div>SMK Telkom Malang</div>
+          <div class="text-slate-400">Inovasi Tata Kelola Fasilitas Kampus Terpadu</div>
           <div class="pt-1">
             <span>Email: <a href="mailto:support@mokletcare.my.id" class="text-slate-300 hover:text-white transition-colors">support@mokletcare.my.id</a></span>
           </div>
@@ -923,7 +885,7 @@
           <li><a href="/report" class="hover:text-white transition-colors">Formulir Pelaporan</a></li>
           <li><a href="/history" class="hover:text-white transition-colors">Riwayat Laporan Saya</a></li>
           <li><a href="/dashboard" class="hover:text-white transition-colors">Dashboard Pemeliharaan</a></li>
-          <li><a href="/admin/approval" class="hover:text-white transition-colors">Pusat Approval Sarpras</a></li>
+          <li><a href="/admin/approval" class="hover:text-white transition-colors">Pusat Persetujuan Sarpras</a></li>
         </ul>
       </div>
 

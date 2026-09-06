@@ -118,7 +118,7 @@ router.get(['/', '/welcome'], populateUser, async function(req, res, next) {
       resolved: 235,
       inProgress: 260,
       pending: 271,
-      resolutionPercent: 94
+      resolutionPercent: 49
     };
 
     if (cachedLandingStats && Date.now() < landingStatsExpiresAt) {
@@ -147,7 +147,7 @@ router.get(['/', '/welcome'], populateUser, async function(req, res, next) {
             resolved: r,
             inProgress: ip,
             pending: p,
-            resolutionPercent: t > 0 ? Math.round(((r + ip) / t) * 100) : 98
+            resolutionPercent: t > 0 ? Math.round(((r + ip) / t) * 100) : 100
           };
           cachedLandingStats = stats;
           landingStatsExpiresAt = Date.now() + 60 * 1000;
@@ -160,7 +160,7 @@ router.get(['/', '/welcome'], populateUser, async function(req, res, next) {
     }
 
     res.render('landing', {
-      title: 'MokletCare — Sistem Pelaporan & Pemeliharaan Fasilitas SMK Telkom Malang',
+      title: 'MokletCare — Inovasi Tata Kelola & Pemeliharaan Fasilitas SMK Telkom Malang',
       isAuthenticated: isAuthenticated,
       user: req.user,
       stats: stats,

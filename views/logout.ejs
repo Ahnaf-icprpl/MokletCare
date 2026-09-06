@@ -46,20 +46,47 @@
     data-clerk-publishable-key="<%= locals.clerkPublishableKey || '' %>"
     src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
     type="text/javascript"
+    onload="processLogout()"
   ></script>
 
   <script>
-    window.addEventListener('load', async () => {
-      if (window.Clerk) {
-        try {
-          await window.Clerk.load();
-          await window.Clerk.signOut();
-        } catch (err) {
-          console.error(err);
+    let logoutHandled = false;
+    async function processLogout() {
+      if (logoutHandled) return;
+      logoutHandled = true;
+
+      // Clear the cookie immediately
+      document.cookie = '__session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax';
+
+      let attempts = 0;
+      const trySignOut = async () => {
+        if (window.Clerk) {
+          try {
+            if (!window.Clerk.loaded) {
+              await window.Clerk.load();
+            }
+            await window.Clerk.signOut();
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
+          window.location.replace('/login');
+        } else {
+          attempts++;
+          if (attempts >= 40) { // 4 seconds max wait
+            window.location.replace('/login');
+          } else {
+            setTimeout(trySignOut, 100);
+          }
         }
-      }
-      window.location.href = '/login';
-    });
+      };
+      trySignOut();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', processLogout);
+    } else {
+      processLogout();
+    }
   </script>
 </body>
 </html>
