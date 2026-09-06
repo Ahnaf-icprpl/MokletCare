@@ -108,7 +108,12 @@
             return;
           }
         }
-        await window.Clerk.client.signIn.authenticateWithRedirect({
+        // Prefer top-level Clerk.authenticateWithRedirect, fallback to client.signIn
+        const authRedirect = window.Clerk.authenticateWithRedirect 
+          ? window.Clerk.authenticateWithRedirect.bind(window.Clerk)
+          : window.Clerk.client.signIn.authenticateWithRedirect.bind(window.Clerk.client.signIn);
+
+        await authRedirect({
           strategy: strategy,
           redirectUrl: '/sso-callback',
           redirectUrlComplete: '/'
@@ -127,9 +132,15 @@
             console.error('Retry token sync error:', retryErr);
           }
         }
-        const errorMsg = (err.errors && err.errors[0]) 
+        let errorMsg = (err.errors && err.errors[0]) 
           ? (err.errors[0].longMessage || err.errors[0].message) 
           : 'Sign in failed. Please try again.';
+
+        if (errorMsg.includes('allowed values for parameter strategy') || (err.errors && err.errors[0] && err.errors[0].meta?.paramName === 'strategy')) {
+          const provider = strategy === 'oauth_google' ? 'Google' : (strategy === 'oauth_apple' ? 'Apple' : strategy);
+          errorMsg = `${provider} authentication is not enabled in your Clerk Dashboard. Go to Clerk Dashboard > Configure > User & Authentication > Social Connections and enable ${provider}.`;
+        }
+
         showError(errorMsg);
         document.getElementById('google-btn').disabled = false;
         document.getElementById('apple-btn').disabled = false;
