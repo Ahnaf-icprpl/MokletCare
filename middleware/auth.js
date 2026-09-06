@@ -137,12 +137,13 @@ async function ensureAuthenticated(req, res, next) {
 
 function ensureRole(...allowedRoles) {
   return function(req, res, next) {
+    // Admin has full uncontrolled superuser access across all role-guarded routes
+    if (req.user && req.user.role === 'admin') {
+      return next();
+    }
     if (!req.user || !allowedRoles.includes(req.user.role)) {
       if (req.xhr || (req.headers && req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(403).json({ error: 'Forbidden: Insufficient privileges.' });
-      }
-      if (req.user && req.user.role === 'admin') {
-        return res.redirect('/admin/approval');
       }
       return res.redirect('/?error=' + encodeURIComponent('Access denied. You do not have permission to view that page.'));
     }

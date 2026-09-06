@@ -108,9 +108,6 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
 });
 
 router.get('/', ensureAuthenticated, async function(req, res, next) {
-  if (req.user && req.user.role === 'admin') {
-    return res.redirect('/admin/approval');
-  }
   try {
     const result = await db.query('SELECT * FROM dropdown_options ORDER BY sort_order ASC');
     const facilities = result.rows.filter(r => r.category === 'facility');
@@ -362,9 +359,6 @@ router.post('/upload-image', ensureAuthenticated, uploadLimiter, function(req, r
 });
 
 router.post('/report', ensureAuthenticated, reportLimiter, async function(req, res, next) {
-  if (req.user && req.user.role === 'admin') {
-    return res.redirect('/admin/approval');
-  }
   try {
     // Secure identity enforcement directly from JWT token / session
     const reporter_name = req.user.displayName || 'Anonymous';
@@ -421,9 +415,6 @@ router.post('/report', ensureAuthenticated, reportLimiter, async function(req, r
 });
 
 router.get('/history', ensureAuthenticated, async function(req, res, next) {
-  if (req.user && req.user.role === 'admin') {
-    return res.redirect('/admin/approval');
-  }
   try {
     const email = (req.user && req.user.emails && req.user.emails[0]) ? req.user.emails[0].value : '';
     if (!email) {
@@ -434,14 +425,15 @@ router.get('/history', ensureAuthenticated, async function(req, res, next) {
     const limit = Math.max(1, Math.min(100, parseInt(req.query.limit, 10) || 10));
     const offset = (page - 1) * limit;
 
-    const result = await db.query(
-      `SELECT *, COUNT(*) OVER()::int as full_count 
-       FROM reports 
-       WHERE reporter_email = $1 
-       ORDER BY created_at DESC 
-       LIMIT $2 OFFSET $3`,
-      [email, limit, offset]
-    );
+    const isAdmin = req.user && req.user.role === 'admin';
+    const viewAll = isAdmin && req.query.view === 'all';
+
+    const query = viewAll
+      ? `SELECT *, COUNT(*) OVER()::int as full_count FROM reports ORDER BY created_at DESC LIMIT $1 OFFSET $2`
+      : `SELECT *, COUNT(*) OVER()::int as full_count FROM reports WHERE reporter_email = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
+    const params = viewAll ? [limit, offset] : [email, limit, offset];
+
+    const result = await db.query(query, params);
 
     const reports = result.rows;
     const totalMatching = reports.length > 0 ? reports[0].full_count : 0;
@@ -460,11 +452,49 @@ router.get('/history', ensureAuthenticated, async function(req, res, next) {
       },
       optionMap,
       formatOptionText,
+      viewAll,
+      isAdmin,
       success: req.query.success,
       error: req.query.error || null,
       clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
     });
   } catch(err) {
+    next(err);
+  }
+});
+
+// POST: Admin can delete any report permanently (full uncontrolled admin access)
+router.post(['/dashboard/reports/:id/delete', '/admin/reports/:id/delete'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+  try {
+    const { id } = req.params;
+    const reportId = parseInt(id, 10);
+    if (isNaN(reportId) || reportId <= 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(400).json({ error: 'Invalid report ID.' });
+      }
+      return res.redirect('/dashboard?error=' + encodeURIComponent('Invalid report ID.'));
+    }
+
+    // Delete associated photo_requests first to prevent constraint violations
+    await db.query('DELETE FROM photo_requests WHERE report_id = $1', [reportId]);
+    const result = await db.query('DELETE FROM reports WHERE id = $1 RETURNING id', [reportId]);
+
+    if (result.rows.length === 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(404).json({ error: 'Report not found.' });
+      }
+      return res.redirect('/dashboard?error=' + encodeURIComponent('Report not found.'));
+    }
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({ success: true, message: `Report #${reportId} deleted successfully.` });
+    }
+
+    const referer = req.get('Referer') || '/dashboard';
+    const cleanReferer = referer.split('#')[0].replace(/([?&])success=[^&]*(&|$)/g, '$1').replace(/([?&])error=[^&]*(&|$)/g, '$1').replace(/[?&]$/, '');
+    const separator = cleanReferer.includes('?') ? '&' : '?';
+    res.redirect(cleanReferer + separator + 'success=' + encodeURIComponent(`Report #${reportId} deleted successfully.`));
+  } catch (err) {
     next(err);
   }
 });

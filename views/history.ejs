@@ -39,19 +39,31 @@
 
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">My Reports</h1>
-      <p class="text-slate-500 mt-1">Track the progress of your submitted facility damage reports.</p>
+      <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight"><%= locals.viewAll ? 'All School Reports' : 'My Reports' %></h1>
+      <p class="text-slate-500 mt-1"><%= locals.viewAll ? 'Viewing all submitted facility reports across the school (Admin Mode).' : 'Track the progress of your submitted facility damage reports.' %></p>
     </div>
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-      <% if (locals.user && user.role === 'staff') { %>
-      <a href="/dashboard" class="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center shadow-sm">Dashboard</a>
-      <% } else if (locals.user && user.role === 'admin') { %>
+      <% if (locals.user && (user.role === 'staff' || user.role === 'admin')) { %>
+      <a href="/dashboard" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg transition-colors font-medium text-center border border-slate-200">Dashboard</a>
+      <% } %>
+      <% if (locals.user && user.role === 'admin') { %>
       <a href="/admin/approval" class="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center shadow-sm">Approval Page</a>
       <% } %>
       <a href="/" class="text-sm bg-white text-slate-600 px-4 py-2 rounded-lg transition-colors border border-slate-200 font-medium text-center">New Report</a>
       <a href="/logout" class="text-sm bg-red-50 text-red-600 px-4 py-2 rounded-lg transition-colors border border-red-200 font-medium text-center">Logout</a>
     </div>
   </div>
+
+  <% if (locals.isAdmin) { %>
+  <div class="flex items-center gap-2 mb-6 bg-white p-1.5 rounded-xl border border-slate-200 w-fit shadow-xs">
+    <a href="/history" class="text-xs px-3.5 py-1.5 rounded-lg font-semibold transition-colors <%= !locals.viewAll ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' %>">
+      My Submitted Reports
+    </a>
+    <a href="/history?view=all" class="text-xs px-3.5 py-1.5 rounded-lg font-semibold transition-colors <%= locals.viewAll ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' %>">
+      All School Reports
+    </a>
+  </div>
+  <% } %>
 
  <% if (reports.length === 0) { %>
  <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-12 text-center ">
@@ -155,6 +167,18 @@
     </div>
     <% } %>
 
+    <% if (locals.isAdmin) { %>
+    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+      <div class="text-[11px] text-slate-400">Reporter: <strong class="text-slate-600"><%= report.reporter_name %></strong> (<%= report.reporter_email %>)</div>
+      <form action="/dashboard/reports/<%= report.id %>/delete" method="POST" onsubmit="return confirm('Permanently delete Report #<%= report.id %>? This action cannot be undone.')">
+        <button type="submit" class="text-xs text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1 hover:bg-rose-50 px-2.5 py-1 rounded-md transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          Delete Ticket
+        </button>
+      </form>
+    </div>
+    <% } %>
+
     </div>
     <% }); %>
   </div>
@@ -172,9 +196,10 @@
      <% 
        const prevPage = pagination.page > 1 ? pagination.page - 1 : 1;
        const nextPage = pagination.page < pagination.totalPages ? pagination.page + 1 : pagination.totalPages;
+       const viewParam = locals.viewAll ? '&view=all' : '';
      %>
 
-     <a href="/history?page=<%= prevPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= pagination.page <= 1 ? 'pointer-events-none opacity-50' : '' %>">
+     <a href="/history?page=<%= prevPage %><%= viewParam %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= pagination.page <= 1 ? 'pointer-events-none opacity-50' : '' %>">
        Previous
      </a>
 
@@ -182,7 +207,7 @@
        Page <%= pagination.page %> of <%= pagination.totalPages %>
      </span>
 
-     <a href="/history?page=<%= nextPage %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= pagination.page >= pagination.totalPages ? 'pointer-events-none opacity-50' : '' %>">
+     <a href="/history?page=<%= nextPage %><%= viewParam %>" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium text-slate-600 transition-colors <%= pagination.page >= pagination.totalPages ? 'pointer-events-none opacity-50' : '' %>">
        Next
      </a>
    </div>

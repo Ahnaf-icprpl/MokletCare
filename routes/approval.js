@@ -311,4 +311,29 @@ router.post(['/admin/approval/:id/reject', '/admin/approval/:id/decline', '/admi
   }
 });
 
+// POST: Delete photo request permanently (admin only)
+router.post(['/admin/approval/:id/delete', '/admin/permissions/:id/delete'], ensureAuthenticated, ensureRole('admin'), async function(req, res, next) {
+  try {
+    const { id } = req.params;
+    const requestId = parseInt(id, 10);
+    if (isNaN(requestId) || requestId <= 0) {
+      if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.status(400).json({ error: 'Invalid request ID specified.' });
+      }
+      return res.redirect('/admin/approval?error=' + encodeURIComponent('Invalid request ID specified.'));
+    }
+
+    await db.query('DELETE FROM photo_requests WHERE id = $1', [requestId]);
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.json({ success: true, message: 'Request deleted successfully.' });
+    }
+
+    const referer = req.get('Referer') || '/admin/approval';
+    res.redirect(referer.includes('/admin/approval') ? referer : '/admin/approval?success=' + encodeURIComponent('Request deleted successfully'));
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

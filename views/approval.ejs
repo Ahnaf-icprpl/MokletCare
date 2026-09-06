@@ -30,7 +30,13 @@
         <p class="text-xs text-slate-500">Logged in as <strong class="text-slate-800"><%= locals.user ? user.displayName : 'Admin' %></strong> (<span class="capitalize font-semibold text-red-600">Admin</span>)</p>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+      <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-wrap">
+        <a href="/" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+          Report Portal
+        </a>
+        <a href="/history" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
+          My Reports
+        </a>
         <a href="/dashboard" class="text-xs bg-white text-slate-700 hover:bg-slate-100 px-3.5 py-2 rounded-lg transition-colors border border-slate-200 font-semibold text-center shadow-xs">
           Maintenance Dashboard
         </a>
@@ -198,23 +204,28 @@
               </div>
               <% } %>
 
-              <!-- Action Buttons (only for pending requests) -->
-              <% if (req.status === 'pending') { %>
-              <div class="flex gap-2 pt-2">
+              <!-- Action Buttons -->
+              <div class="flex items-center gap-2 pt-2">
+                <% if (req.status === 'pending') { %>
                 <form action="/admin/approval/<%= req.id %>/approve" method="POST" class="flex-1">
                   <button type="submit" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <span>Approve Request</span>
+                    <span>Approve</span>
                   </button>
                 </form>
                 <form action="/admin/approval/<%= req.id %>/decline" method="POST" class="flex-1">
                   <button type="submit" class="w-full text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    <span>Decline Request</span>
+                    <span>Decline</span>
+                  </button>
+                </form>
+                <% } %>
+                <form action="/admin/approval/<%= req.id %>/delete" method="POST" onsubmit="return confirm('Permanently delete this approval request?');">
+                  <button type="submit" title="Delete request" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 p-2.5 rounded-lg transition-colors border border-rose-200 flex items-center justify-center cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                   </button>
                 </form>
               </div>
-              <% } %>
             </div>
           </div>
 
