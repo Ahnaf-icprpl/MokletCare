@@ -60,9 +60,9 @@
 
 | Name | Role | GitHub Profile |
 | :--- | :--- | :--- |
-| **Dilshad Ahnaf** | Backend Developer & System Architect | [@Ahnaf-icprpl](https://github.com/Ahnaf-icprpl) |
-| **Rafale Alfardean Herawan** | Frontend Developer | [@RaffFidela](https://github.com/RaffFidela) |
-| **Baruna Aryatama** | UI/UX Designer | — |
+| **Dilshad Ahnaf (X ICP RPL)** | Backend Developer & System Architect | [@Ahnaf-icprpl](https://github.com/Ahnaf-icprpl) |
+| **Rafale Alfardean Herawan (X ICP RPL)** | Frontend Developer | [@RaffFidela](https://github.com/RaffFidela) |
+| **Baruna Aryatama (X ICP RPL)** | UI/UX Designer | — |
 
 ---
 

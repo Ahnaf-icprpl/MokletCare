@@ -60,6 +60,30 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+    @keyframes gandr-ltr {
+      0% {
+        transform: translate3d(-50%, 0, 0);
+      }
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    .gandr-track-1 {
+      display: flex;
+      width: max-content;
+      animation: gandr-ltr 65s linear infinite;
+      will-change: transform;
+    }
+    .gandr-track-2 {
+      display: flex;
+      width: max-content;
+      animation: gandr-ltr 80s linear infinite;
+      will-change: transform;
+    }
+    .gandr-track-1:hover,
+    .gandr-track-2:hover {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased selection:bg-red-600 selection:text-white min-h-screen flex flex-col relative overflow-x-hidden">
@@ -580,95 +604,97 @@
     </div>
   </section>
 
-  <!-- 7. SECTION: SYSTEM SHOWCASE & SCREENSHOTS ("Galeri Antarmuka Nyata") -->
-  <section id="preview" class="relative z-10 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
-    <div class="max-w-7xl mx-auto space-y-10">
+  <!-- 7. SECTION: SYSTEM SHOWCASE & SCREENSHOTS (Gandr.io Style Grid Carousel) -->
+  <section id="preview" class="relative z-10 py-12 sm:py-16 md:py-20 bg-white overflow-hidden">
+    
+    <!-- Section Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12 text-center">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Eksplorasi Konsep & Tampilan MokletCare
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base font-light mt-2 max-w-2xl mx-auto">
+        Antarmuka responsif yang dirancang intuitif, bersih, dan optimal untuk seluruh ekosistem perangkat sekolah.
+      </p>
+    </div>
+
+    <div class="w-full space-y-4 sm:space-y-6 max-h-[720px] overflow-hidden">
       
-      <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto space-y-3">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Eksplorasi Konsep & Tampilan MokletCare
-        </h2>
-        <p class="text-slate-600 text-sm sm:text-base font-light">
-          Setiap tampilan dirancang bersih, intuitif, dan optimal untuk layar komputer maupun perangkat seluler.
-        </p>
+      <!-- Track 1: Left to Right -->
+      <div class="flex overflow-hidden w-full select-none">
+        <div class="gandr-track-1 gap-4 sm:gap-6">
+          <!-- Set 1 -->
+          <img src="/images/responsively/MacBook%20Pro-1788721222022.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788721220557.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788721223127.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788721223802.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722420226.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722417460.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722433661.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722429910.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722494981.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722493789.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722495759.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722496825.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722795832.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722794578.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722797842.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          
+          <!-- Set 1 Duplicate for Seamless Loop -->
+          <img src="/images/responsively/MacBook%20Pro-1788721222022.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788721220557.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788721223127.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788721223802.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722420226.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722417460.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722433661.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722429910.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722494981.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722493789.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722495759.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722496825.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722795832.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722794578.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722797842.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+        </div>
       </div>
 
-      <!-- Screenshot Tabs Navigation -->
-      <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-3 px-2 scrollbar-none snap-x" id="gallery-tabs">
-        <button type="button" data-tab="tab-dashboard" class="gallery-tab-btn active shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-red-600 text-white transition-all">
-          1. Dasbor Penanganan Fasilitas
-        </button>
-        <button type="button" data-tab="tab-form" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          2. Formulir Laporan Cepat
-        </button>
-        <button type="button" data-tab="tab-modal" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          3. Panel Pemeriksaan & Hasil
-        </button>
-        <button type="button" data-tab="tab-auth" class="gallery-tab-btn shrink-0 snap-start whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
-          4. Akses Akun Sekolah
-        </button>
-      </div>
-
-      <!-- Screenshot Preview -->
-      <div class="max-w-5xl mx-auto">
-        
-        <!-- Tab 1 Content -->
-        <div id="tab-dashboard" class="gallery-content block space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 bg-white">
-            <picture>
-              <source type="image/webp" srcset="/images/screenshots/dashboard-desktop.webp">
-              <img src="/images/screenshots/dashboard-desktop.png" alt="Dasbor Penanganan Fasilitas" loading="lazy" width="1280" height="720" class="w-full h-auto block">
-            </picture>
-          </div>
-          <div class="px-1 py-1 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 gap-2">
-            <span>Tampilan: <strong class="text-slate-900 font-semibold">Dasbor Penanganan Fasilitas</strong></span>
-            <span class="text-slate-500">Ringkasan status terkini, pencarian cepat, penyaringan laporan, dan navigasi yang mudah</span>
-          </div>
+      <!-- Track 2: Left to Right (Staggered Speed) -->
+      <div class="flex overflow-hidden w-full select-none">
+        <div class="gandr-track-2 gap-4 sm:gap-6">
+          <!-- Set 2 -->
+          <img src="/images/responsively/iPad-1788722796885.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722833260.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722834215.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722835389.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722836111.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722843847.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722842534.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722844982.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722845925.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788723058219.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788723060171.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788723062391.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788723104392.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788723106411.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788723107808.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          
+          <!-- Set 2 Duplicate for Seamless Loop -->
+          <img src="/images/responsively/iPad-1788722796885.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722833260.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722834215.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722835389.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722836111.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788722843847.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788722842534.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPad-1788722844982.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788722845925.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788723058219.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788723060171.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788723062391.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%2012%20Pro-1788723104392.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/iPhone%20XR-1788723106411.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
+          <img src="/images/responsively/MacBook%20Pro-1788723107808.jpeg" alt="" loading="lazy" class="h-52 sm:h-64 md:h-72 lg:h-80 w-auto shrink-0 shadow-sm transition-transform duration-200 hover:scale-[1.02]">
         </div>
-
-        <!-- Tab 2 Content -->
-        <div id="tab-form" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 bg-white">
-            <picture>
-              <source type="image/webp" srcset="/images/screenshots/report-form-desktop.webp">
-              <img src="/images/screenshots/report-form-desktop.png" alt="Formulir Laporan Cepat" loading="lazy" width="1280" height="720" class="w-full h-auto block">
-            </picture>
-          </div>
-          <div class="px-1 py-1 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 gap-2">
-            <span>Tampilan: <strong class="text-slate-900 font-semibold">Formulir Laporan Cepat</strong></span>
-            <span class="text-slate-500">Kategori terarah, penentuan lokasi ruangan, dan lampiran foto bukti kerusakan</span>
-          </div>
-        </div>
-
-        <!-- Tab 3 Content -->
-        <div id="tab-modal" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 bg-white">
-            <picture>
-              <source type="image/webp" srcset="/images/screenshots/report-details-modal.webp">
-              <img src="/images/screenshots/report-details-modal.png" alt="Panel Pemeriksaan & Hasil" loading="lazy" width="1280" height="720" class="w-full h-auto block">
-            </picture>
-          </div>
-          <div class="px-1 py-1 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 gap-2">
-            <span>Tampilan: <strong class="text-slate-900 font-semibold">Panel Pemeriksaan & Hasil</strong></span>
-            <span class="text-slate-500">Pemeriksaan foto, pembaruan status kerja, catatan teknis, dan verifikasi selesai</span>
-          </div>
-        </div>
-
-        <!-- Tab 4 Content -->
-        <div id="tab-auth" class="gallery-content hidden space-y-3">
-          <div class="shadow-xl shadow-slate-200/60 bg-white">
-            <picture>
-              <source type="image/webp" srcset="/images/screenshots/auth-signin.webp">
-              <img src="/images/screenshots/auth-signin.png" alt="Akses Akun Sekolah" loading="lazy" width="1280" height="720" class="w-full h-auto block">
-            </picture>
-          </div>
-          <div class="px-1 py-1 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 gap-2">
-            <span>Tampilan: <strong class="text-slate-900 font-semibold">Akses Akun Sekolah</strong></span>
-            <span class="text-slate-500">Masuk mudah dengan akun Google sekolah, perlindungan data, dan sesi yang aman</span>
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -697,7 +723,7 @@
             
             <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Arsitektur Sistem & Rekayasa Logika</div>
-              <div class="text-lg font-bold text-slate-900 tracking-tight">Dilshad <span class="underline underline-offset-4">Ahnaf</span></div>
+              <div class="text-lg font-bold text-slate-900 tracking-tight">Dilshad <span class="underline underline-offset-4">Ahnaf</span> (X ICP RPL)</div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Perancangan arsitektur alur kerja sistem, pengelolaan data terpusat, dan integrasi keamanan akses pengguna.</p>
               <div class="pt-2">
                 <a href="https://github.com/Ahnaf-icprpl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs text-slate-700 hover:text-red-600 font-semibold transition-colors">
@@ -709,7 +735,7 @@
 
             <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Pengembangan Tampilan Web</div>
-              <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Rafale</span> Alfardean Herawan</div>
+              <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Rafale</span> Alfardean Herawan (X ICP RPL)</div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Penyusunan antarmuka interaktif, implementasi tata letak responsif, dan kenyamanan visual pengguna.</p>
               <div class="pt-2">
                 <a href="https://github.com/RaffFidela" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs text-slate-700 hover:text-red-600 font-semibold transition-colors">
@@ -721,7 +747,7 @@
 
             <div class="bg-slate-50 p-6 space-y-3 hover:bg-slate-100/60 transition-colors">
               <div class="text-[11px] font-bold text-red-600 tracking-wider uppercase">Desain Pengalaman Pengguna</div>
-              <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Baruna</span> Aryatama</div>
+              <div class="text-lg font-bold text-slate-900 tracking-tight"><span class="underline underline-offset-4">Baruna</span> Aryatama (X ICP RPL)</div>
               <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">Perancangan alur interaksi pengguna, standarisasi sistem desain visual, dan pengujian kegunaan produk.</p>
               <div class="pt-2">
                 <div class="inline-flex items-center gap-2 text-xs text-slate-600 font-medium">
@@ -821,7 +847,7 @@
         © 2026 MokletCare · SMK Telkom Malang · Tim ITECHNO CUP 2026.
       </div>
       <div class="text-slate-300 font-medium">
-        <span>Ahnaf · Rafale · Baruna</span>
+        <span>Ahnaf · Rafale · Baruna (X ICP RPL)</span>
       </div>
     </div>
   </footer>
@@ -884,34 +910,6 @@
             destination: this.getAttribute("href"),
             link_text: this.textContent.trim().slice(0, 50)
           });
-        });
-      });
-
-      // 2. Screenshot Showcase Tab Switcher
-      const tabButtons = document.querySelectorAll(".gallery-tab-btn");
-      const tabContents = document.querySelectorAll(".gallery-content");
-
-      tabButtons.forEach(function(button) {
-        button.addEventListener("click", function() {
-          const targetTabId = this.getAttribute("data-tab");
-          
-          tabButtons.forEach(function(btn) {
-            btn.classList.remove("bg-red-600", "text-white");
-            btn.classList.add("bg-slate-100", "text-slate-700");
-          });
-
-          this.classList.remove("bg-slate-100", "text-slate-700");
-          this.classList.add("bg-red-600", "text-white");
-
-          tabContents.forEach(function(content) {
-            if (content.id === targetTabId) {
-              content.classList.remove("hidden");
-            } else {
-              content.classList.add("hidden");
-            }
-          });
-
-          trackGA("switch_gallery_tab", { tab_id: targetTabId });
         });
       });
 
