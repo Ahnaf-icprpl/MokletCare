@@ -106,6 +106,17 @@ router.get(['/terms', '/terms-of-service'], function(req, res, next) {
   res.redirect('/tos');
 });
 
+router.get('/welcome', function(req, res, next) {
+  // If already authenticated, redirect to report form
+  const auth = getAuth(req);
+  if (auth && auth.userId) {
+    return res.redirect('/');
+  }
+  res.render('landing', {
+    title: 'MokletCare — Facility Damage Reporting Portal'
+  });
+});
+
 router.get('/', ensureAuthenticated, async function(req, res, next) {
   try {
     const result = await db.query('SELECT * FROM dropdown_options ORDER BY sort_order ASC');
