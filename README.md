@@ -101,9 +101,7 @@ Educational institutions—particularly technology-focused vocational schools li
 | **Admin Approvals & RBAC Delegation (`/admin/approval`)** | Administrative command center to review staff photo requests with interactive statistical breakdowns, and assign user roles (`reporter`, `staff`, `admin`) via Clerk. | Granular control over permissions without needing direct database access or manual SQL queries. |
 
 ### Additional Capabilities
-- 🛡️ **Multi-Tier Rate Limiting**: Global DDoS protection (5000 req/15min) paired with dedicated per-user upload (100/hr) and report creation (100/hr) throttling.
 - ⚡ **High-Performance Memory Caching**: 5-minute TTL caching for Clerk user profiles and 10-minute TTL caching for dropdown taxonomies to reduce database and API overhead.
-- 🔒 **SQL Injection Immunity**: 100% parameterized SQL queries via PostgreSQL client connection pool.
 - 📱 **Mobile-First Responsive Layout**: Built with Tailwind CSS v4, perfectly optimized for both desktop monitors and student mobile devices.
 
 ---
