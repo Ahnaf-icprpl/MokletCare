@@ -36,13 +36,19 @@ app.use(function(req, res, next) {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+var compression = require('compression');
+
+// Enable Gzip/Deflate HTTP response compression (CSS, JS, HTML)
+app.use(compression());
+
 // Parse cookies and request bodies with explicit limits
 app.use(logger(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0
+  maxAge: process.env.NODE_ENV === 'production' ? '1d' : '1h',
+  etag: true
 }));
 
 // Enable Clerk middleware with explicit keys
