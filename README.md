@@ -13,7 +13,7 @@
 [![Cloudinary](https://img.shields.io/badge/Storage-Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-**Submission for ITECHNO CUP 2026 — Web Development Competition**
+**Submission for ITECHNO CUP 2026 - Web Development Competition**
 
 <br/>
 
