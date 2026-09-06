@@ -41,13 +41,16 @@ var compression = require('compression');
 // Enable Gzip/Deflate HTTP response compression (CSS, JS, HTML)
 app.use(compression());
 
+// Expose dynamic asset versioning for cache-busting static stylesheets
+app.locals.assetVersion = process.env.RENDER_GIT_COMMIT || process.env.RAILWAY_GIT_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA || ('v' + Date.now());
+
 // Parse cookies and request bodies with explicit limits
 app.use(logger(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : '1h',
+  maxAge: process.env.NODE_ENV === 'production' ? '2h' : 0,
   etag: true
 }));
 

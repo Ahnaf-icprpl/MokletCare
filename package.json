@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "npm run build:css",
+    "prestart": "npm run build:css",
     "start": "node app.js",
     "dev": "concurrently \"npm run build:css -- --watch\" \"nodemon -e js,ejs app.js\"",
     "build:css": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css",
@@ -12,6 +14,7 @@
   },
   "dependencies": {
     "@clerk/express": "^2.1.54",
+    "@tailwindcss/cli": "^4.3.3",
     "cloudinary": "^1.41.3",
     "compression": "^1.8.1",
     "cookie-parser": "~1.4.4",
@@ -25,15 +28,14 @@
     "morgan": "~1.9.1",
     "multer": "^2.2.0",
     "multer-storage-cloudinary": "^4.0.0",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/cli": "^4.3.3",
     "concurrently": "^10.0.4",
     "eslint": "^10.10.0",
     "globals": "^17.12.0",
-    "nodemon": "^3.1.14",
-    "tailwindcss": "^4.3.3"
+    "nodemon": "^3.1.14"
   }
 }
