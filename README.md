@@ -69,7 +69,7 @@
 ## 📖 Application Overview
 
 ### Background
-Educational institutions—particularly technology-focused vocational schools like **SMK Telkom Malang**—rely heavily on hundreds of high-utilization hardware assets, computer labs, air conditioning units, network equipment, and classroom infrastructure. In traditional setups:
+Educational institutions—particularly technology-focused vocational schools like **SMK Telkom Malang**-rely heavily on hundreds of high-utilization hardware assets, computer labs, air conditioning units, network equipment, and classroom infrastructure. In traditional setups:
 1. **Reporting Bottlenecks**: Students and teachers report damages through unstructured WhatsApp messages, word of mouth, or physical paper forms, leading to lost tickets and forgotten repairs.
 2. **Lack of Transparency**: Reporters have zero visibility into whether their tickets were received, assigned, or fixed.
 3. **Budget & Authorization Confusion**: Technicians often lack clear guidelines on whether a minor vs. major repair requires administrative approval before procurement.
