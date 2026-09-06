@@ -23,18 +23,6 @@ var app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-const rateLimit = require('express-rate-limit');
-
-// Global rate limit: 5000 requests per 15 minutes per IP
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5000,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Too many requests from this IP, please try again after 15 minutes.'
-});
-app.use(globalLimiter);
-
 // Security Headers Middleware
 app.use(function(req, res, next) {
   res.setHeader('X-Content-Type-Options', 'nosniff');

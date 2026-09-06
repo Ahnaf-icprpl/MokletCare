@@ -226,7 +226,7 @@ flowchart TD
 
     subgraph AuthTier["Authentication & Edge Tier"]
         ClerkAuth["🔐 Clerk Authentication (SSO / OTP / JWT)"]
-        RateLimiter["🛡️ Express Rate Limiter (Global / Upload / Report)"]
+        RateLimiter["🛡️ Express Rate Limiter (Upload / Report)"]
     end
 
     subgraph AppTier["Application Server (Express.js)"]
@@ -320,7 +320,7 @@ erDiagram
 ```text
 MokletCare/
 ├── Dockerfile                  # Production container configuration
-├── app.js                      # Express app initialization, rate limiting, and middleware
+├── app.js                      # Express app initialization, security headers, and middleware
 ├── db.js                       # PostgreSQL connection pooling with pg
 ├── package.json                # NPM packages and lifecycle scripts
 ├── .env.example                # Sample environment variables file
